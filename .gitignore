@@ -30,7 +30,9 @@
 *.exe
 *.out
 *.app
-.vs/TI-THDE6/v16/.suo
+
+# VisualStudio
+*.suo
 *.sln
 *.db
 *.db-shm
@@ -39,3 +41,17 @@
 *.vcxproj
 *.filters
 *.user
+.vs/
+Debug/
+
+# Other
+*.bin
+*.elf
+*.ld
+*.map
+*.log
+*.cache
+
+bmptk_fixed_size_stack.c
+_cc_flags
+_linker_flags
