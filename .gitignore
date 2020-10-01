@@ -32,3 +32,10 @@
 *.app
 .vs/TI-THDE6/v16/.suo
 *.sln
+*.db
+*.db-shm
+*.db-wal
+*.opendb
+*.vcxproj
+*.filters
+*.user
