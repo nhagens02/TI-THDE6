@@ -30,3 +30,5 @@
 *.exe
 *.out
 *.app
+.vs/TI-THDE6/v16/.suo
+*.sln
