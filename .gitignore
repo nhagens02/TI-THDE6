@@ -57,3 +57,4 @@ _cc_flags
 _linker_flags
 
 Test/
+Project/_cpp_flags
