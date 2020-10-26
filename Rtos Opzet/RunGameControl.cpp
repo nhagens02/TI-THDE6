@@ -100,6 +100,31 @@ class RunGameControl : public rtos::task<>{
 						//other events
 						wait(hitReceivedTimerFlag);
 
+						if (playerEntity.getLives >= 1) {
+							state = run_game;
+						}
+						else{
+							state = gameOver;
+							//misch aanpassen naar flag setten en terug naar run game gaan.
+						}
+						break;
+
+					case reload:
+						//entry events
+						soundControl.playSound(3);
+						reloadTimer.start();
+
+						//other events
+						wait(reloadTimerFlag);
+
+					case shoot:
+						//entry events
+						DataToIRByteControl.sendTrigger(playerEntity.getPlayerID(),playerEntity.getWeaponPower());
+						soundControl.playSound(1);
+
+						shootTimer.Start();
+						wait(shootTimerFlag);
+
 					default:break;
 				}
 			}
