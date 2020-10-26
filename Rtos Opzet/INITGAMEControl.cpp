@@ -8,11 +8,13 @@ class INITGAMEControl : public rtos::task<>{
 
 	private:
 		state_t state = idle;
+		rtos::channel buttonChannel;
 		registerGameParametersControl& registerGameParametersControl;
 		dataToIRByteControl& dataToIRByteControl;
 
 	INITGAMEControl(registerGameParametersControl& registerGameParametersControl,dataToIRByteControl& dataToIRByteControl):
-
+	registerGameParametersControl (registerGameParametersControl),
+	dataToIRByteControl (dataToIRByteControl)
 	{buttonHandler.addButton();}
 
 
@@ -20,5 +22,21 @@ class INITGAMEControl : public rtos::task<>{
 		void buttonPressed(eButtonID buttonID){buttonChannel.write(buttonID);}
 
 	private:
+			void main(){
+
+				for(;;){
+						switch(state)
+						{
+							case idle:
+								//entry events
+
+								//other events
+								//check deze state nog ff.
+								wait(buttonPressChannel.read());
+								bnID = buttonPressChannel.read()
+
+						}
+				}
+			}
 
 };
