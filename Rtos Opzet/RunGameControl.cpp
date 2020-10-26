@@ -1,7 +1,7 @@
 #include "hwlib.hpp"
 #include "rtos.hpp"
 
-enum eButtonID = {instellingenKnopID, minKnopID, plusKnopID, okKnopID};
+enum eButtonID = {reloadButton, TriggerButton};
 
 class RunGameControl : public rtos::task<>{
 	enum state_t = {idle, saveParameters, start_game, run_game, gameOver,hit_received, weaponButtonPressed, shoot, reload, sendDataToComputer};
@@ -13,15 +13,25 @@ class RunGameControl : public rtos::task<>{
 		rtos::pool buttonIDPool;
 		rtos::channel sendGameParametersChannel;
 		rtos::flag flagGameOver;
+		dataToIRControl& dataToIRControl;
+		transferHitsControl& transferHitsControl;
+		displayControl& displayControl;
+		playerEntity& playerEntity;
 		int gamemode = 0;
 		int gameTime = 0;
 		int timeUntilStart = 0;
 
-	RunGameControl():
+	RunGameControl(dataToIRControl& dataToIRControl, transferHitsControl& transferHitsControl, displayControl& displayControl, playerEntity& playerEntity):
+	dataToIRControl (dataToIRControl),
+	transferHitsControl (transferHitsControl),
+	displayControl (displayControl),
+	playerEntity (playerEntity)
 	{}
 
 	public:
+		void sendHit(playerinfo,weaponStrength){sendHitChannel.write(playerinfo,weaponStrength);}
 		void buttonPressed(eButtonID buttonID){buttonIDPool.write(buttonID); buttonFlag.set();}
+		void sendGameParameters(gamemode,gameTime,timeUntilStart){sendGameParametersChannel.write(gamemode,gameTime,timeUntilStart);}
 		void gameOver(){flagGameOver.set();}
 
 	private:
@@ -36,9 +46,61 @@ class RunGameControl : public rtos::task<>{
 							events = saveParameters;
 						}
 					break;
-					case saveParameters:
+
+					case start_timer_until_gamestart:
 						//entry events
-						auto events = wait();
+						timerControl.setUntilStartTimer(timeUntilStart);
+						wait(timerControl.untilStartTimerFlag);
+						//other events
+						state = start_game;
+						break;
+
+					case start_game:
+						//entry events
+						displayControl.showMessage(gameMode);
+						displayControl.showMessage(gameTime);
+						timerControl.setTimer(gameTime);
+						break;
+					
+					case run_game:
+						//entry events
+						displayControl.showMessage(gameMode);
+						displayControl.showMessage(gameTime);
+						displayControl.showMessage(playerEntity.getLives());
+						//other events
+						auto event = wait(gameOverFlag,sendHitChannel,buttonPressedChannel);
+						if (event == gameOverFlag) {
+							state = gameOver;
+						}
+						if (event == sendHitChannel) {
+							state = hit_received;
+						}
+						if (event == buttonPressedChannel) {
+							bnID = buttonPressedChannel.read();
+							if (bnID == reloadButton) {
+								state = reload;
+							}
+							if (bnID == TriggerButton ) {
+								state = shoot;
+							}
+							else{
+								state = run_game;
+							}
+						}
+						break;
+
+					case hit_received:
+						//entry events
+						//weaponID = sendHitChannel.read();
+						playerEntity.addHit(sendHitChannel.read());
+						playerEntity.setLives(playerEntity.getLives - sendHitChannel.read());
+						soundControl.playSound(2);
+						hitReceivedTimer.start();
+
+						//other events
+						wait(hitReceivedTimerFlag);
+
+					default:break;
 				}
 			}
 		}
