@@ -125,6 +125,15 @@ class RunGameControl : public rtos::task<>{
 						shootTimer.Start();
 						wait(shootTimerFlag);
 
+					case gameOver:
+						displayControl.showMessage("game Over");
+						soundControl.showMessage(4);
+						displayControl.showMessage(playerEntity.getPlayerID());
+						displayControl.showMessage(playerEntity.getLives());
+						transferHitsControl.gameOver.set();
+						state = idle;
+						break;
+
 					default:break;
 				}
 			}
