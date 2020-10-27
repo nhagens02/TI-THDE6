@@ -1,7 +1,5 @@
 #include "hwlib.hpp"
 
-#define BITS sizeof(uint16_t) * 8
-
 // Ouput the 38KHz carrier frequency for the required time in microseconds
 // This is timing critial and just do-able on an Arduino using the standard I/O functions.
 // If you are using interrupts, ensure they disabled for the duration.
@@ -92,7 +90,7 @@ void detectButtonPress() {
 			if (state) {
 				uint16_t code = 0b1110101010101010;
 				sendIRMessage(code);
-				hwlib::cout << "\nButton pressed!\n";
+				hwlib::cout << "Button pressed!\n";
 			}
 		}
 	}
