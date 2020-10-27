@@ -1,0 +1,8 @@
+#ifndef SENDIRMESSAGECONTROL_HPP
+#define SENDIRMESSAGECONTROL_HPP
+
+class SendIRMessageControl {
+
+};
+
+#endif // !SENDIRMESSAGECONTROL_HPP
