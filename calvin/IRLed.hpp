@@ -1,14 +1,12 @@
-#include "hwlib.hpp"
-
 #ifndef IRLED_HPP
 #define IRLED_HPP
 
 class IRLed {
 private:
-  hwlib::pin_in ledPin;
+  hwlib::pin_out& ledPin;
 
 public:
-  IRLed(hwlib::pin_in ledPin):
+  IRLed(hwlib::pin_out& ledPin):
     ledPin(ledPin)
     {}
 
@@ -16,7 +14,7 @@ public:
       ledPin.write(1);
     }
     void turnOff(){
-      ledPin.write(0)
+		ledPin.write(0);
     }
 
 };
