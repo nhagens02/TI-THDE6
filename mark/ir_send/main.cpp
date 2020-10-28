@@ -1,7 +1,5 @@
 #include "hwlib.hpp"
 
-#define BITS sizeof(uint16_t) * 8
-
 // Ouput the 38KHz carrier frequency for the required time in microseconds
 // This is timing critial and just do-able on an Arduino using the standard I/O functions.
 // If you are using interrupts, ensure they disabled for the duration.
@@ -27,7 +25,7 @@ void IRcarrier(unsigned int IRtimemicroseconds)
 
 void sendIRMessage(uint16_t code) {
 	for(uint8_t i = 0; i < 16; i++) {
-		if(code & (1 << (BITS - 1))) {
+		if(code & (1 << ((sizeof(uint16_t) * 8) - 1))) {
 			IRcarrier(1600);
 			hwlib::wait_us(800);
 		}
@@ -52,8 +50,10 @@ void detectButtonPress() {
 			lastBtnState = state;
 			if (!state) {
 				uint16_t code = 0b1010101010101010;
+				auto start = hwlib::now_us();
 				sendIRMessage(code);
-				hwlib::cout << "IR Packet sent!\n";
+				auto stop = hwlib::now_us();
+				hwlib::cout << "IR Packet sent in " << (stop - start) << " microseconds!\n";
 			}
 		}
 	}
