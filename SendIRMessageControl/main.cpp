@@ -36,7 +36,9 @@ public:
 			information += (x ^ y) << (i - 1);
 		}
 		sendIRMessageControl.sendBytes(information);
-		hwlib::wait_ms(5);
+		hwlib::wait_ms(3);
+		sendIRMessageControl.sendBytes(information);
+		hwlib::wait_ms(3);
 
 		//Time until start
 
@@ -53,6 +55,9 @@ public:
 			information += (x ^ y) << (i - 1);
 		}
 		sendIRMessageControl.sendBytes(information);
+		hwlib::wait_ms(3);
+		sendIRMessageControl.sendBytes(information);
+		hwlib::wait_ms(3);
 	}
 	void sendTrigger(int playerID, int weaponStrength) {
 		uint16_t information = 0;
@@ -69,6 +74,9 @@ public:
 			information += (x ^ y) << (i - 1);
 		}
 		sendIRMessageControl.sendBytes(information);
+		hwlib::wait_ms(3);
+		sendIRMessageControl.sendBytes(information);
+		hwlib::wait_ms(3);
 	}
 };
 
@@ -106,11 +114,9 @@ int main() {
 		if (currentTime > lastTime) {
 			lastTime++;
 			timeUntilStart--;
-			hwlib::cout << timeUntilStart << "\n";
 		}
 		hwlib::wait_ms(50);
 	}
-	hwlib::cout << "done!\n";
 
 	bool triggerButtonAlreadyPressed = 0;
 	while (true) {
