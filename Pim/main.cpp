@@ -1,6 +1,6 @@
 #include "hwlib.hpp"
 
-void getBit(auto tsop_signal) {
+bool getBit(auto &tsop_signal) {
 	int timing_low = 0;
 	int timing_high = 0;
 	tsop_signal.refresh();
@@ -8,7 +8,7 @@ void getBit(auto tsop_signal) {
 		tsop_signal.refresh();
 	}
 	if (tsop_signal.read() == 1) {
-		for (int = 0; i <= 24; i++) {
+		for (int i = 0; i <= 24; i++) {
 			tsop_signal.refresh();
 			if (tsop_signal.read() == 1) {
 				timing_high++;
@@ -19,25 +19,36 @@ void getBit(auto tsop_signal) {
 			hwlib::wait_us(100);
 		}
 	}
+	if ((timing_high == 8) && (timing_low == 16)) { return 0; }
+	if ((timing_high == 16) && (timing_low == 8)) { return 1; }
 	hwlib::cout << "timing_low:" << timing_low << hwlib::endl;
 	hwlib::cout << "timing_high:" << timing_high << hwlib::endl;
+	hwlib::cout << hwlib::endl;
+	return 0;
 }
 
+//void sendBit(bool bit, auto &ir) {
+//	ir.write(1);
+//	ir.flush();
+//	hwlib::wait_us(800);
+//	ir.write(0);
+//	ir.flush();
+//}
 
-
-uint16_t GetReceivingBits() {
-	uint16_t result = 0;
-	for (int i = 0; i <= 15; i++) {
-		wait(bitsChannel);
-		bool bit = bitsChannel.read();
-		result += (bit << i);
-	}
-	return result;
-}
+//uint16_t GetReceivingBits() {
+//	uint16_t result = 0;
+//	for (int i = 0; i <= 15; i++) {
+	//	wait(bitsChannel);
+	//	bool bit = bitsChannel.read();
+//		result += (bit << i);
+//	}
+//	return result;
+//}
 
 
 
 int main() {
+	hwlib::wait_ms(2000);
 	auto ir = hwlib::target::d2_36kHz();
 
 	namespace target = hwlib::target;
@@ -49,15 +60,19 @@ int main() {
 	tsop_vdd.write(1);
 	tsop_gnd.flush();
 	tsop_vdd.flush();
-
+	//auto sw = hwlib::target::pin_in(hwlib::target::pins::d3);
 	auto led = target::pin_out(target::pins::led);
 
 	for (;;) {
 		int result = 0;
 		for (int i = 0; i < 16;i++) {
 			result += (getBit(tsop_signal) << i);
+			//sw.refresh();
+			//if (!sw.read()) {
+			//	sendBit(1, ir);
+			//}
 		}
-		hwlib::cout << result << hwlib::end;
+		hwlib::cout << result << hwlib::endl;
 		hwlib::wait_ms(2);
 		
 	}

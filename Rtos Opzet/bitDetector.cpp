@@ -63,7 +63,7 @@ class bitDetector : public rtos::task<>{
 								16BitConverter.sendBit(0);
 								state = idle;
 							}
-							else if (timing_high == 16) && (timing_low == 19 {
+							else if (timing_high == 16) && (timing_low == 8) {
 								16BitConverter.sendBit(1);
 								state = idle;
 							}
