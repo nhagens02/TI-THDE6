@@ -1,6 +1,5 @@
 #include "hwlib.hpp"
 #include "SendIRMessageControl.hpp"
-#include <bitset>
 
 
 enum gameModes {
@@ -41,7 +40,8 @@ public:
 
 
 int main() {
-	DataToIRByteControl dataToIR(hwlib::pin_out_dummy);
+	auto irPin = hwlib::target::d2_38kHz();
+	DataToIRByteControl dataToIR(irPin);
 	hwlib::wait_ms(2000);
 	int gamemode = regular;
 	int gameTime = testing;
@@ -61,7 +61,7 @@ int main() {
 			buttonAlreadyPressed = 0;
 		}
 
-		int currentTime = hwlib::now_us() / 500'000;
+		int currentTime = hwlib::now_us() / 2'000'000;
 		if (currentTime > lastTime) {
 			lastTime++;
 			timeUntilStart--;

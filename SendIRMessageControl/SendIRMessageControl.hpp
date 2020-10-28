@@ -7,10 +7,22 @@ class SendIRMessageControl {
 private:
 	IRLed irLed;
 	void sendZero(){
-		//send 0
+		irLed.turnOn();
+
+		hwlib::wait_us(800);
+
+		irLed.turnOff();
+
+		hwlib::wait_us(1600);
 	}
 	void sendOne() {
-		//send 1
+		irLed.turnOn();
+
+		hwlib::wait_us(1600);
+
+		irLed.turnOff();
+
+		hwlib::wait_us(800);
 	}
 public:
 	SendIRMessageControl(hwlib::pin_out& ledPin) :
@@ -18,8 +30,8 @@ public:
 	{}
 
 	void sendBytes(uint16_t information) {
-		for (unsigned int i = 0; i < 16; i++) {
-			if (information & (1 << (16 - i))) sendOne(); else { sendZero(); }
+		for (int i = 16; i > 0; i--) {
+			if (information & (1 << (i-1))) sendOne(); else { sendZero(); }
 		}
 	}
 };
