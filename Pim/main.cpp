@@ -1,11 +1,38 @@
 #include "hwlib.hpp"
 
-bool getBit(auto &tsop_signal) {
+
+void sendBit(bool bit, auto& ir) {
+	if (bit == 1) {
+		ir.write(1);
+		ir.flush();
+		hwlib::wait_us(800);
+		ir.write(0);
+		ir.flush();
+		hwlib::wait_us(1600);
+	}
+	else {
+		ir.write(0);
+		ir.flush();
+		hwlib::wait_us(800);
+		ir.write(1);
+		ir.flush();
+		hwlib::wait_us(1600);
+	}
+	
+}
+
+
+
+int getBit(auto &tsop_signal, auto &ir, auto& sw) {
 	int timing_low = 0;
 	int timing_high = 0;
 	tsop_signal.refresh();
-	while (tsop_signal.read() != 0) {
+	while (tsop_signal.read() == 0) {
 		tsop_signal.refresh();
+		sw.refresh();
+		if (!sw.read()) {
+			sendBit(1, ir);
+		}
 	}
 	if (tsop_signal.read() == 1) {
 		for (int i = 0; i <= 24; i++) {
@@ -19,21 +46,15 @@ bool getBit(auto &tsop_signal) {
 			hwlib::wait_us(100);
 		}
 	}
-	if ((timing_high == 8) && (timing_low == 16)) { return 0; }
-	if ((timing_high == 16) && (timing_low == 8)) { return 1; }
-	hwlib::cout << "timing_low:" << timing_low << hwlib::endl;
-	hwlib::cout << "timing_high:" << timing_high << hwlib::endl;
-	hwlib::cout << hwlib::endl;
+	if ((timing_high == 8) && (timing_low == 16)) { return 8; }//0
+	if ((timing_high == 16) && (timing_low == 8)) { return 1; }//1
+	//hwlib::cout << "timing_low:" << timing_low << hwlib::endl;
+	//hwlib::cout << "timing_high:" << timing_high << hwlib::endl;
+	//hwlib::cout << hwlib::endl;
 	return 0;
 }
 
-//void sendBit(bool bit, auto &ir) {
-//	ir.write(1);
-//	ir.flush();
-//	hwlib::wait_us(800);
-//	ir.write(0);
-//	ir.flush();
-//}
+
 
 //uint16_t GetReceivingBits() {
 //	uint16_t result = 0;
@@ -60,20 +81,35 @@ int main() {
 	tsop_vdd.write(1);
 	tsop_gnd.flush();
 	tsop_vdd.flush();
-	//auto sw = hwlib::target::pin_in(hwlib::target::pins::d3);
+	auto sw = hwlib::target::pin_in(hwlib::target::pins::d3);
 	auto led = target::pin_out(target::pins::led);
 
 	for (;;) {
 		int result = 0;
+
 		for (int i = 0; i < 16;i++) {
-			result += (getBit(tsop_signal) << i);
-			//sw.refresh();
-			//if (!sw.read()) {
-			//	sendBit(1, ir);
-			//}
+			result += (getBit(tsop_signal,ir,sw) << i);
+			sw.refresh();
+			if (!sw.read()) {
+				sendBit(1, ir);
+				result += (getBit(tsop_signal, ir, sw) << i);
+				sendBit(0, ir);
+				result += (getBit(tsop_signal, ir, sw) << i);
+				sendBit(1, ir);
+				result += (getBit(tsop_signal, ir, sw) << i);
+				sendBit(1, ir);
+				result += (getBit(tsop_signal, ir, sw) << i);
+				sendBit(1, ir);
+				result += (getBit(tsop_signal, ir, sw) << i);
+				sendBit(0, ir);
+				result += (getBit(tsop_signal, ir, sw) << i);
+				sendBit(0, ir);
+				result += (getBit(tsop_signal, ir, sw) << i);
+				sendBit(1, ir);
+			}
 		}
 		hwlib::cout << result << hwlib::endl;
-		hwlib::wait_ms(2);
+		//hwlib::wait_ms(2);
 		
 	}
 	
