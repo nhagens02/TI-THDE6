@@ -71,8 +71,8 @@ class bitDetector : public rtos::task<>{
 								state = idle;
 							}
 						}
-						
-
+						break;
+					default:break;
 				}
 
 
