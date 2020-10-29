@@ -24,15 +24,15 @@ class bitDetector : public rtos::task<>{
 				{
 					case idle:
 						//entry events
-						intervalTimer.start();
+						intervalTimer.set(800);
 
 						//other events
-						wait(intervalTimerFlag);
+						wait(intervalTimer);
 						bool signal = IrReceiver.getCurrentSignal();
 						if (signal == 1){
 							int timing_low = 0;
 							int timing_high = 0;
-							afterBitTimer.start();
+							afterBitTimer.set(2400);
 							state = startReceiving;
 						}
 						else {
@@ -43,11 +43,11 @@ class bitDetector : public rtos::task<>{
 
 					case startReceiving:
 						//entry events
-						intervalTimer.start();
+						intervalTimer.set(800);
 
 						//other events
-						auto event = wait(intervalTimerFlag, afterBitTimer);
-						if (event == intervalTimerFlag) {
+						auto event = wait(intervalTimer, afterBitTimer);
+						if (event == intervalTimer) {
 							bool signal = IrReceiver.getCurrentSignal();
 							if (signal == 1) {
 								timing_high++;
@@ -59,11 +59,11 @@ class bitDetector : public rtos::task<>{
 							}
 						}
 						if (event == afterBitTimer) {
-							if (timing_high == 8) && (timing_low == 16) {
+							if (timing_high == 1) && (timing_low == 2) {
 								16BitConverter.sendBit(0);
 								state = idle;
 							}
-							else if (timing_high == 16) && (timing_low == 8) {
+							else if (timing_high == 2) && (timing_low == 1) {
 								16BitConverter.sendBit(1);
 								state = idle;
 							}
