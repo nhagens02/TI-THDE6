@@ -49,7 +49,7 @@ void detectButtonPress() {
 		if (state != lastBtnState) {
 			lastBtnState = state;
 			if (!state) {
-				uint16_t code = 0b1010101010101010;
+				//uint16_t code = 0b1010101010101010;
 				auto start = hwlib::now_us();
 				sendIRMessage(code);
 				auto stop = hwlib::now_us();
