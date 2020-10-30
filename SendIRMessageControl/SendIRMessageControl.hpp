@@ -8,21 +8,32 @@ private:
 	IRLed irLed;
 	void sendZero(){
 		irLed.turnOn();
-
-		hwlib::wait_us(800);
+		uint_fast32_t currentTime = hwlib::now_us();
+		while ((currentTime + 800) > (hwlib::now_us())) {
+			//do nothing
+		}
 
 		irLed.turnOff();
 
-		hwlib::wait_us(1600);
+		currentTime = hwlib::now_us();
+		while ((currentTime + 1600) > (hwlib::now_us())) {
+			//do nothing
+		}
 	}
 	void sendOne() {
 		irLed.turnOn();
 
-		hwlib::wait_us(1600);
+		uint_fast32_t currentTime = hwlib::now_us();
+		while ((currentTime + 1600) > (hwlib::now_us())) {
+			//do nothing
+		}
 
 		irLed.turnOff();
 
-		hwlib::wait_us(800);
+		currentTime = hwlib::now_us();
+		while ((currentTime + 800) > (hwlib::now_us())) {
+			//do nothing
+		}
 	}
 public:
 	SendIRMessageControl(hwlib::pin_out& ledPin) :
