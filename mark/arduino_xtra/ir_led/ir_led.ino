@@ -31,6 +31,9 @@ void setup() {
   pinMode(IR, OUTPUT);
   
   uint16_t code = 0b1010101010101010;
+  
+  sendIRMessage(code);
+  delay(3);
   sendIRMessage(code);
 }
 
