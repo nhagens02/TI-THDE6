@@ -5,6 +5,7 @@ class bitDetector : public rtos::task<>{
 	enum state_t = {idle, startReceiving};
 
 	private:
+		state_t state = idle;
 		16BitConverter& 16BitConverter;
 		rtos::timer intervalTimer;
 		rtos::timer afterBitTimer;
