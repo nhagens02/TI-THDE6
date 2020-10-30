@@ -7,30 +7,30 @@ class SendIRMessageControl {
 private:
 	IRLed irLed;
 	void sendZero(){
-		irLed.turnOn();
 		uint_fast32_t currentTime = hwlib::now_us();
+		irLed.turnOn();
 		while ((currentTime + 800) > (hwlib::now_us())) {
 			//do nothing
 		}
 
+		currentTime = hwlib::now_us();
 		irLed.turnOff();
 
-		currentTime = hwlib::now_us();
 		while ((currentTime + 1600) > (hwlib::now_us())) {
 			//do nothing
 		}
 	}
 	void sendOne() {
+		uint_fast32_t currentTime = hwlib::now_us();
 		irLed.turnOn();
 
-		uint_fast32_t currentTime = hwlib::now_us();
 		while ((currentTime + 1600) > (hwlib::now_us())) {
 			//do nothing
 		}
 
+		currentTime = hwlib::now_us();
 		irLed.turnOff();
 
-		currentTime = hwlib::now_us();
 		while ((currentTime + 800) > (hwlib::now_us())) {
 			//do nothing
 		}
