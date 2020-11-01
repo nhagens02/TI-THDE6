@@ -1,16 +1,30 @@
 #include "hwlib.hpp"
 #include "rtos.hpp"
+/// @file
 
+/// \brief
+/// CLASS
+/// \details
+/// This class
+/// This class uses rtos::task<>. 
 enum gameModes {
 	regular = 0, goldenGun = 1
 };
 
-
+/// \brief
+/// GameTime options
+/// \details
+/// This enum contains all possible times for a game of lazergun.
 enum gameTimes {
 	veryShortTime = 0, shortTime = 1, mediumTime = 2, longTime = 3, veryLongTime = 4, testing = 7
 };
 
 
+/// \brief
+/// CLASS
+/// \details
+/// This class
+/// This class uses rtos::task<>. 
 class ReceiveIRByteToDataControl : public rtos::task<>{
 	enum state_t = {idle, decodeData};
 

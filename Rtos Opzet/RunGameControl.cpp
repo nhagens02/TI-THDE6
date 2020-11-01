@@ -1,8 +1,22 @@
 #include "hwlib.hpp"
 #include "rtos.hpp"
+/// @file
 
+/// \brief
+/// enum eButtonID
+/// \details
+/// This enum will define the possible states for the button's.
+/// The Buttons in the class RunGameControl are: reloadButton, TriggerButton.
 enum eButtonID = {reloadButton, TriggerButton};
 
+
+/// \brief
+/// CLASS
+/// \details
+/// This class manages the lazergame itself.
+/// This class will check if the player received a hit(and from who) and processed that.
+/// This class will check if the buttons reload and trigger buttons are being pressed and and processed that.
+/// This class uses rtos::task<>. 
 class RunGameControl : public rtos::task<>{
 	enum state_t = {idle, saveParameters, start_game, run_game, gameOver,hit_received, weaponButtonPressed, shoot, reload, sendDataToComputer};
 

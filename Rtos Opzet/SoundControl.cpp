@@ -1,7 +1,14 @@
 #include "hwlib.hpp"
 #include "rtos.hpp"
+/// @file
 
 
+/// \brief
+/// SoundControl CLASS
+/// \details
+/// This Class manages the playback of sounds of the lazergun. 
+/// This class uses the boundary object: speaker.
+/// This class uses rtos::task<>.
 class SoundControl : public rtos::task<>{
 	enum state_t state = {idle,playSound};
 

@@ -1,7 +1,13 @@
 #include "hwlib.hpp"
 #include "rtos.hpp"
+/// @file
 
 
+/// \brief
+/// Game parameters struct. 
+/// \details
+/// This struct contains the GameMode, gameTime and timeUntil start of a game.
+/// all variables are of the type int. 
 struct parameters{
 	int gameMode,
 	int gameTime,
@@ -9,9 +15,18 @@ struct parameters{
 };
 
 
+/// \brief
+/// Enum buttons keypad.
+/// \details
+/// This enum contains all possable buttons from the keypad to be pressed.
 enum eButtonID = {BUTTON_1,BUTTON_2,BUTTON_3,BUTTON_4,BUTTON_5,BUTTON_6,BUTTON_7,BUTTON_8,BUTTON_9,BUTTON_0,BUTTON_*,BUTTON_#,BUTTON_A,BUTTON_B,BUTTON_C,BUTTON_D};
 
 
+/// \brief
+/// RegisterGameParametersControl CLASS
+/// \details
+/// This class
+/// This class uses rtos::task<>. 
 class RegisterGameParametersControl : public rtos::task<>{
 	enum state_t = {idle,enterPlayerID,enterWeaponPower, waitForGameData, };
 

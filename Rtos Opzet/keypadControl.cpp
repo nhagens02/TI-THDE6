@@ -1,6 +1,13 @@
 #include "hwlib.hpp"
 #include "rtos.hpp"
+/// @file
 
+
+/// \brief
+/// CLASS
+/// \details
+/// This class
+/// This class uses rtos::task<>. 
 class keypadControl : public rtos::task<>{
 	enum state_t = {idle,sendInput};
 
