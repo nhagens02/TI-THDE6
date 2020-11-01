@@ -1,16 +1,49 @@
 #include "hwlib.hpp"
 
+enum pulseDurations {
+	shortPulseMinimumDuration = 725,
+	shortPulseMaximumDuration = 875,
+	longPulseMinimumDuration = 1525,
+	longPulseMaximumDuration = 1675
+};
+
+//int read(hwlib::pin_in& tsop_signal) {
+//	tsop_signal.refresh();
+//	if (tsop_signal.read()) {
+//		// 1 puls is ontvangen
+//		hwlib::wait_us(792);
+//		bool bitValue = tsop_signal.read();
+//		hwlib::wait_us(792);
+//		if (tsop_signal.read()) {
+//			
+//			return -1;
+//		}
+//		return bitValue;
+//	}
+//	else {
+//		return -1;
+//	}
+//}
+
 int read(hwlib::pin_in& tsop_signal) {
+	auto pin = hwlib::target::pin_out(hwlib::target::pins::d3);
 	tsop_signal.refresh();
 	if (tsop_signal.read()) {
-		// 1 puls is ontvangen
-		hwlib::wait_us(792);
-		bool bitValue = tsop_signal.read();
-		hwlib::wait_us(792);
-		if (tsop_signal.read()) {
-			return -1;
+		pin.write(1);
+		pin.flush();
+		uint_fast32_t beforeTime = hwlib::now_us();
+		while (tsop_signal.read()) {}
+		uint_fast32_t pulseDuration = hwlib::now_us() - beforeTime;
+		pin.write(0);
+		pin.flush();
+		if (((pulseDuration) > shortPulseMinimumDuration) && ((pulseDuration) < shortPulseMaximumDuration)) {
+			// short pulse detected
+			return 0;
 		}
-		return bitValue;
+		else if (((pulseDuration) > longPulseMinimumDuration) && ((pulseDuration) < longPulseMaximumDuration)) {
+			// long pulse detected
+			return 1;
+		}
 	}
 	else {
 		return -1;
@@ -34,18 +67,22 @@ int main(void) {
 
 
 	for (;;) {
-		if ((bitsSize != 0) && (timeSinceLastReceivedBit < hwlib::now_us() - 4000)) {
+		if (hwlib::now_us() > (timeSinceLastReceivedBit + 4000)) {
 			bitsSize = 0;
+			timeSinceLastReceivedBit = hwlib::now_us();
 		}
 
-		//hwlib::wait_us(790);
-		if ((hwlib::now_us() + 800) >= currentLoopTime) {
+		if (hwlib::now_us() > (currentLoopTime + 800)) {
 			int bitValue = read(tsop_signal);
 			if (bitValue != -1) {
 				bits[bitsSize] = bitValue;
 				bitsSize++;
 				timeSinceLastReceivedBit = hwlib::now_us();
 			}
+			else {
+				bitsSize = 0;
+			}
+			currentLoopTime = hwlib::now_us();
 			if (bitsSize == 16) {
 				for (int i = 0; i < 16; i++) {
 					hwlib::cout << bits[i];
