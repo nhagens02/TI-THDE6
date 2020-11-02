@@ -4,7 +4,7 @@
 
 struct data_s{
 	std::array<int,500> array;
-	int counter;
+    int counter = 0;;
 };
 
 //class must use pool with public function
@@ -23,11 +23,16 @@ class playerEntity : public rtos::task<> {
    		int weaponID;
    		int lives;
    		struct data_s data_a;
-   		data_a.counter = 0;
+   		//data_a.counter = 0;
+
+        void main() {
+
+        }
    		
 
 	public:
-		playerEntity():
+		playerEntity( ):
+
 		task ("entityPlayer"),
 		player_mutex( "player_mutex" ),
         playerIDPool( "playerID_pool" ),
@@ -48,7 +53,7 @@ class playerEntity : public rtos::task<> {
 		void setLives(int lives_n){ lives_mutex.wait(); lives = lives_n; lives_mutex.signal();}
 		void getlives(){lives_mutex.wait(); livesPool.write(lives); lives_mutex.signal();}
 
-		void addData(playerID_n){ data_mutex.wait(); if(data_a.counter < 500) {data_a.array[data_a_counter] = playerID_n}; data_mutex.signal(); }
-		void getlives(){ data_mutex.wait(); array_a.write(data_a.array); data_mutex.signal(); }
+        void addData(int playerID_n) { data_mutex.wait(); if (data_a.counter < 500) { data_a.array[data_a.counter] = playerID_n; data_a.counter++; }; data_mutex.signal(); }
+		void getData(){ data_mutex.wait(); data.write(data_a); data_mutex.signal(); }
 
 };
