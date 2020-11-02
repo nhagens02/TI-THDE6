@@ -1,10 +1,10 @@
 #include "hwlib.hpp"
 
 enum pulseDurations {
-	shortPulseMinimumDuration = 725,
-	shortPulseMaximumDuration = 875,
-	longPulseMinimumDuration = 1525,
-	longPulseMaximumDuration = 1675
+	shortPulseMinimumDuration = 400,
+	shortPulseMaximumDuration = 1200,
+	longPulseMinimumDuration = 1200,
+	longPulseMaximumDuration = 2900
 };
 
 //int read(hwlib::pin_in& tsop_signal) {
@@ -72,7 +72,7 @@ int main(void) {
 			timeSinceLastReceivedBit = hwlib::now_us();
 		}
 
-		if (hwlib::now_us() > (currentLoopTime + 800)) {
+		if (hwlib::now_us() > (currentLoopTime + 100)) {
 			int bitValue = read(tsop_signal);
 			if (bitValue != -1) {
 				bits[bitsSize] = bitValue;
