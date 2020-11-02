@@ -13,9 +13,8 @@ int main( void ) {
 	//namespace target = hwlib::target;
 
 	auto pe = playerEntity();
-	auto IrLed_o = hwlib::target::pin_out(hwlib::target::pins::d10);
-	//auto classIrled = IRLed(IrLed_o);
-	auto sendIrMessage = SendIRMessageControl(IrLed_o);
+	auto IrLed_output = hwlib::target::pin_out(hwlib::target::pins::d10);
+	auto sendIrMessage = SendIRMessageControl(IrLed_output);
 
 	rtos::run();
 }
