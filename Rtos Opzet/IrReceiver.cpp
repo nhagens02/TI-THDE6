@@ -4,9 +4,9 @@
 
 
 /// \brief
-/// CLASS
+/// IrReceiver CLASS
 /// \details
-/// This class
+/// This class is be used to read out the ir receiver. 
 /// This class uses rtos::task<>. 
 class IrReceiver : public rtos::task<>{
 	private:

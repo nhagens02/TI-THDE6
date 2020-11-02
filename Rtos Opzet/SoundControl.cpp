@@ -6,8 +6,9 @@
 /// \brief
 /// SoundControl CLASS
 /// \details
-/// This Class manages the playback of sounds of the lazergun. 
-/// This class uses the boundary object: speaker.
+/// This class manages the playback of sounds of the lazergun. 
+/// This class uses the boundary object: Speaker.
+/// The class uses the soundEntity to get the sounds.
 /// This class uses rtos::task<>.
 class SoundControl : public rtos::task<>{
 	enum state_t state = {idle,playSound};

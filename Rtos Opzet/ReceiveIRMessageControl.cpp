@@ -1,6 +1,14 @@
 #include "hwlib.hpp"
 #include "rtos.hpp"
+/// @file
 
+
+/// \brief
+/// ReceiveIrMessageControl CLASS
+/// \details
+/// This class will use the class: "IrReceiver", to receive the 16 bits of data.
+/// The class uses the THDE IR protocol. 
+/// This class uses rtos::task<>. 
 class ReceiveIrMessageControl : public rtos::task<>{
 	enum state_t ={idle,receivingBits};
 

@@ -2,6 +2,7 @@
 #include "rtos.hpp"
 /// @file
 
+
 /// \brief
 /// Game parameters struct. 
 /// \details
@@ -22,11 +23,13 @@ enum eButtonID = {BUTTON_1,BUTTON_2,BUTTON_3,BUTTON_4,BUTTON_5,BUTTON_6,BUTTON_7
 
 
 /// \brief
-/// CLASS
+/// InitGameControl CLASS
 /// \details
-/// This class
+/// This class will be used by the game leader. 
+/// This class will be used to set the game parameters. 
+/// It set the gamemode, gameTime and Time until the game start. 
 /// This class uses rtos::task<>. 
-class INITGAMEControl : public rtos::task<>{
+class InitGameControl : public rtos::task<>{
 	enum state_t = {idle,init,enterPlayTime,setGameMode,SetTimeUntilStart,sendData};
 
 	private:
@@ -35,7 +38,7 @@ class INITGAMEControl : public rtos::task<>{
 		registerGameParametersControl& registerGameParametersControl;
 		dataToIRByteControl& dataToIRByteControl;
 
-	INITGAMEControl(registerGameParametersControl& registerGameParametersControl,dataToIRByteControl& dataToIRByteControl):
+	InitGameControl(registerGameParametersControl& registerGameParametersControl,dataToIRByteControl& dataToIRByteControl):
 	registerGameParametersControl (registerGameParametersControl),
 	dataToIRByteControl (dataToIRByteControl)
 	{buttonHandler.addButton();}

@@ -4,9 +4,11 @@
 
 
 /// \brief
-/// CLASS
+/// keypadControl CLASS
 /// \details
-/// This class
+/// This class is used to send the keypad presses to the RegisterGameParametersControl and InitGameControl.
+/// This class uses the boundary object:"keypad".
+/// This class only support a 4x4 matrix keypad.
 /// This class uses rtos::task<>. 
 class keypadControl : public rtos::task<>{
 	enum state_t = {idle,sendInput};
