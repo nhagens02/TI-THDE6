@@ -10,27 +10,27 @@ class Keypad {
 private:
 	KeypadButton buttons[16];
 public:
-	Keypad(hwlib::pin_direct_from_in_t* pin1, hwlib::pin_direct_from_in_t* pin2, hwlib::pin_direct_from_in_t* pin3, hwlib::pin_direct_from_in_t* pin4, hwlib::pin_direct_from_oc_t* pin5, hwlib::pin_direct_from_oc_t* pin6, hwlib::pin_direct_from_oc_t* pin7, hwlib::pin_direct_from_oc_t* pin8){
-		buttons[0] = { pin8, pin2 }; // 0
-		buttons[1] = { pin5, pin1 }; // 1
-		buttons[2] = { pin5, pin2 }; // 2
-		buttons[3] = { pin5, pin3 }; // 3
-		buttons[4] = { pin6, pin1 }; // 4
-		buttons[5] = { pin6, pin2 }; // 5
-		buttons[6] = { pin6, pin3 }; // 6
-		buttons[7] = { pin7, pin1 }; // 7
-		buttons[8] = { pin7, pin2 }; // 8
-		buttons[9] = { pin7, pin3 }; // 9
-		buttons[10] = { pin5, pin4 }; // A
-		buttons[11] = { pin6, pin4 }; // B
-		buttons[12] = { pin7, pin4 }; // C
-		buttons[13] = { pin8, pin4 }; // D
-		buttons[14] = { pin8, pin1 }; // *
-		buttons[15] = { pin8, pin3 }; // #
-		pin5->write(0);
-		pin6->write(0);
-		pin7->write(0);
-		pin8->write(0);
+	Keypad(hwlib::pin_direct_from_oc_t* pinOut1, hwlib::pin_direct_from_oc_t* pinOut2, hwlib::pin_direct_from_oc_t* pinOut3, hwlib::pin_direct_from_oc_t* pinOut4, hwlib::pin_direct_from_in_t* pinIn1, hwlib::pin_direct_from_in_t* pinIn2, hwlib::pin_direct_from_in_t* pinIn3, hwlib::pin_direct_from_in_t* pinIn4){
+		buttons[0] = { pinOut4, pinIn2 }; // 0
+		buttons[1] = { pinOut1, pinIn1 }; // 1
+		buttons[2] = { pinOut1, pinIn2 }; // 2
+		buttons[3] = { pinOut1, pinIn3 }; // 3
+		buttons[4] = { pinOut2, pinIn1 }; // 4
+		buttons[5] = { pinOut2, pinIn2 }; // 5
+		buttons[6] = { pinOut2, pinIn3 }; // 6
+		buttons[7] = { pinOut3, pinIn1 }; // 7
+		buttons[8] = { pinOut3, pinIn2 }; // 8
+		buttons[9] = { pinOut3, pinIn3 }; // 9
+		buttons[10] = { pinOut1, pinIn4 }; // A
+		buttons[11] = { pinOut2, pinIn4 }; // B
+		buttons[12] = { pinOut3, pinIn4 }; // C
+		buttons[13] = { pinOut4, pinIn4 }; // D
+		buttons[14] = { pinOut4, pinIn1 }; // *
+		buttons[15] = { pinOut4, pinIn3 }; // #
+		pinOut1->write(0);
+		pinOut2->write(0);
+		pinOut3->write(0);
+		pinOut4->write(0);
 	}
 	bool getKeyPressed(int buttonID) {
 		buttons[buttonID].pinOut->write(0);
