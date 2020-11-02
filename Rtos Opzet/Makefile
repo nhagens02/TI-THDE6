@@ -1,4 +1,4 @@
-SOURCES ?= bitDetector.cpp ReceiveIRByteToDataControl.cpp
+SOURCES ?= playerEntity.cpp IrReceiver.cpp bitDetector.cpp ReceiveIRByteToDataControl.cpp 
 HEADERS ?= 
 SEARCH  ?= 
 RELATIVE ?= ../..

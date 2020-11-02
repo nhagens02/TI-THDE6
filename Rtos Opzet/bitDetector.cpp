@@ -1,5 +1,6 @@
 #include "hwlib.hpp"
 #include "rtos.hpp"
+//#include "IrReceiver.cpp"
 /// @file
 
 
@@ -11,15 +12,17 @@
 /// This class uses the ir protocol from the THDE casus. 
 /// This class uses rtos::task<>. 
 class bitDetector : public rtos::task<>{
-	enum state_t = {idle, startReceiving};
+	enum state_t {idle, startReceiving};
 
 	private:
 		state_t state = idle;
-		16BitConverter& 16BitConverter;
+		//IrReceiver & IrReceiverLed;
+		//hwlib::target::pin_in(hwlib::target::pins::d6) irReceiverLed;
+		//s16BitConverter& s16BitConverter;
 		rtos::timer intervalTimer;
 		rtos::timer afterBitTimer;
-	bitDetector():
-
+	bitDetector()//:
+		//IrReceiverLed ( irReceiverLed )
 	{}
 
 	public:
@@ -38,7 +41,7 @@ class bitDetector : public rtos::task<>{
 
 						//other events
 						wait(intervalTimer);
-						bool signal = IrReceiver.getCurrentSignal();
+						bool signal = IrReceiver.get();
 						if (signal == 1){
 							int timing_low = 0;
 							int timing_high = 0;
