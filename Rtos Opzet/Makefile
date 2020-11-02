@@ -1,4 +1,4 @@
-SOURCES ?= playerEntity.cpp IRLed.cpp SendIrMessageControl.cpp
+SOURCES ?= playerEntity.cpp IRLed.cpp SendIrMessageControl.cpp dataToIrByteControl.cpp
 HEADERS ?= 
 SEARCH  ?= 
 RELATIVE ?= ../..

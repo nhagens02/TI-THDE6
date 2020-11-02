@@ -1,5 +1,6 @@
 #include "hwlib.hpp"
 #include "rtos.hpp"
+#include "SendIrMessageControl.cpp"
 /// @file
 
 
@@ -9,8 +10,8 @@
 /// This struct contains the GameMode, gameTime and timeUntil start of a game.
 /// All variables are of the type int. 
 struct parameters{
-	int gameMode,
-	int gameTime,
+	int gameMode;
+	int gameTime;
 	int timeUntilStart;
 };
 
@@ -21,7 +22,7 @@ struct parameters{
 /// This struct contains a playerID and weaponstrenght. 
 /// This struct will be used to send data of a shot. 
 struct shootdata{
-	int playerID,
+	int playerID;
 	int weaponstrenght;
 };
 
@@ -31,22 +32,31 @@ struct shootdata{
 /// \details
 /// This class will convert the functions: sendTriggers and sendTriggers to 16 bits to be used by the sendIrMessageControl class. 
 /// This class uses rtos::task<>. 
-class DataToIRbyteControl : public rtos::task<>{
-	enum state_t = {idle, sendingTrigger, sendingGameParameters};
+class DataToIrbyteControl : public rtos::task<>{
+	enum state_t {idle, sendingTrigger, sendingGameParameters};
 
 	private:
 		state_t state = idle;
-		sendIrMessageControl sendIrMessageControl;
-		rtos::channel gameParametersChannel;
-		rtos::channel triggerChannel;
+		SendIRMessageControl sendIrMessageControl;
+		rtos::channel< struct parameters, 1024 > gameParametersChannel;
+		rtos::channel< struct shootdata , 1024 > triggerChannel;
+		struct shootdata sData;
+		struct parameters gamePara;
 
 
-	DataToIRbyteControl():
-	{}
+	
 
 	public:
-		void sendingGameParameters(struct parameters para){gameParametersChannel.write(para);}
-		void sendTrigger(struct shootdata trigger){triggerChannel.write(trigger);}
+		//mayby by private
+		DataToIrbyteControl(hwlib::pin_out& ledpin):
+			task("dataToIRByteControl"),
+			sendIrMessageControl(ledpin),
+			gameParametersChannel(this, "gameParametersChannelc"),
+			triggerChannel(this, "triggerChannelc")
+			
+		{}
+		//void sendingGameParameters(struct parameters para){gameParametersChannel.write(para);}
+		//void sendTrigger(struct shootdata trigger){triggerChannel.write(trigger);}
 
 	private:
 		void main(){
@@ -58,13 +68,13 @@ class DataToIRbyteControl : public rtos::task<>{
 						//entry events
 
 						//other events
-						auto events = wait(triggerChannel,gameParametersChannel);
+						auto events = wait(triggerChannel); //gameParametersChannel
 						if (events == triggerChannel) {
-							struct shootdata sData = gameParametersChannel.read();
+							sData = gameParametersChannel.read();
 							state = sendingTrigger;
 						}
 						if (events == gameParametersChannel) {
-							struct parameters gamePara = gameParametersChannel.read();
+							gamePara = gameParametersChannel.read();
 							state = sendingGameParameters;
 						}
 						break;
