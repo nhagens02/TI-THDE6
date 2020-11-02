@@ -25,12 +25,19 @@ enum pulseDurations {
 //	}
 //}
 
+int count = 0;
+
+/*
 int read(hwlib::pin_in& tsop_signal) {
 	tsop_signal.refresh();
 	if (tsop_signal.read()) {
 		uint_fast32_t beforeTime = hwlib::now_us();
 		while (tsop_signal.read()) {}
 		uint_fast32_t pulseDuration = hwlib::now_us() - beforeTime;
+
+		count+=1;
+
+		hwlib::cout << count << "\n";
 
 		if (((pulseDuration) > longPulseMinimumDuration) && ((pulseDuration) < longPulseMaximumDuration)) {
 			return 1;
@@ -41,6 +48,23 @@ int read(hwlib::pin_in& tsop_signal) {
 	}
 	return -1;
 }
+*/
+
+int read(hwlib::pin_in& tsop_signal) {
+	tsop_signal.refresh();
+	if (tsop_signal.read()) {
+		hwlib::wait_us(800);
+		bool returnValue = tsop_signal.read();
+		while (tsop_signal.read()) {}
+
+		count+=1;
+		hwlib::cout << count << "\n";
+
+		return returnValue;
+	}
+	return -1;
+}
+
 
 int main(void) {
 	namespace target = hwlib::target;
@@ -78,7 +102,7 @@ int main(void) {
 				*/
 
 				timeSinceLastReceivedBit = hwlib::now_us();
-				hwlib::cout << bitValue;
+				//hwlib::cout << bitValue;
 			}
 			/*
 			else {
