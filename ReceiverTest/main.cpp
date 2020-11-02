@@ -1,10 +1,10 @@
 #include "hwlib.hpp"
 
 enum pulseDurations {
-	shortPulseMinimumDuration = 400,
-	shortPulseMaximumDuration = 1200,
-	longPulseMinimumDuration = 1200,
-	longPulseMaximumDuration = 2900
+	shortPulseMinimumDuration = 725,
+	shortPulseMaximumDuration = 875,
+	longPulseMinimumDuration = 1525,
+	longPulseMaximumDuration = 1675
 };
 
 //int read(hwlib::pin_in& tsop_signal) {
@@ -25,64 +25,94 @@ enum pulseDurations {
 //	}
 //}
 
+int count = 0;
+
+/*
 int read(hwlib::pin_in& tsop_signal) {
-	auto pin = hwlib::target::pin_out(hwlib::target::pins::d3);
 	tsop_signal.refresh();
 	if (tsop_signal.read()) {
-		pin.write(1);
-		pin.flush();
 		uint_fast32_t beforeTime = hwlib::now_us();
 		while (tsop_signal.read()) {}
 		uint_fast32_t pulseDuration = hwlib::now_us() - beforeTime;
-		pin.write(0);
-		pin.flush();
-		if (((pulseDuration) > shortPulseMinimumDuration) && ((pulseDuration) < shortPulseMaximumDuration)) {
-			// short pulse detected
-			return 0;
-		}
-		else if (((pulseDuration) > longPulseMinimumDuration) && ((pulseDuration) < longPulseMaximumDuration)) {
-			// long pulse detected
+
+		count+=1;
+
+		hwlib::cout << count << "\n";
+
+		if (((pulseDuration) > longPulseMinimumDuration) && ((pulseDuration) < longPulseMaximumDuration)) {
 			return 1;
 		}
+		else if (((pulseDuration) > shortPulseMinimumDuration) && ((pulseDuration) < shortPulseMaximumDuration)) {
+			return 0;
+		}
 	}
-	else {
-		return -1;
+	return -1;
+}
+*/
+
+int read(hwlib::pin_in& tsop_signal) {
+	tsop_signal.refresh();
+	if (tsop_signal.read()) {
+		hwlib::wait_us(800);
+		bool returnValue = tsop_signal.read();
+		while (tsop_signal.read()) {}
+
+		count+=1;
+		hwlib::cout << count << "\n";
+
+		return returnValue;
 	}
+	return -1;
 }
 
+
 int main(void) {
-	hwlib::wait_ms(2000);
 	namespace target = hwlib::target;
 
-	auto tsop_signal_ = target::pin_in(target::pins::d2);
-	auto tsop_signal = hwlib::invert(tsop_signal_);
-	auto tsop_vdd = target::pin_out(target::pins::d53);
+	auto _tsop_signal	= target::pin_in(target::pins::d8);
+	auto tsop_signal 	= invert(_tsop_signal);
+	auto tsop_gnd    	= target::pin_out(target::pins::d9);
+	auto tsop_vdd    	= target::pin_out(target::pins::d10);
+   
+	tsop_gnd.write(0);
 	tsop_vdd.write(1);
+	tsop_gnd.flush();
 	tsop_vdd.flush();
 
-	int bits[16] = {};
-	int bitsSize = 0;
+	//int bits[16] = {};
+	//int bitsSize = 0;
+
 	uint_fast32_t timeSinceLastReceivedBit = hwlib::now_us();
 	uint_fast32_t currentLoopTime = hwlib::now_us();
 
+	hwlib::wait_ms(500);
 
 	for (;;) {
 		if (hwlib::now_us() > (timeSinceLastReceivedBit + 4000)) {
-			bitsSize = 0;
+			//bitsSize = 0;
 			timeSinceLastReceivedBit = hwlib::now_us();
 		}
 
 		if (hwlib::now_us() > (currentLoopTime + 100)) {
 			int bitValue = read(tsop_signal);
 			if (bitValue != -1) {
+				/*
 				bits[bitsSize] = bitValue;
 				bitsSize++;
+				*/
+
 				timeSinceLastReceivedBit = hwlib::now_us();
+				//hwlib::cout << bitValue;
 			}
+			/*
 			else {
 				bitsSize = 0;
 			}
+			*/
+			
 			currentLoopTime = hwlib::now_us();
+
+			/*
 			if (bitsSize == 16) {
 				for (int i = 0; i < 16; i++) {
 					hwlib::cout << bits[i];
@@ -90,6 +120,7 @@ int main(void) {
 				hwlib::cout << "\n";
 				bitsSize = 0;
 			}
+			*/
 		}
 	}
 }
