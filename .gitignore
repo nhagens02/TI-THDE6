@@ -83,3 +83,4 @@ _*
 *.pdb
 *.ipch
 *.VC.*
+makefile.due
