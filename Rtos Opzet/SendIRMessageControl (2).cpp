@@ -42,12 +42,8 @@ private:
 			//do nothing
 		}
 	}
-	void main() {
-
-	}
 public:
 	SendIRMessageControl(hwlib::pin_out& ledPin) :
-		task ("Irled"),
 		irLed(ledPin)
 	{}
 
@@ -58,3 +54,4 @@ public:
 	}
 };
 
+#endif // SENDIRMESSAGECONTROL_HPP

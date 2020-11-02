@@ -1,11 +1,11 @@
 #include "hwlib.hpp"
 
-enum pulseDurations {
-	shortPulseMinimumDuration = 400,
-	shortPulseMaximumDuration = 1200,
-	longPulseMinimumDuration = 1200,
-	longPulseMaximumDuration = 2900
-};
+//enum pulseDurations {
+//	shortPulseMinimumDuration = 400,
+//	shortPulseMaximumDuration = 1200,
+//	longPulseMinimumDuration = 1200,
+//	longPulseMaximumDuration = 2900
+//};
 
 //int read(hwlib::pin_in& tsop_signal) {
 //	tsop_signal.refresh();
@@ -25,28 +25,38 @@ enum pulseDurations {
 //	}
 //}
 
+//int read(hwlib::pin_in& tsop_signal) {
+//	auto pin = hwlib::target::pin_out(hwlib::target::pins::d3);
+//	tsop_signal.refresh();
+//	if (tsop_signal.read()) {
+//		pin.write(1);
+//		pin.flush();
+//		uint_fast32_t beforeTime = hwlib::now_us();
+//		while (tsop_signal.read()) {}
+//		uint_fast32_t pulseDuration = hwlib::now_us() - beforeTime;
+//		pin.write(0);
+//		pin.flush();
+//		if (((pulseDuration) > shortPulseMinimumDuration) && ((pulseDuration) < shortPulseMaximumDuration)) {
+//			// short pulse detected
+//			return 0;
+//		}
+//		else if (((pulseDuration) > longPulseMinimumDuration) && ((pulseDuration) < longPulseMaximumDuration)) {
+//			// long pulse detected
+//			return 1;
+//		}
+//	}
+//	else {
+//		return -1;
+//	}
+//}
+
 int read(hwlib::pin_in& tsop_signal) {
-	auto pin = hwlib::target::pin_out(hwlib::target::pins::d3);
 	tsop_signal.refresh();
 	if (tsop_signal.read()) {
-		pin.write(1);
-		pin.flush();
-		uint_fast32_t beforeTime = hwlib::now_us();
+		hwlib::wait_us(800);
+		bool returnValue = tsop_signal.read();
 		while (tsop_signal.read()) {}
-		uint_fast32_t pulseDuration = hwlib::now_us() - beforeTime;
-		pin.write(0);
-		pin.flush();
-		if (((pulseDuration) > shortPulseMinimumDuration) && ((pulseDuration) < shortPulseMaximumDuration)) {
-			// short pulse detected
-			return 0;
-		}
-		else if (((pulseDuration) > longPulseMinimumDuration) && ((pulseDuration) < longPulseMaximumDuration)) {
-			// long pulse detected
-			return 1;
-		}
-	}
-	else {
-		return -1;
+		return returnValue;
 	}
 }
 
