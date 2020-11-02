@@ -4,9 +4,11 @@
 
 
 /// \brief
-/// CLASS
+/// bitDetector CLASS
 /// \details
-/// This class
+/// This class will detect using the boundary object:"Ir Receiver".
+/// This class poll every 800 microseconds if ther is a change in signal.
+/// This class uses the ir protocol from the THDE casus. 
 /// This class uses rtos::task<>. 
 class bitDetector : public rtos::task<>{
 	enum state_t = {idle, startReceiving};

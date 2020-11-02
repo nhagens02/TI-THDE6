@@ -3,13 +3,14 @@
 /// @file
 
 /// \brief
-/// CLASS
+/// gameModes enum
 /// \details
-/// This class
+/// This enum contains the gamemodes in the game.
 /// This class uses rtos::task<>. 
 enum gameModes {
 	regular = 0, goldenGun = 1
 };
+
 
 /// \brief
 /// GameTime options
@@ -21,9 +22,11 @@ enum gameTimes {
 
 
 /// \brief
-/// CLASS
+/// ReceiveIRByteToDataControl CLASS
 /// \details
-/// This class
+/// This class is used to convert the 16 bits to data to trigger functions in the game. 
+/// If the class received game parameters the class will trigger the function the RegisterGameParametersControl class to send the game parameters.
+/// If the class received a shot. The runGameControl class wil be trigged with the playerData and the weaponstrenght. 
 /// This class uses rtos::task<>. 
 class ReceiveIRByteToDataControl : public rtos::task<>{
 	enum state_t = {idle, decodeData};

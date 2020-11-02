@@ -8,7 +8,7 @@
 /// Struct used to save data about the timer used.
 /// Option 1: If runGameTime is true, the time in timer used is the time how long the game is.
 /// Option 2: If runGameTime is false, the time in timer used is not the time how long the game is.
-/// the time will uses minutes.
+/// The time used will be in minutes.
 struct timer_struct timer_s{
 	int time;
 	bool runGameTime;
