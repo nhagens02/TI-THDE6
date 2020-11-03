@@ -11,12 +11,10 @@
 class IrReceiver{
 	private:
 		hwlib::pin_in& IrReceiverPin;
-
-	IrReceiver(hwlib::pin_in & IrReceiverPin):
-		IrReceiverPin ( IrReceiverPin )
-	{}
-
 	public: 
-		bool get() { IrReceiverPin.refresh(); return (IrReceiverPin.read()); }
+		IrReceiver(hwlib::pin_in& IrReceiverPin):
+			IrReceiverPin(IrReceiverPin)
+		{}
+		bool getCurrentSignal() { IrReceiverPin.refresh(); return (IrReceiverPin.read()); }
 
 };

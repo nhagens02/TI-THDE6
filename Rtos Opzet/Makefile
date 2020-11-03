@@ -1,4 +1,4 @@
-SOURCES ?= playerEntity.cpp IRLed.cpp SendIrMessageControl.cpp dataToIrByteControl.cpp keypadControl.cpp
+SOURCES ?= playerEntity.cpp IRLed.cpp SendIrMessageControl.cpp dataToIrByteControl.cpp keypadControl.cpp IrReceiver.cpp bitDetector.cpp
 HEADERS ?= Keypad.hpp
 SEARCH  ?= 
 RELATIVE ?= ../..

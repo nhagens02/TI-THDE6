@@ -1,6 +1,6 @@
 #include "hwlib.hpp"
 #include "rtos.hpp"
-//#include "IrReceiver.cpp"
+#include "IrReceiver.cpp"
 /// @file
 
 
@@ -11,21 +11,24 @@
 /// This class poll every 800 microseconds if ther is a change in signal.
 /// This class uses the ir protocol from the THDE casus. 
 /// This class uses rtos::task<>. 
-class bitDetector : public rtos::task<>{
+class bitDetector : public rtos::task<> {
 	enum state_t {idle, startReceiving};
 
 	private:
 		state_t state = idle;
-		//IrReceiver & IrReceiverLed;
+		IrReceiver irReceiver;
 		//hwlib::target::pin_in(hwlib::target::pins::d6) irReceiverLed;
 		//s16BitConverter& s16BitConverter;
-		rtos::timer intervalTimer;
-		rtos::timer afterBitTimer;
-	bitDetector()//:
-		//IrReceiverLed ( irReceiverLed )
-	{}
+		rtos::clock intervalHunderdSignalCheck;
+		//rtos::timer afterBitTimer;
+	
 
 	public:
+		bitDetector(hwlib::pin_in& IrReceiverPin):
+			task("bit detector signal"),
+			irReceiver ( IrReceiverPin ),
+			intervalHunderdSignalCheck(this, (200 * rtos::ms), "keypad interval checker")
+		{}
 
 
 	private:
@@ -37,11 +40,11 @@ class bitDetector : public rtos::task<>{
 				{
 					case idle:
 						//entry events
-						intervalTimer.set(800);
+						//intervalTimer.set(800);
 
 						//other events
-						wait(intervalTimer);
-						bool signal = IrReceiver.get();
+						wait(intervalHunderdSignalCheck);
+						bool signal = IrReceiver.getCurrentSignal();
 						if (signal == 1){
 							int timing_low = 0;
 							int timing_high = 0;
@@ -59,7 +62,7 @@ class bitDetector : public rtos::task<>{
 						intervalTimer.set(800);
 
 						//other events
-						auto event = wait(intervalTimer, afterBitTimer);
+						auto event = wait(intervalTimer + afterBitTimer);
 						if (event == intervalTimer) {
 							bool signal = IrReceiver.getCurrentSignal();
 							if (signal == 1) {
@@ -73,11 +76,11 @@ class bitDetector : public rtos::task<>{
 						}
 						if (event == afterBitTimer) {
 							if (timing_high == 1) && (timing_low == 2) {
-								16BitConverter.sendBit(0);
+								//16BitConverter.sendBit(0);
 								state = idle;
 							}
 							else if (timing_high == 2) && (timing_low == 1) {
-								16BitConverter.sendBit(1);
+								//16BitConverter.sendBit(1);
 								state = idle;
 							}
 							else {

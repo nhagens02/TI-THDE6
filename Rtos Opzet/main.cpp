@@ -5,6 +5,7 @@
 #include "DataToIrByteControl.cpp"
 //#include "sendIrMessageControl.cpp"
 #include "playerEntity.cpp"
+#include "bitDetector.cpp"
 
 //#include "IRLed.cpp"
 

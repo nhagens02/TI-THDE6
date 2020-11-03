@@ -1,12 +1,12 @@
-#ifndef SOUNCONTROL.HPP
+#ifndef SOUNDCONTROL_HPP
 #define SOUNDCONTROL_HPP
 
 class soundControl {
 private:
-	hwlib::pin_oc& speakerPin;
+	hwlib::pin_out& speakerPin;
 
 public:
-	soundControl(hwlib::pin_oc& speakerPin):
+	soundControl(hwlib::pin_out& speakerPin):
 		speakerPin(speakerPin)
     {}
 
