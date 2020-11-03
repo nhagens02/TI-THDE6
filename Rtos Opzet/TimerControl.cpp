@@ -23,7 +23,7 @@ struct timer_struct timer_s{
 /// If the bool runGameTime is false. The time in the struct will contain in how many minutes the game will start.
 /// This class uses rtos::task<>.
 class TimerControl : public rtos::task<>{
-	enum state state_t = {idle, timer};
+	enum state state_t{idle, timer};
 
 	private:
 		state_t state = idle;
@@ -69,14 +69,16 @@ class TimerControl : public rtos::task<>{
 						DisplayControl.showMessage(TimerControl.timeremaining());
 
 						//other events
-						events = wait(untilGameTimerFlag, startGameTimerFlag);
+						events = wait(untilGameTimerFlag + startGameTimerFlag);
 						if (events == untilGameTimerFlag) {
 							endTimerFlag.set();
 							state = idle;
+							break;
 						}
 						if (events == startGameTimerFlag) {
 							runGameControl.gameOver();
 							state = idle;
+							break;
 						}
 						break;
 					default:break;

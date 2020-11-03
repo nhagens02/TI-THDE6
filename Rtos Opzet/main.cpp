@@ -3,6 +3,7 @@
 #include <array>
 #include "keypadControl.cpp"
 #include "DataToIrByteControl.cpp"
+#include "InitGameControl.cpp"
 //#include "sendIrMessageControl.cpp"
 #include "playerEntity.cpp"
 //#include "bitDetector.cpp"

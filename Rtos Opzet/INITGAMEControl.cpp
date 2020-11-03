@@ -8,11 +8,11 @@
 /// \details
 /// This struct contains the GameMode, gameTime and timeUntil start of a game.
 /// all variables are of the type int. 
-struct parameters{
-	int gameMode,
-	int gameTime,
-	int timeUntilStart;
-};
+//struct parameters{
+//	int gameMode,
+//	int gameTime,
+//	int timeUntilStart;
+//};
 
 
 /// \brief
@@ -34,25 +34,27 @@ class InitGameControl : public rtos::task<>{
 
 	private:
 		state_t state = idle;
+		int bnID;
 		struct parameters para;
 		rtos::channel< int, 1024 > buttonChannel;
-		keypadControl& KeypadControl
+		keypadControl& KeypadControl;
 		//registerGameParametersControl& registerGameParametersControl;
-		//dataToIRByteControl& dataToIRByteControl;
+		DataToIrbyteControl& dataToIrByteControl;
 
 	
 
 
-	public: //registerGameParametersControl& registerGameParametersControl, dataToIRByteControl& dataToIRByteControl,
-		InitGameControl( keypadControl KeypadControl) :
+	public: //registerGameParametersControl& registerGameParametersControl,
+		InitGameControl( keypadControl& KeypadControl, DataToIrbyteControl& dataToIrByteControl):
 			task("init game controller"),
 			buttonChannel(this, "button press Channel"),
 			//registerGameParametersControl(registerGameParametersControl),
 			//dataToIRByteControl(dataToIRByteControl),
-			KeypadControl( keypadControl )
+			KeypadControl( KeypadControl ),
+			dataToIrByteControl( dataToIrByteControl )
 		{}
 
-		void buttonPressed(eButtonID buttonID){buttonChannel.write(buttonID);}
+		void buttonPressed(int buttonID){buttonChannel.write(buttonID);}
 
 	private:
 			void main(){
@@ -65,8 +67,8 @@ class InitGameControl : public rtos::task<>{
 
 								//other events
 								//check deze state nog ff.
-								wait(buttonPressChannel);
-								bnID = buttonPressChannel.read()
+								wait(buttonChannel);
+								bnID = buttonChannel.read();
 								if (bnID == 12) { //bnID =12 = BUTTON C
 									state = init;
 									break;
@@ -80,7 +82,7 @@ class InitGameControl : public rtos::task<>{
 							case init:
 								//displayControl.showMessage("command");
 								//displayControl.showMessage("Enter play time:");
-								para.playTime = 0;
+								para.gameTime = 0;
 								para.gameMode = 0;
 								para.timeUntilStart = 0;
 								state = enterPlayTime;
@@ -97,106 +99,96 @@ class InitGameControl : public rtos::task<>{
 								if (bnID == 15) { //15 = #
 									if ((para.gameTime >= 1) && (para.gameTime <= 15)) {
 										state = setGameMode;
+										break;
 									}
 									else {
 										state = init;
+										break;
 									}
 								}
 								else if (bnID == 0) {
-									
 
 								}
 								else if ((bnID >=1) && (bnID <=9)) {
-									para.gameTime += 
-								}
-								else if ((bnID == BUTTON_0) || (bnID == BUTTON_1) || (bnID == BUTTON_2) || (bnID == BUTTON_3) || (bnID == BUTTON_4) || (bnID == BUTTON_5) || (bnID == BUTTON_6) || (bnID == BUTTON_7) || (bnID == BUTTON_8) || (bnID == BUTTON_9)) {
-									if (bnID == BUTTON_0) {para.gameTime = 0;}
-									else if (bnID == BUTTON_1) {para.gameTime += 1;}
-									else if (bnID == BUTTON_2) {para.gameTime += 2;}
-									else if (bnID == BUTTON_3) {para.gameTime += 3;}
-									else if (bnID == BUTTON_4) {para.gameTime += 4;}
-									else if (bnID == BUTTON_5) {para.gameTime += 5;}
-									else if (bnID == BUTTON_6) {para.gameTime += 6;}
-									else if (bnID == BUTTON_7) {para.gameTime += 7;}
-									else if (bnID == BUTTON_8) {para.gameTime += 8;}
-									else if (bnID == BUTTON_9) {para.gameTime += 9;}
+									para.gameTime += bnID;
 								}
 								else {
-									state = enterPlayTime
+									state = enterPlayTime;
+									break;
 								}
 								break;
 
 							case setGameMode:
 								//entry events
-								displayControl.showMessage("command");
-								displayControl.showMessage("Enter game Mode:");
+								//displayControl.showMessage("command");
+								//displayControl.showMessage("Enter game Mode:");
 
 								//other events
 								wait(buttonChannel);
 								bnID = buttonChannel.read();
-								if (bnID == BUTTON_#) {
+								hwlib::cout << bnID << hwlib::endl;
+								if (bnID == 15) { //15 = #
 									if ((para.gameMode >= 1) && (para.gameMode <= 2)) {
 										state = SetTimeUntilStart;
+										break;
 									}
 									else {
 										state = init;
+										break;
 									}
 								}
-								else if ((bnID == BUTTON_1) || (bnID == BUTTON_2)) {
-									if (bnID == BUTTON_1) {para.gameTime = 1;}
-									else if (bnID == BUTTON_2) {para.gameTime = 2;}
+								else if ((bnID >= 1) || (bnID <= 2)) {
+									para.gameTime = bnID;
+									state = SetTimeUntilStart;
+									break;
 								}
 								else {
 									state = setGameMode;
+									break;
 								}
 								break;
 
 							case SetTimeUntilStart:
 								//entry events
-								displayControl.showMessage("command");
-								displayControl.showMessage("Enter time until start of game:");
+								//displayControl.showMessage("command");
+								//displayControl.showMessage("Enter time until start of game:");
 								wait(buttonChannel);
 								bnID = buttonChannel.read();
-								if (bnID == BUTTON_#) {
-									state = sendData;
-									//if ((gameMode >= 1) && (gameMode <= 2)) {
-									//	state = SetTimeUntilStart;
-									//}
-									//else {
-									//	state = init;
-									//}
+								if (bnID == 15) { //15 = #
+									if ((para.timeUntilStart >= 1) && (para.timeUntilStart <= 31)) {
+										state = sendData;
+										break;
+									}
+									else {
+										state = init;
+										break;
+									}	
 								}
-								else if ((bnID == BUTTON_0) || (bnID == BUTTON_1) || (bnID == BUTTON_2) || (bnID == BUTTON_3) || (bnID == BUTTON_4) || (bnID == BUTTON_5) || (bnID == BUTTON_6) || (bnID == BUTTON_7) || (bnID == BUTTON_8) || (bnID == BUTTON_9)) {
-									if (bnID == BUTTON_0) {para.timeUntilStart = 0;}
-									else if (bnID == BUTTON_1) {para.timeUntilStart += 1;}
-									else if (bnID == BUTTON_2) {para.timeUntilStart += 2;}
-									else if (bnID == BUTTON_3) {para.timeUntilStart += 3;}
-									else if (bnID == BUTTON_4) {para.timeUntilStart += 4;}
-									else if (bnID == BUTTON_5) {para.timeUntilStart += 5;}
-									else if (bnID == BUTTON_6) {para.timeUntilStart += 6;}
-									else if (bnID == BUTTON_7) {para.timeUntilStart += 7;}
-									else if (bnID == BUTTON_8) {para.timeUntilStart += 8;}
-									else if (bnID == BUTTON_9) {para.timeUntilStart += 9;}
-								}
+								//else if () {
+
+								//}
 								else {
 									state = SetTimeUntilStart;
+									break;
 								}
 								break;
 
 							case sendData:
 								//entry events
-								dataToIRByteControl.sendGameParameters(para);
-								displayControl.showmessage("Press any button exept the * button to send parameters, press the * to go to start.")
+								dataToIrByteControl.sendingGameParametersfun(para);
+								//displayControl.showmessage("Press any button exept the * button to send parameters, press the * to go to start.")
 
 								//other events
 								wait(buttonChannel);
 								bnID = buttonChannel.read();
-								if (bnID == BUTTON_*) {
-									registerGameParametersControl.setParameters(para);
-									state = idle;
+								if (bnID != 14) { // * = 14
+									//registerGameParametersControl.setParameters(para);
+									state = sendData;
+									break;
 								}
 								else {
-									state = sendData;
+									state = idle;
+									break;
 								}
 								break;
 								

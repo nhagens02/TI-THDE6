@@ -42,8 +42,8 @@ class DataToIrbyteControl : public rtos::task<>{
 		rtos::channel< struct parameters, 1024 > gameParametersChannel; 
 		rtos::channel< struct shootdata, 1024 > triggerChannel; 
 		struct shootdata sData;
-		int test;
-		int test2;
+		//int test;
+		//int test2;
 		struct parameters gamePara;
 
 
@@ -152,8 +152,6 @@ class DataToIrbyteControl : public rtos::task<>{
 				
 				case sendingTrigger:
 					//entry events
-					//hwlib::cout << "trigger" << hwlib::endl;
-					//
 					sendTrigger(sData.playerID, sData.weaponStrength);
 					//other events
 					//hwlib::cout << "aftertrigger" << hwlib::endl;
