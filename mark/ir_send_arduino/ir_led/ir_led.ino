@@ -37,6 +37,7 @@ void setup() {
   delay(20);
   digitalWrite(led, LOW);
   sendIRMessage(code2);
+  delay(3);
   sendIRMessage(code);
 }
 
