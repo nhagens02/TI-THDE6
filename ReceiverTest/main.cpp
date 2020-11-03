@@ -78,7 +78,7 @@ int main() {
 	tsop_gnd.flush();
 	tsop_vdd.flush();
 
-	int bits[32] = {};
+	int bits[64] = {};
 	int bitsSize = 0;
 
 	uint_fast32_t timeSinceLastReceivedBit = hwlib::now_us();
@@ -88,9 +88,13 @@ int main() {
 
 	for (;;) {
 		if (hwlib::now_us() > (timeSinceLastReceivedBit + 4000)) {
-			if (bitsSize == 16) {
+			if (bitsSize == 32) {
 				for (int i = 0; i < 16; i++) {
 					hwlib::cout << bits[i];
+				}
+				hwlib::cout << "\n";
+				for (int i = 0; i < 16; i++) {
+					hwlib::cout << bits[16+i];
 				}
 				hwlib::cout << "\n";
 			}
@@ -117,13 +121,21 @@ int main() {
 			currentLoopTime = hwlib::now_us();
 
 			
-			if (bitsSize == 32) {
+			if (bitsSize == 64) {
 				for (int i = 0; i < 16; i++) {
 					hwlib::cout << bits[i];
 				}
 				hwlib::cout << "\n";
 				for (int i = 0; i < 16; i++) {
 					hwlib::cout << bits[16+i];
+				}
+				hwlib::cout << "\n";
+				for (int i = 0; i < 16; i++) {
+					hwlib::cout << bits[32+i];
+				}
+				hwlib::cout << "\n";
+				for (int i = 0; i < 16; i++) {
+					hwlib::cout << bits[48+i];
 				}
 				hwlib::cout << "\n";
 				bitsSize = 0;
