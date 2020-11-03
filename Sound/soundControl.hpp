@@ -11,7 +11,7 @@ public:
     {}
 
 		void await( long long unsigned int t ){
-		   while( t > hwlib::now_us() ){hwlib::sleep(0);}
+		   while( t > hwlib::now_us() ){} //hwlib::sleep(0);
 		}
 		
 		void playSound( hwlib::pin_out & speakerPin, int f, int d, int fd = 1000 ){

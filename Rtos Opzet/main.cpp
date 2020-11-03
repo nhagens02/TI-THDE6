@@ -1,10 +1,11 @@
 #include "hwlib.hpp"
 #include "rtos.hpp"
 #include <array>
+#include "keypadControl.cpp"
 #include "DataToIrByteControl.cpp"
 //#include "sendIrMessageControl.cpp"
 #include "playerEntity.cpp"
-#include "keypadControl.cpp"
+
 //#include "IRLed.cpp"
 
 class test : public rtos::task<> {
@@ -33,18 +34,10 @@ class test : public rtos::task<> {
 
 
 int main( void ) {
-	hwlib::wait_ms(500);
+	hwlib::wait_ms(600);
 
 	hwlib::cout << "startup\n";
 	
-	//namespace target = hwlib::target;
-
-	auto pe = playerEntity();
-	auto IrLed_output = hwlib::target::d2_36kHz();;
-	//auto sendIrMessage = SendIRMessageControl(IrLed_output);
-	//auto dataToIrByteControl = DataToIrbyteControl(IrLed_output);
-	auto test2 = test(IrLed_output);
-
 	due::pin_oc pinOut1__ = hwlib::target::pin_oc(hwlib::target::pins::d53);
 	hwlib::pin_direct_from_oc_t pinOut1_(pinOut1__);
 	hwlib::pin_direct_from_oc_t* pinOut1 = &pinOut1_;
@@ -73,6 +66,15 @@ int main( void ) {
 
 	auto keyPad = keypadControl(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4);
 
+	//namespace target = hwlib::target;
+
+	auto pe = playerEntity();
+
+	auto IrLed_output = hwlib::target::d2_36kHz();;
+	//auto sendIrMessage = SendIRMessageControl(IrLed_output);
+	//auto dataToIrByteControl = DataToIrbyteControl(IrLed_output);
+	
+	auto test2 = test(IrLed_output);
 
 
 
