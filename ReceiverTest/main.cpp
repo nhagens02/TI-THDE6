@@ -70,13 +70,13 @@ int main(void) {
 
 	auto _tsop_signal	= target::pin_in(target::pins::d8);
 	auto tsop_signal 	= hwlib::invert(_tsop_signal);
-	//auto tsop_gnd    	= target::pin_out(target::pins::d9);
-	//auto tsop_vdd    	= target::pin_out(target::pins::d10);
- //  
-	//tsop_gnd.write(0);
-	//tsop_vdd.write(1);
-	//tsop_gnd.flush();
-	//tsop_vdd.flush();
+	auto tsop_gnd    	= target::pin_out(target::pins::d9);
+	auto tsop_vdd    	= target::pin_out(target::pins::d10);
+   
+	tsop_gnd.write(0);
+	tsop_vdd.write(1);
+	tsop_gnd.flush();
+	tsop_vdd.flush();
 
 	int bits[16] = {};
 	int bitsSize = 0;
