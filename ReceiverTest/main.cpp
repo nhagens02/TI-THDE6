@@ -1,11 +1,11 @@
 #include "hwlib.hpp"
 
-enum pulseDurations {
-	shortPulseMinimumDuration = 725,
-	shortPulseMaximumDuration = 875,
-	longPulseMinimumDuration = 1525,
-	longPulseMaximumDuration = 1675
-};
+//enum pulseDurations {
+//	shortPulseMinimumDuration = 725,
+//	shortPulseMaximumDuration = 875,
+//	longPulseMinimumDuration = 1525,
+//	longPulseMaximumDuration = 1675
+//};
 
 //int read(hwlib::pin_in& tsop_signal) {
 //	tsop_signal.refresh();
@@ -25,7 +25,7 @@ enum pulseDurations {
 //	}
 //}
 
-int count = 0;
+//int count = 0;
 
 /*
 int read(hwlib::pin_in& tsop_signal) {
@@ -53,12 +53,11 @@ int read(hwlib::pin_in& tsop_signal) {
 int read(hwlib::pin_in& tsop_signal) {
 	tsop_signal.refresh();
 	if (tsop_signal.read()) {
-		hwlib::wait_us(800);
+		hwlib::wait_us(1200);
 		bool returnValue = tsop_signal.read();
 		while (tsop_signal.read()) {}
 
-		count+=1;
-		hwlib::cout << count << "\n";
+		/*count+=1;*/
 
 		return returnValue;
 	}
@@ -70,7 +69,7 @@ int main(void) {
 	namespace target = hwlib::target;
 
 	auto _tsop_signal	= target::pin_in(target::pins::d8);
-	auto tsop_signal 	= invert(_tsop_signal);
+	auto tsop_signal 	= hwlib::invert(_tsop_signal);
 	auto tsop_gnd    	= target::pin_out(target::pins::d9);
 	auto tsop_vdd    	= target::pin_out(target::pins::d10);
    
@@ -79,8 +78,8 @@ int main(void) {
 	tsop_gnd.flush();
 	tsop_vdd.flush();
 
-	//int bits[16] = {};
-	//int bitsSize = 0;
+	int bits[16] = {};
+	int bitsSize = 0;
 
 	uint_fast32_t timeSinceLastReceivedBit = hwlib::now_us();
 	uint_fast32_t currentLoopTime = hwlib::now_us();
@@ -89,30 +88,29 @@ int main(void) {
 
 	for (;;) {
 		if (hwlib::now_us() > (timeSinceLastReceivedBit + 4000)) {
-			//bitsSize = 0;
+			bitsSize = 0;
 			timeSinceLastReceivedBit = hwlib::now_us();
 		}
 
 		if (hwlib::now_us() > (currentLoopTime + 100)) {
 			int bitValue = read(tsop_signal);
 			if (bitValue != -1) {
-				/*
+				
 				bits[bitsSize] = bitValue;
 				bitsSize++;
-				*/
-
 				timeSinceLastReceivedBit = hwlib::now_us();
-				//hwlib::cout << bitValue;
 			}
-			/*
-			else {
+			/*else {
+				if (bitsSize > 0) {
+					hwlib::cout << bitsSize << "\n";
+				}
 				bitsSize = 0;
-			}
-			*/
+			}*/
+			
 			
 			currentLoopTime = hwlib::now_us();
 
-			/*
+			
 			if (bitsSize == 16) {
 				for (int i = 0; i < 16; i++) {
 					hwlib::cout << bits[i];
@@ -120,7 +118,6 @@ int main(void) {
 				hwlib::cout << "\n";
 				bitsSize = 0;
 			}
-			*/
 		}
 	}
 }
