@@ -9,7 +9,7 @@
 /// \details
 /// This struct contains the GameMode, gameTime and timeUntil start of a game.
 /// All variables are of the type int. 
-struct parameters{
+struct parameters {
 	int gameMode;
 	int gameTime;
 	int timeUntilStart;
@@ -21,7 +21,7 @@ struct parameters{
 /// \details
 /// This struct contains a playerID and weaponstrenght. 
 /// This struct will be used to send data of a shot. 
-struct shootdata{
+struct shootdata {
 	int playerID;
 	int weaponstrenght;
 };
@@ -38,9 +38,11 @@ class DataToIrbyteControl : public rtos::task<>{
 	private:
 		state_t state = idle;
 		SendIRMessageControl sendIrMessageControl;
-		rtos::channel< struct parameters, 1024 > gameParametersChannel;
-		rtos::channel< struct shootdata , 1024 > triggerChannel;
+		rtos::channel< struct parameters, 1024 > gameParametersChannel; 
+		rtos::channel< struct shootdata, 1024 > triggerChannel; 
 		struct shootdata sData;
+		int test;
+		int test2;
 		struct parameters gamePara;
 
 
@@ -51,12 +53,72 @@ class DataToIrbyteControl : public rtos::task<>{
 		DataToIrbyteControl(hwlib::pin_out& ledpin):
 			task("dataToIRByteControl"),
 			sendIrMessageControl(ledpin),
-			gameParametersChannel(this, "gameParametersChannelc"),
-			triggerChannel(this, "triggerChannelc")
+			gameParametersChannel(this, "gameParametersChannel"),
+			triggerChannel(this, "triggerChannel")
 			
 		{}
-		//void sendingGameParameters(struct parameters para){gameParametersChannel.write(para);}
-		//void sendTrigger(struct shootdata trigger){triggerChannel.write(trigger);}
+		void sendingGameParametersfun(struct parameters para){gameParametersChannel.write(para);}
+		void sendTriggerfun(struct shootdata trigger){triggerChannel.write(trigger);}
+
+		void sendGameParameters(int gamemodeID, int gameTime, int timeUntilStart) {
+			//Gamemode and Gametime
+			uint16_t information = 0;
+			if ((gamemodeID > 1) || (gameTime > 7) || (timeUntilStart > 31))return;
+			information += 1 << 15;
+			information += gamemodeID << 7;
+			information += gameTime << 5;
+			//XOR
+			for (int i = 5; i > 0; i--) {
+				bool x = 0;
+				bool y = 0;
+				if (information & (1 << (i + 9)))x = 1;
+				if (information & (1 << (i + 4)))y = 1;
+				information += (x ^ y) << (i - 1);
+			}
+			sendIrMessageControl.sendBytes(information);
+			hwlib::wait_ms(3);
+			sendIrMessageControl.sendBytes(information);
+			hwlib::wait_ms(3);
+
+			//Time until start
+
+			information = 0;
+			if ((gamemodeID > 1) || (gameTime > 7) || (timeUntilStart > 31))return;
+			information += 1 << 15;
+			information += timeUntilStart << 5;
+			//XOR
+			for (int i = 5; i > 0; i--) {
+				bool x = 0;
+				bool y = 0;
+				if (information & (1 << (i + 9)))x = 1;
+				if (information & (1 << (i + 4)))y = 1;
+				information += (x ^ y) << (i - 1);
+			}
+			sendIrMessageControl.sendBytes(information);
+			hwlib::wait_ms(3);
+			sendIrMessageControl.sendBytes(information);
+			hwlib::wait_ms(3);
+		}
+		void sendTrigger(int playerID, int weaponStrength) {
+			//hwlib::cout << "test function" << hwlib::endl;
+			uint16_t information = 0;
+			if ((playerID > 31) || (weaponStrength > 31))return;
+			information += 1 << 15;
+			information += playerID << 10;
+			information += weaponStrength << 5;
+			//XOR
+			for (int i = 5; i > 0; i--) {
+				bool x = 0;
+				bool y = 0;
+				if (information & (1 << (i + 9)))x = 1;
+				if (information & (1 << (i + 4)))y = 1;
+				information += (x ^ y) << (i - 1);
+			}
+			sendIrMessageControl.sendBytes(information);
+			hwlib::wait_ms(3);
+			sendIrMessageControl.sendBytes(information);
+			hwlib::wait_ms(3);
+		}
 
 	private:
 		void main(){
@@ -64,40 +126,47 @@ class DataToIrbyteControl : public rtos::task<>{
 			for(;;){
 				switch(state)
 				{
-					case idle:
-						//entry events
-
-						//other events
-						auto events = wait(triggerChannel); //gameParametersChannel
-						if (events == triggerChannel) {
-							sData = gameParametersChannel.read();
-							state = sendingTrigger;
-						}
-						if (events == gameParametersChannel) {
-							gamePara = gameParametersChannel.read();
-							state = sendingGameParameters;
-						}
+				case idle: {
+					//hwlib::cout << "before wait" << hwlib::endl; //entry events//other events
+					auto event = wait(triggerChannel + gameParametersChannel); //
+					//hwlib::cout << "after wait" << hwlib::endl;
+					if (event == triggerChannel) {
+						//hwlib::cout << "in if" << hwlib::endl;
+						sData = triggerChannel.read();
+						//hwlib::cout << sData.playerID << hwlib::endl;
+						//hwlib::cout << sData.weaponstrenght << hwlib::endl;
+						state = sendingTrigger;
 						break;
-
-					case sendingTrigger:
-						//entry events
-						sendIrMessageControl.sendTrigger(sData.playerID, sData.weaponstrenght);
-
-						//other events
+					}
+					if (event == gameParametersChannel) {
+						gamePara = gameParametersChannel.read();
+						state = sendingGameParameters;
+						break;
+					}
+					else {
 						state = idle;
-
 						break;
-
-					case sendingGameParameters:
-						//entry events
-						sendIrMessageControl.sendIrMessageControl(gamePara.gameMode, gamePara.gameTime, gamePara.timeUntilStart);
-
-						//other events
-						state = idle;
-
-						break;
-
-					default:break;
+					}
+					break;
+				}
+				
+				case sendingTrigger:
+					//entry events
+					//hwlib::cout << "trigger" << hwlib::endl;
+					//
+					sendTrigger(sData.playerID, sData.weaponstrenght);
+					//other events
+					//hwlib::cout << "aftertrigger" << hwlib::endl;
+					state = idle;
+					break;
+				case sendingGameParameters:
+					//entry events
+					
+					sendGameParameters(gamePara.gameMode, gamePara.gameTime, gamePara.timeUntilStart);
+					//other events
+					state = idle;
+					break;
+				default:break;
 				}
 			}
 		}
