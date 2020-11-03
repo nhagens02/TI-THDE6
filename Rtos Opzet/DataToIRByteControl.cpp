@@ -8,6 +8,7 @@
 /// Game parameters struct. 
 /// \details
 /// This struct contains the GameMode, gameTime and timeUntil start of a game.
+/// This is in seconds
 /// All variables are of the type int. 
 struct parameters {
 	int gameMode;
@@ -19,11 +20,11 @@ struct parameters {
 /// \brief
 /// Shoot data struct
 /// \details
-/// This struct contains a playerID and weaponstrenght. 
+/// This struct contains a playerID and weaponStrength. 
 /// This struct will be used to send data of a shot. 
 struct shootdata {
 	int playerID;
-	int weaponstrenght;
+	int weaponStrength;
 };
 
 
@@ -49,7 +50,6 @@ class DataToIrbyteControl : public rtos::task<>{
 	
 
 	public:
-		//mayby by private
 		DataToIrbyteControl(hwlib::pin_out& ledpin):
 			task("dataToIRByteControl"),
 			sendIrMessageControl(ledpin),
@@ -134,7 +134,7 @@ class DataToIrbyteControl : public rtos::task<>{
 						//hwlib::cout << "in if" << hwlib::endl;
 						sData = triggerChannel.read();
 						//hwlib::cout << sData.playerID << hwlib::endl;
-						//hwlib::cout << sData.weaponstrenght << hwlib::endl;
+						//hwlib::cout << sData.weaponStrength << hwlib::endl;
 						state = sendingTrigger;
 						break;
 					}
@@ -154,7 +154,7 @@ class DataToIrbyteControl : public rtos::task<>{
 					//entry events
 					//hwlib::cout << "trigger" << hwlib::endl;
 					//
-					sendTrigger(sData.playerID, sData.weaponstrenght);
+					sendTrigger(sData.playerID, sData.weaponStrength);
 					//other events
 					//hwlib::cout << "aftertrigger" << hwlib::endl;
 					state = idle;

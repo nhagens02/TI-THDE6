@@ -102,8 +102,12 @@ class InitGameControl : public rtos::task<>{
 										state = init;
 									}
 								}
-								else if ((bnID >=0) && (bnID <=9)) {
-									bnID 
+								else if (bnID == 0) {
+									
+
+								}
+								else if ((bnID >=1) && (bnID <=9)) {
+									para.gameTime += 
 								}
 								else if ((bnID == BUTTON_0) || (bnID == BUTTON_1) || (bnID == BUTTON_2) || (bnID == BUTTON_3) || (bnID == BUTTON_4) || (bnID == BUTTON_5) || (bnID == BUTTON_6) || (bnID == BUTTON_7) || (bnID == BUTTON_8) || (bnID == BUTTON_9)) {
 									if (bnID == BUTTON_0) {para.gameTime = 0;}

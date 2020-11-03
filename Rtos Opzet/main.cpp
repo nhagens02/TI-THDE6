@@ -5,20 +5,26 @@
 #include "DataToIrByteControl.cpp"
 //#include "sendIrMessageControl.cpp"
 #include "playerEntity.cpp"
-#include "bitDetector.cpp"
+//#include "bitDetector.cpp"
 
 //#include "IRLed.cpp"
 
 class test : public rtos::task<> {
 	DataToIrbyteControl DataToIrByteControl;
 	struct shootdata data;
+	struct parameters para;
 	
 	void main() {
 		data.playerID = 7;
-		data.weaponstrenght = 4;
+		data.weaponStrength = 4;
+		para.gameMode = 1;
+		para.gameTime = 5;
+		para.timeUntilStart = 10;
 		for (;;) {
 			hwlib::wait_ms(2000);
 			DataToIrByteControl.sendTriggerfun(data);
+			hwlib::wait_ms(2000);
+			DataToIrByteControl.sendingGameParametersfun(para);
 			//hwlib::cout << data.playerID << hwlib::endl;
 		}
 	}
@@ -64,7 +70,7 @@ int main( void ) {
 	due::pin_in pinIn4__ = hwlib::target::pin_in(hwlib::target::pins::d39);
 	hwlib::pin_direct_from_in_t pinIn4_(pinIn4__);
 	hwlib::pin_direct_from_in_t* pinIn4 = &pinIn4_;
-
+	
 	auto keyPad = keypadControl(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4);
 
 	//namespace target = hwlib::target;

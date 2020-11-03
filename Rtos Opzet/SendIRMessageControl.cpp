@@ -22,6 +22,7 @@ private:
 		irLed.turnOn();
 		while ((currentTime + 800) > (hwlib::now_us())) {
 			//do nothing
+			hwlib::wait_ms(0);
 		}
 
 		currentTime = hwlib::now_us();
@@ -29,6 +30,7 @@ private:
 
 		while ((currentTime + 1600) > (hwlib::now_us())) {
 			//do nothing
+			hwlib::wait_ms(0);
 		}
 	}
 	void sendOne() {
@@ -37,6 +39,7 @@ private:
 
 		while ((currentTime + 1600) > (hwlib::now_us())) {
 			//do nothing
+			hwlib::wait_ms(0);
 		}
 
 		currentTime = hwlib::now_us();
@@ -44,6 +47,7 @@ private:
 
 		while ((currentTime + 800) > (hwlib::now_us())) {
 			//do nothing
+			hwlib::wait_ms(0);
 		}
 	}
 	void main() {
