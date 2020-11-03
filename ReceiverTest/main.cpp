@@ -65,7 +65,7 @@ int read(hwlib::pin_in& tsop_signal) {
 }
 
 
-int main(void) {
+int main() {
 	namespace target = hwlib::target;
 
 	auto _tsop_signal	= target::pin_in(target::pins::d8);
@@ -78,7 +78,7 @@ int main(void) {
 	tsop_gnd.flush();
 	tsop_vdd.flush();
 
-	int bits[16] = {};
+	int bits[32] = {};
 	int bitsSize = 0;
 
 	uint_fast32_t timeSinceLastReceivedBit = hwlib::now_us();
@@ -88,6 +88,12 @@ int main(void) {
 
 	for (;;) {
 		if (hwlib::now_us() > (timeSinceLastReceivedBit + 4000)) {
+			if (bitsSize == 16) {
+				for (int i = 0; i < 16; i++) {
+					hwlib::cout << bits[i];
+				}
+				hwlib::cout << "\n";
+			}
 			bitsSize = 0;
 			timeSinceLastReceivedBit = hwlib::now_us();
 		}
@@ -97,8 +103,8 @@ int main(void) {
 			if (bitValue != -1) {
 				
 				bits[bitsSize] = bitValue;
+				timeSinceLastReceivedBit = hwlib::now_us() + 1600 - (bits[bitsSize] * 800);
 				bitsSize++;
-				timeSinceLastReceivedBit = hwlib::now_us();
 			}
 			/*else {
 				if (bitsSize > 0) {
@@ -111,9 +117,13 @@ int main(void) {
 			currentLoopTime = hwlib::now_us();
 
 			
-			if (bitsSize == 16) {
+			if (bitsSize == 32) {
 				for (int i = 0; i < 16; i++) {
 					hwlib::cout << bits[i];
+				}
+				hwlib::cout << "\n";
+				for (int i = 0; i < 16; i++) {
+					hwlib::cout << bits[16+i];
 				}
 				hwlib::cout << "\n";
 				bitsSize = 0;
