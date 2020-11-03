@@ -18,7 +18,7 @@ class keypadControl : public rtos::task<>{
 		state_t state = idle;
 		Keypad keypad;
 		int key = -1;
-		//InitGameControl& InitGameControl;
+		InitGameControl& initGameControl;
 		//registerGameParametersControl& registerGameParametersControl;
 		rtos::clock intervalKeyCheck;
 
@@ -32,9 +32,10 @@ class keypadControl : public rtos::task<>{
 		}
 
 	public:
-	keypadControl(hwlib::pin_direct_from_oc_t* pinOut1, hwlib::pin_direct_from_oc_t* pinOut2, hwlib::pin_direct_from_oc_t* pinOut3, hwlib::pin_direct_from_oc_t* pinOut4, hwlib::pin_direct_from_in_t* pinIn1, hwlib::pin_direct_from_in_t* pinIn2, hwlib::pin_direct_from_in_t* pinIn3, hwlib::pin_direct_from_in_t* pinIn4):
+	keypadControl(hwlib::pin_direct_from_oc_t* pinOut1, hwlib::pin_direct_from_oc_t* pinOut2, hwlib::pin_direct_from_oc_t* pinOut3, hwlib::pin_direct_from_oc_t* pinOut4, hwlib::pin_direct_from_in_t* pinIn1, hwlib::pin_direct_from_in_t* pinIn2, hwlib::pin_direct_from_in_t* pinIn3, hwlib::pin_direct_from_in_t* pinIn4, InitGameControl& initGameControl):
 		task("keypad controller"),
 		keypad(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4),
+		initGameControl ( initGameControl ),
 		intervalKeyCheck(this, (200* rtos::ms), "keypad interval checker")
 
 	{}

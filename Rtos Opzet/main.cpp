@@ -1,17 +1,19 @@
 #include "hwlib.hpp"
 #include "rtos.hpp"
 #include <array>
-#include "keypadControl.cpp"
+
 #include "DataToIrByteControl.cpp"
-#include "InitGameControl.cpp"
+
 //#include "sendIrMessageControl.cpp"
 #include "playerEntity.cpp"
+#include "InitGameControl.cpp"
+#include "keypadControl.cpp"
 //#include "bitDetector.cpp"
 
 //#include "IRLed.cpp"
 
 class test : public rtos::task<> {
-	DataToIrbyteControl DataToIrByteControl;
+	DataToIrbyteControl& dataToIrByteControl;
 	struct shootdata data;
 	struct parameters para;
 	
@@ -23,17 +25,17 @@ class test : public rtos::task<> {
 		para.timeUntilStart = 10;
 		for (;;) {
 			hwlib::wait_ms(2000);
-			DataToIrByteControl.sendTriggerfun(data);
+			dataToIrByteControl.sendTriggerfun(data);
 			hwlib::wait_ms(2000);
-			DataToIrByteControl.sendingGameParametersfun(para);
+			dataToIrByteControl.sendingGameParametersfun(para);
 			//hwlib::cout << data.playerID << hwlib::endl;
 		}
 	}
 
 	public:
-		test(hwlib::pin_out& ledpin) :
+		test(DataToIrbyteControl& dataToIrByteControl) :
 			task("test"),
-			DataToIrByteControl(ledpin)
+			dataToIrByteControl(dataToIrByteControl)
 		{}
 
 };
@@ -72,7 +74,7 @@ int main( void ) {
 	hwlib::pin_direct_from_in_t pinIn4_(pinIn4__);
 	hwlib::pin_direct_from_in_t* pinIn4 = &pinIn4_;
 	
-	auto keyPad = keypadControl(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4);
+	
 
 	//namespace target = hwlib::target;
 
@@ -80,9 +82,13 @@ int main( void ) {
 
 	auto IrLed_output = hwlib::target::d2_36kHz();;
 	//auto sendIrMessage = SendIRMessageControl(IrLed_output);
-	//auto dataToIrByteControl = DataToIrbyteControl(IrLed_output);
+	auto dataToIrByteControl = DataToIrbyteControl(IrLed_output);
 	
-	auto test2 = test(IrLed_output);
+	auto test2 = test(dataToIrByteControl);
+
+	auto init = InitGameControl(dataToIrByteControl);
+
+	auto keyPad = keypadControl(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4, init);
 
 
 
