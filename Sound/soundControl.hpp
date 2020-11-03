@@ -13,7 +13,7 @@ public:
 		void await( long long unsigned int t ){
 		   while( t > hwlib::now_us() ){}
 		}
-		
+
 		void playSound( hwlib::pin_out & speakerPin, int f, int d, int fd = 1000 ){
 		   auto t = hwlib::now_us();
 		   auto end = t + d;
