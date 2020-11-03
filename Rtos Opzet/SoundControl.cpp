@@ -14,16 +14,17 @@ class SoundControl : public rtos::task<>{
 	enum state_t state = {idle,playSound};
 
 	private:
-		state_t = idle;
+		state_t state = idle;
 		rtos::pool playSoundIDPool;
-		rtos::flag playSoundFlag;
-
-
-	SoundControl():
-
-	{}
+		rtos::flag playSoundFlag
+		hwlib::pin_oc& speakerPin;
 
 	public:
+		soundControl(hwlib::pin_oc& speakerPin):
+			task("speaker Control"),
+			speakerPin(speakerPin)
+		{}
+
 		void playSound(int soundID){playSoundID.write(soundID);playSoundFlag.set();}
 
 	private:

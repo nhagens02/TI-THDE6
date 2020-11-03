@@ -50,17 +50,18 @@ private:
 		for (;;) {
 			switch (state)
 			{
-			case idle:
+			case idle: {
 				//entry event
-
+				//hwlib::cout << "abuaiudias" << hwlib::endl;
 				//other event
 				wait(send2ByteChannel);
 				state = sending;
 				break;
-
+			}
 			case sending:
 				//entry event
 				auto information = send2ByteChannel.read();
+				//hwlib::cout << "info:" << information << hwlib::endl;
 				sendBytes(information);
 
 				//other event
@@ -80,6 +81,7 @@ public:
 	{}
 
 	void sendBytes(uint16_t information) {
+		//hwlib::cout << "i am here" << hwlib::endl;
 		for (int i = 16; i > 0; i--) {
 			if (information & (1 << (i-1))) sendOne(); else { sendZero(); }
 		}

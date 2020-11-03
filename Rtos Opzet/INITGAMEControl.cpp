@@ -19,7 +19,7 @@ struct parameters{
 /// Enum buttons keypad.
 /// \details
 /// This enum contains all possable buttons from the keypad to be pressed.
-enum eButtonID = {BUTTON_1,BUTTON_2,BUTTON_3,BUTTON_4,BUTTON_5,BUTTON_6,BUTTON_7,BUTTON_8,BUTTON_9,BUTTON_0,BUTTON_*,BUTTON_#,BUTTON_A,BUTTON_B,BUTTON_C,BUTTON_D};
+//enum eButtonID = {BUTTON_1,BUTTON_2,BUTTON_3,BUTTON_4,BUTTON_5,BUTTON_6,BUTTON_7,BUTTON_8,BUTTON_9,BUTTON_0,BUTTON_*,BUTTON_#,BUTTON_A,BUTTON_B,BUTTON_C,BUTTON_D};
 
 
 /// \brief
@@ -30,21 +30,28 @@ enum eButtonID = {BUTTON_1,BUTTON_2,BUTTON_3,BUTTON_4,BUTTON_5,BUTTON_6,BUTTON_7
 /// It set the gamemode, gameTime and Time until the game start. 
 /// This class uses rtos::task<>. 
 class InitGameControl : public rtos::task<>{
-	enum state_t = {idle,init,enterPlayTime,setGameMode,SetTimeUntilStart,sendData};
+	enum state_t {idle, init, enterPlayTime, setGameMode, SetTimeUntilStart, sendData};
 
 	private:
 		state_t state = idle;
-		rtos::channel buttonChannel;
-		registerGameParametersControl& registerGameParametersControl;
-		dataToIRByteControl& dataToIRByteControl;
+		struct parameters para;
+		rtos::channel< int, 1024 > buttonChannel;
+		keypadControl& KeypadControl
+		//registerGameParametersControl& registerGameParametersControl;
+		//dataToIRByteControl& dataToIRByteControl;
 
-	InitGameControl(registerGameParametersControl& registerGameParametersControl,dataToIRByteControl& dataToIRByteControl):
-	registerGameParametersControl (registerGameParametersControl),
-	dataToIRByteControl (dataToIRByteControl)
-	{buttonHandler.addButton();}
+	
 
 
-	public:
+	public: //registerGameParametersControl& registerGameParametersControl, dataToIRByteControl& dataToIRByteControl,
+		InitGameControl( keypadControl KeypadControl) :
+			task("init game controller"),
+			buttonChannel(this, "button press Channel"),
+			//registerGameParametersControl(registerGameParametersControl),
+			//dataToIRByteControl(dataToIRByteControl),
+			KeypadControl( keypadControl )
+		{}
+
 		void buttonPressed(eButtonID buttonID){buttonChannel.write(buttonID);}
 
 	private:
@@ -60,18 +67,19 @@ class InitGameControl : public rtos::task<>{
 								//check deze state nog ff.
 								wait(buttonPressChannel);
 								bnID = buttonPressChannel.read()
-								if (bnID == BUTTON_C) {
+								if (bnID == 12) { //bnID =12 = BUTTON C
 									state = init;
+									break;
 								}
 								else {
 									state = idle;
+									break;
 								}
 								break;
 
 							case init:
-								displayControl.showMessage("command");
-								displayControl.showMessage("Enter play time:");
-								struct parameters para;
+								//displayControl.showMessage("command");
+								//displayControl.showMessage("Enter play time:");
 								para.playTime = 0;
 								para.gameMode = 0;
 								para.timeUntilStart = 0;
@@ -80,19 +88,22 @@ class InitGameControl : public rtos::task<>{
 
 							case enterPlayTime:
 								//entry events
-								displayControl.showMessage("command");
-								displayControl.showMessage("Enter play time:")
+								//displayControl.showMessage("command");
+								//displayControl.showMessage("Enter play time:")
 
 								//other events
 								wait(buttonChannel);
 								bnID = buttonChannel.read();
-								if (bnID == BUTTON_#) {
+								if (bnID == 15) { //15 = #
 									if ((para.gameTime >= 1) && (para.gameTime <= 15)) {
 										state = setGameMode;
 									}
 									else {
 										state = init;
 									}
+								}
+								else if ((bnID >=0) && (bnID <=9)) {
+									bnID 
 								}
 								else if ((bnID == BUTTON_0) || (bnID == BUTTON_1) || (bnID == BUTTON_2) || (bnID == BUTTON_3) || (bnID == BUTTON_4) || (bnID == BUTTON_5) || (bnID == BUTTON_6) || (bnID == BUTTON_7) || (bnID == BUTTON_8) || (bnID == BUTTON_9)) {
 									if (bnID == BUTTON_0) {para.gameTime = 0;}

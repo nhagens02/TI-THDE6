@@ -95,7 +95,7 @@ int main() {
 
 	auto triggerButton_ = hwlib::target::pin_in(hwlib::target::pins::d12);
 	auto triggerButton = hwlib::invert(triggerButton_);
-	auto dataButton_ = hwlib::target::pin_in(hwlib::target::pins::d44);
+	auto dataButton_ = hwlib::target::pin_in(hwlib::target::pins::d4);
 	auto dataButton = hwlib::invert(dataButton_);
 	bool dataButtonAlreadyPressed = 0;
 	while (timeUntilStart > 0) {
