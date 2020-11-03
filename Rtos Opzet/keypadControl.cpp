@@ -1,5 +1,6 @@
 #include "hwlib.hpp"
 #include "rtos.hpp"
+#include "keypad.hpp"
 /// @file
 
 
@@ -11,14 +12,30 @@
 /// This class only support a 4x4 matrix keypad.
 /// This class uses rtos::task<>. 
 class keypadControl : public rtos::task<>{
-	enum state_t = {idle,sendInput};
+	enum state_t {idle,sendInput};
 
 	private:
-		state_t = state = idle;
-		InitGameControl& InitGameControl;
-		registerGameParametersControl& registerGameParametersControl;
+		state_t state = idle;
+		Keypad keypad;
+		int key = -1;
+		//InitGameControl& InitGameControl;
+		//registerGameParametersControl& registerGameParametersControl;
+		rtos::clock intervalKeyCheck;
 
-	keypadControl():
+		int checkIfAnKeyIsPressed() {
+			for (unsigned int i = 0; i <= 15; i++) {
+				if (keypad.getKeyPressed(i)) {
+					return i;
+				}
+			}
+			return -1;
+		}
+
+	public:
+	keypadControl(hwlib::pin_direct_from_oc_t* pinOut1, hwlib::pin_direct_from_oc_t* pinOut2, hwlib::pin_direct_from_oc_t* pinOut3, hwlib::pin_direct_from_oc_t* pinOut4, hwlib::pin_direct_from_in_t* pinIn1, hwlib::pin_direct_from_in_t* pinIn2, hwlib::pin_direct_from_in_t* pinIn3, hwlib::pin_direct_from_in_t* pinIn4):
+		task("keypad controller"),
+		keypad(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4),
+		intervalKeyCheck(this, (200* rtos::ms), "keypad interval checker")
 
 	{}
 
@@ -28,19 +45,29 @@ class keypadControl : public rtos::task<>{
 			for(;;){
 				switch(state)
 				{
-					case idle:
-						//entry events
+				case idle: {
+					//entry events
 
-						//other events
-						wait(keypad.getKeyPressedChannel);
-						bnID = keypad.getKeyPressedChannel.read();
+					//other events
+					wait(intervalKeyCheck);
+					//wait(keypad.getKeyPressedChannel);
+					//bnID = keypad.getKeyPressedChannel.read();
+					key = checkIfAnKeyIsPressed();
+					if (key == -1) {
+						state = idle;
+						break;
+					}
+					else {
 						state = sendInput;
 						break;
-
+					}
+					break;
+				}
 					case sendInput:
 						//entry events
-						RegisterGameParametersControl.buttonPressedChannel.write(bnID)
-						InitGameControl.buttonPressedChannel.write(bnID)
+						hwlib::cout << "keytest: " << key << hwlib::endl;
+						//RegisterGameParametersControl.buttonPressedChannel.write(bnID)
+						//InitGameControl.buttonPressedChannel.write(bnID)
 
 						//other events
 						state = idle;
