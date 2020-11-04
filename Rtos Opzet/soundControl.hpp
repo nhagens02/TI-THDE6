@@ -1,6 +1,11 @@
 #ifndef SOUNCONTROL.HPP
 #define SOUNDCONTROL_HPP
 
+/// \brief
+/// soundControl CLASS
+/// \details
+/// This class will magage wich sound needs to be played at a spicific time. 
+/// This class uses hwlib::pin_oc, hwlib::now_us. 
 class soundControl {
 private:
 	hwlib::pin_oc& speakerPin;
