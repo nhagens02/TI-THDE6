@@ -35,4 +35,4 @@ public:
 		}
 };
 
-#endif
+#endif // SOUNDCONTROL_HPP

@@ -28,7 +28,7 @@ enum gameTimes {
 /// If the class received game parameters the class will trigger the function the RegisterGameParametersControl class to send the game parameters.
 /// If the class received a shot. The runGameControl class wil be trigged with the playerData and the weaponstrenght. 
 /// This class uses rtos::task<>. 
-class ReceiveIRByteToDataControl : public rtos::task<>{
+class ReceiveIRByteToDataControl : public rtos::task<> {
 	enum state_t {idle, decodeData};
 
 	private:

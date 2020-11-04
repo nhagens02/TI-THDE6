@@ -20,8 +20,8 @@ class DataToIrbyteControl : public rtos::task<>{
 	private:
 		state_t state = idle;
 		SendIRMessageControl sendIrMessageControl;
-		rtos::channel< struct parameters, 1024 > gameParametersChannel; 
-		rtos::channel< struct shootdata, 1024 > triggerChannel; 
+		rtos::channel< struct parameters, 512 > gameParametersChannel; 
+		rtos::channel< struct shootdata, 512 > triggerChannel; 
 		struct shootdata sData;
 		//int test;
 		//int test2;

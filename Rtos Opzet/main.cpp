@@ -95,9 +95,9 @@ int main( void ) {
 
 	auto init = InitGameControl(dataToIrByteControl, display);
 
-	//auto regPar = RegisterGameParametersControl(pe, display);
+	auto regPar = RegisterGameParametersControl(pe, display);
 
-	auto keyPad = keypadControl(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4, init);//, regPar
+	auto keyPad = keypadControl(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4, init, regPar);
 	hwlib::cout << "before start" << hwlib::endl;
 	rtos::run();
 }

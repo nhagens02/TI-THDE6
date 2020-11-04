@@ -19,7 +19,7 @@ class ReceiveIrMessageControl : public rtos::task<>{
 
 	private:
 		state_t state = idle;
-		rtos::channel<bool, 1024> bitValueChannel;
+		rtos::channel<bool, 256> bitValueChannel;
 		uint_fast16_t message;
 		uint_fast16_t bitAmount;
 public:

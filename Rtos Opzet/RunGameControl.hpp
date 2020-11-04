@@ -1,3 +1,7 @@
+#ifndef RUNGAMECONTROL_HPP
+#define RUNGAMECONTROL_HPP
+
+
 #include "hwlib.hpp"
 #include "rtos.hpp"
 /// @file
@@ -154,3 +158,5 @@ class RunGameControl : public rtos::task<>{
 		}
 
 };
+
+#endif // RUNGAMECONTROL_HPP

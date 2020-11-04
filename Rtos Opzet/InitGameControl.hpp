@@ -36,7 +36,7 @@ class InitGameControl : public rtos::task<>{
 		state_t state = idle;
 		struct parameters para;
 		int bnID;
-		rtos::channel< int, 1024 > buttonChannel;
+		rtos::channel< int, 512 > buttonChannel;
 		//keypadControl& KeypadControl;
 		//registerGameparametersControl& registerGameparametersControl;
 		DataToIrbyteControl& dataToIrByteControl;
