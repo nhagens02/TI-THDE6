@@ -10,7 +10,7 @@
 /// IrReceiver CLASS
 /// \details
 /// This class is be used to read out the ir receiver. 
-/// This class uses rtos::task<>. 
+/// This class uses hwlib::pin_in. 
 class IrReceiver {
 private:
 	hwlib::pin_in& receiverPin;
