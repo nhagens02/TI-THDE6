@@ -1,5 +1,5 @@
-SOURCES ?= keypadControl.cpp RegisterGameParametersControl.cpp
-HEADERS ?= StructData.hpp InitGameControl.hpp dataToIrByteControl.hpp playerEntity.hpp Keypad.hpp IRLed.hpp SendIrMessageControl.hpp DisplayController.hpp
+SOURCES ?= keypadControl.cpp 
+HEADERS ?= StructData.hpp InitGameControl.hpp dataToIrByteControl.hpp playerEntity.hpp Keypad.hpp IRLed.hpp SendIrMessageControl.hpp DisplayController.hpp RegisterGameParametersControl.hpp
 SEARCH  ?= 
 RELATIVE ?= ../..
 include $(RELATIVE)/Makefile.due

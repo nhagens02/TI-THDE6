@@ -9,7 +9,7 @@
 #include "InitGameControl.hpp"
 #include "keypadControl.cpp"
 #include "DisplayController.hpp"
-#include "RegisterGameParametersControl.cpp"
+#include "RegisterGameParametersControl.hpp"
 //#include "bitDetector.cpp"
 
 //#include "IRLed.cpp"
@@ -27,8 +27,8 @@ class test : public rtos::task<> {
 		para.timeUntilStart = 10;
 		for (;;) {
 			hwlib::wait_ms(2000);
-			//dataToIrByteControl.sendTriggerChannel(data);
-			//hwlib::wait_ms(2000);
+			dataToIrByteControl.sendTriggerChannel(data);
+			hwlib::wait_ms(2000);
 			//dataToIrByteControl.sendingGameParametersChannel(para);
 			//hwlib::cout << data.playerID << hwlib::endl;
 		}
@@ -91,13 +91,13 @@ int main( void ) {
 	//auto sendIrMessage = SendIRMessageControl(IrLed_output);
 	auto dataToIrByteControl = DataToIrbyteControl(IrLed_output);
 	
-	auto test2 = test(dataToIrByteControl);
+	//auto test2 = test(dataToIrByteControl);
 
 	auto init = InitGameControl(dataToIrByteControl, display);
 
-	auto keyPad = keypadControl(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4, init);
+	//auto regPar = RegisterGameParametersControl(pe, display);
 
-	
-
+	auto keyPad = keypadControl(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4, init);//, regPar
+	hwlib::cout << "before start" << hwlib::endl;
 	rtos::run();
 }

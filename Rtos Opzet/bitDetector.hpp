@@ -12,7 +12,7 @@
 /// bitDetector CLASS
 /// \details
 /// This class will detect using the boundary object:"Ir Receiver".
-/// This class poll every 800 microseconds if ther is a change in signal.
+/// This class poll every 100 microseconds if ther is a change in signal.
 /// This class uses the ir protocol from the THDE casus. 
 /// This class uses rtos::task<>. 
 class BitDetector : public rtos::task<> {
@@ -22,10 +22,7 @@ class BitDetector : public rtos::task<> {
 		state_t state = idle;
 		IrReceiver irReceiver;
 		ReceiveIrMessageControl& receiveIrMessageControl;
-		//hwlib::target::pin_in(hwlib::target::pins::d6) irReceiverLed;
-		//s16BitConverter& s16BitConverter;
 		rtos::clock intervalHunderdSignalCheck;
-		//rtos::timer afterBitTimer;
 	
 
 	public:

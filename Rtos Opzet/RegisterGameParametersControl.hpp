@@ -1,3 +1,6 @@
+#ifndef REGISTERGAMEPARAMETERSCONTROL_HPP
+#define REGISTERGAMEPARAMETERSCONTROL_HPP
+
 #include "hwlib.hpp"
 #include "rtos.hpp"
 #include "StructData.hpp"
@@ -44,8 +47,6 @@ class RegisterGameParametersControl : public rtos::task<>{
 			SetParametersChannel(this, "parameters channel"),
 			playerEntity( playerEntity ),
 			displayControl( displayControl )
-			
-
 		{}
 
 
@@ -70,24 +71,28 @@ class RegisterGameParametersControl : public rtos::task<>{
 						playerEntity.setWeaponPower(0);
 						playerEntity.setPlayerID(0);
 						state = enterPlayerID;
+						break;
 					}
-					else if (bnID == 11) { //B = 11
-						state = enterWeaponPower;
+					else {
+						state = idle;
+						break;
 					}
 					break;
 
 				case enterPlayerID:
 					//entry events
 					displayControl.showMessage("\fcommand\n");
+					hwlib::wait_ms(0);
 					displayControl.showMessage("Enter PlayerID:\n");
+					hwlib::wait_ms(0);
 					displayControl.showMessage(playerEntity.getPlayerID());
-					playerEntity.setPlayerID(playerID);
+					//playerEntity.setPlayerID(playerID);
 
 					//other events
 					wait(buttonChannel);
 					bnID = buttonChannel.read();
 					if (bnID == 11) { // 11 = B
-						if ((playerEntity.getPlayerID() >= 2) && (playerEntity.getPlayerID() <= 31) {
+						if ((playerEntity.getPlayerID() >= 2) && (playerEntity.getPlayerID() <= 31)) {
 							state = enterWeaponPower;
 							break;
 						}
@@ -97,8 +102,8 @@ class RegisterGameParametersControl : public rtos::task<>{
 						}
 					}
 					else if ((bnID >= 0) || (bnID <= 9)) {
-						playerEntity.setWeaponPower(playerEntity.getWeaponPower() * 10);
-						playerEntity.setWeaponPower(playerEntity.getWeaponPower() + bnID);
+						playerEntity.setPlayerID(playerEntity.getPlayerID() * 10);
+						playerEntity.setPlayerID(playerEntity.getPlayerID() + bnID);
 						state = enterWeaponPower;
 						break;
 					}
@@ -116,9 +121,9 @@ class RegisterGameParametersControl : public rtos::task<>{
 
 					//other events
 					wait(buttonChannel);
-					bnID == buttonChannel.read();
+					bnID = buttonChannel.read();
 					if (bnID == 11) { // 11 = B
-						if ((playerEntity.getWeaponID() >= 1) && (playerEntity.getWeaponID() <= 9) {
+						if ((playerEntity.getWeaponPower() >= 1) && (playerEntity.getWeaponPower() <= 9)) {
 							state = waitForGameData;
 								break;
 						}
@@ -141,16 +146,19 @@ class RegisterGameParametersControl : public rtos::task<>{
 
 				case waitForGameData:
 					//entry events
-					displayControl.showmessage("Waiting for game Leader for information about the game....");
+					displayControl.showMessage("Waiting for game Leader\nFor information about\nThe game....\n");
 
 					//other events
-					wait(SetParametersChannel)
-						struct parameters para = SetParametersChannel.read();
-					runGameControl.sendGameParameters(para);
+					wait(SetParametersChannel);
+					//runGameControl.sendGameParameters(SetParametersChannel.read());
+					state = idle;
+					break;
 				}
 			}
-			}
+			
 
 		}
-		}
+		
 };
+
+#endif // REGISTERGAMEPARAMETERSCONTROL_HPP

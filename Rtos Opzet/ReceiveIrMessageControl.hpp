@@ -49,17 +49,15 @@ public:
 							state = receivingBits;
 							break;
 
-
 						case receivingBits:
 							//entry events
 							//receiveIrByteToDataControl.getMessage(GetReceivingBits());
-							for (int i = 1; i <= 16;i++) {
+							for (int i = 0; i < 17;i++) {
 								receiveBit(bitValueChannel.read());
 								wait(bitValueChannel);
 							}
 							state = idle;
 							break;
-
 
 						default:break;
 					}
