@@ -4,8 +4,8 @@
 /// \brief
 /// soundControl CLASS
 /// \details
-/// This class will manage wich sound needs to be played at a spicific time. 
-/// This class uses hwlib::pin_oc, hwlib::now_us. 
+/// This class will manage wich sound needs to be played at a specific time. 
+/// This class needs a speaker pin of type hwlib::pin_oc. 
 class soundControl {
 private:
 	hwlib::pin_oc& speakerPin;
