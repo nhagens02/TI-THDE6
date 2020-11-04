@@ -38,8 +38,8 @@ class DataToIrbyteControl : public rtos::task<>{
 			triggerChannel(this, "triggerChannel")
 			
 		{}
-		void sendingGameParametersfun(struct parameters para){gameParametersChannel.write(para);}
-		void sendTriggerfun(struct shootdata trigger){triggerChannel.write(trigger);}
+		void sendingGameParametersChannel(struct parameters para){gameParametersChannel.write(para);}
+		void sendTriggerChannel(struct shootdata trigger){triggerChannel.write(trigger);}
 
 		void sendGameParameters(int gamemodeID, int gameTime, int timeUntilStart) {
 			//Gamemode and Gametime

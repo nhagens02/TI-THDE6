@@ -1,4 +1,4 @@
-SOURCES ?= keypadControl.cpp 
+SOURCES ?= keypadControl.cpp RegisterGameParametersControl.cpp
 HEADERS ?= StructData.hpp InitGameControl.hpp dataToIrByteControl.hpp playerEntity.hpp Keypad.hpp IRLed.hpp SendIrMessageControl.hpp DisplayController.hpp
 SEARCH  ?= 
 RELATIVE ?= ../..

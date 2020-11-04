@@ -9,6 +9,7 @@
 #include "InitGameControl.hpp"
 #include "keypadControl.cpp"
 #include "DisplayController.hpp"
+#include "RegisterGameParametersControl.cpp"
 //#include "bitDetector.cpp"
 
 //#include "IRLed.cpp"
@@ -26,9 +27,9 @@ class test : public rtos::task<> {
 		para.timeUntilStart = 10;
 		for (;;) {
 			hwlib::wait_ms(2000);
-			dataToIrByteControl.sendTriggerfun(data);
-			hwlib::wait_ms(2000);
-			dataToIrByteControl.sendingGameParametersfun(para);
+			//dataToIrByteControl.sendTriggerChannel(data);
+			//hwlib::wait_ms(2000);
+			//dataToIrByteControl.sendingGameParametersChannel(para);
 			//hwlib::cout << data.playerID << hwlib::endl;
 		}
 	}
