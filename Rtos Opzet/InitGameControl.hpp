@@ -6,6 +6,7 @@
 #include "rtos.hpp"
 #include "StructData.hpp"
 #include "DataToIrByteControl.hpp"
+#include "DisplayController.hpp"
 /// @file
 
 
@@ -19,13 +20,6 @@
 //	int gameTime,
 //	int timeUntilStart;
 //};
-
-
-/// \brief
-/// Enum buttons keypad.
-/// \details
-/// This enum contains all possable buttons from the keypad to be pressed.
-//enum eButtonID = {BUTTON_1,BUTTON_2,BUTTON_3,BUTTON_4,BUTTON_5,BUTTON_6,BUTTON_7,BUTTON_8,BUTTON_9,BUTTON_0,BUTTON_*,BUTTON_#,BUTTON_A,BUTTON_B,BUTTON_C,BUTTON_D};
 
 
 /// \brief
@@ -46,18 +40,20 @@ class InitGameControl : public rtos::task<>{
 		//keypadControl& KeypadControl;
 		//registerGameparametersControl& registerGameparametersControl;
 		DataToIrbyteControl& dataToIrByteControl;
+		DisplayController& displayControl;
 
 	
 
 
 	public: //registerGameparametersControl& registerGameparametersControl, keypadControl& KeypadControl,
-		InitGameControl(DataToIrbyteControl& dataToIrByteControl):
+		InitGameControl(DataToIrbyteControl& dataToIrByteControl, DisplayController& displayControl):
 			task("init game controller"),
 			buttonChannel(this, "button press Channel"),
 			//registerGameparametersControl(registerGameparametersControl),
 			//dataToIRByteControl(dataToIRByteControl),
 			//KeypadControl( KeypadControl ),
-			dataToIrByteControl(dataToIrByteControl)
+			dataToIrByteControl(dataToIrByteControl),
+			displayControl( displayControl )
 		{}
 
 		void buttonPressed(int buttonID){buttonChannel.write(buttonID);}
@@ -86,8 +82,8 @@ class InitGameControl : public rtos::task<>{
 								break;
 
 							case init:
-								//displayControl.showMessage("command");
-								//displayControl.showMessage("Enter play time:");
+								//displayControl.showMessage("\fcommand\nEnter play time: ");
+								//displayControl.showMessage("");
 								para.gameTime = 0;
 								para.gameMode = 0;
 								para.timeUntilStart = 0;
@@ -96,10 +92,10 @@ class InitGameControl : public rtos::task<>{
 
 							case enterPlayTime:
 								//entry events
-								//displayControl.showMessage("command");
-								//displayControl.showMessage("Enter play time:")
-								hwlib::cout << "playtimeTest" << hwlib::endl;
-								hwlib::cout << "Time: " << para.gameTime << hwlib::endl;
+								displayControl.showMessage("\fcommand\nEnter play time:\n");
+								displayControl.showMessage(para.gameTime);
+								//hwlib::cout << "playtimeTest" << hwlib::endl;
+								//hwlib::cout << "Time: " << para.gameTime << hwlib::endl;
 								//other events
 								wait(buttonChannel);
 								bnID = buttonChannel.read();
@@ -127,14 +123,14 @@ class InitGameControl : public rtos::task<>{
 
 							case setGameMode:
 								//entry events
-								//displayControl.showMessage("command");
-								//displayControl.showMessage("Enter game Mode:");
-								hwlib::cout << "GameMode" << hwlib::endl;
-								hwlib::cout << "gameMode: " << para.gameMode << hwlib::endl;
+								displayControl.showMessage("\fcommand\nEnter game Mode:\n");
+								displayControl.showMessage(para.gameMode);
+								//hwlib::cout << "GameMode" << hwlib::endl;
+								//hwlib::cout << "gameMode: " << para.gameMode << hwlib::endl;
 								//other events
 								wait(buttonChannel);
 								bnID = buttonChannel.read();
-								hwlib::cout << bnID << hwlib::endl;
+								//hwlib::cout << bnID << hwlib::endl;
 								if (bnID == 15) { //15 = #
 									if ((para.gameMode >= 1) && (para.gameMode <= 2)) {
 										state = SetTimeUntilStart;
@@ -145,9 +141,9 @@ class InitGameControl : public rtos::task<>{
 										break;
 									}
 								}
-								else if ((bnID >= 1) || (bnID <= 2)) {
-									para.gameTime = bnID;
-									state = SetTimeUntilStart;
+								else if ((bnID >= 0) || (bnID <= 1)) {
+									para.gameMode = bnID;
+									state = setGameMode;
 									break;
 								}
 								else {
@@ -158,10 +154,11 @@ class InitGameControl : public rtos::task<>{
 
 							case SetTimeUntilStart:
 								//entry events
-								//displayControl.showMessage("command");
-								//displayControl.showMessage("Enter time until start of game:");
-								hwlib::cout << "Time until start" << hwlib::endl;
-								hwlib::cout << "time: " << para.timeUntilStart << hwlib::endl;
+								displayControl.showMessage("\fcommand\nEnter time until start of game:\n");
+								displayControl.showMessage(para.timeUntilStart);
+								//displayControl.showMessage("");
+								//hwlib::cout << "Time until start" << hwlib::endl;
+								//hwlib::cout << "time: " << para.timeUntilStart << hwlib::endl;
 								wait(buttonChannel);
 								bnID = buttonChannel.read();
 								if (bnID == 15) { //15 = #
@@ -186,8 +183,7 @@ class InitGameControl : public rtos::task<>{
 							case sendData:
 								//entry events
 								dataToIrByteControl.sendingGameParametersfun(para);
-								//displayControl.showmessage("Press any button exept the * button to send parameters, press the * to go to start.")
-
+								displayControl.showMessage("\fPress any button exept the * button\nto send parameters, press\n the * to go to start.");
 								//other events
 								wait(buttonChannel);
 								bnID = buttonChannel.read();

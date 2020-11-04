@@ -42,24 +42,27 @@ class DisplayController : public rtos::task<> {
 
 		void showTime(const int & seconds){
 			//hwlib::cout << "t" << hwlib::endl;
-			d1 << "\f" << "T:" << seconds;
+			d1 << "\f" << "Time:" << seconds;
 			//oled.flush();
 		}
 
-		//void showMessage(std::string str) {
-			//d2 << "\f"
-			//	<< "==============\n"
-			//	<< "test\n"
-			//	<< "score: " << 42 << "\n"
-			//	<< "==============\n";
+		void showMessage(auto str) {
+			d2 << str;
+				//<< "\f"
+				//<< "==============\n"
+				//<< str
+				//<< "score: " << 42 << "\n"
+				//<< "==============\n";
 			//oled.flush();
-	//	}
+		}
 
 
 		void main() {
+			//auto test = "test";
 			for (;;) {
 				hwlib::wait_ms(3000);
-				showTime(50);
+				showTime(2);
+				//showMessage(test);
 		//		showMessage("test");
 				oled.flush();
 			}

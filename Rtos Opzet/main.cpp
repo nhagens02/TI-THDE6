@@ -82,21 +82,21 @@ int main( void ) {
 
 	auto oled = hwlib::glcd_oled(i2c_bus, 0x3c);
 
-	//namespace target = hwlib::target;
+	auto display = DisplayController(scl, sda);
 
 	auto pe = playerEntity();
-
+	
 	auto IrLed_output = hwlib::target::d2_36kHz();;
 	//auto sendIrMessage = SendIRMessageControl(IrLed_output);
 	auto dataToIrByteControl = DataToIrbyteControl(IrLed_output);
 	
 	auto test2 = test(dataToIrByteControl);
 
-	auto init = InitGameControl(dataToIrByteControl);
+	auto init = InitGameControl(dataToIrByteControl, display);
 
 	auto keyPad = keypadControl(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4, init);
 
-	auto display = DisplayController(scl, sda);
+	
 
 	rtos::run();
 }
