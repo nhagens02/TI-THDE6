@@ -6,7 +6,11 @@ struct KeypadButton {
 	hwlib::pin_direct_from_in_t* pinIn;
 };
 
-
+/// \brief
+/// Keypad CLASS
+/// \details
+/// This class will read the buttons that are pressed on the keypad. 
+/// This class uses hwlib::pin_direct_from_oc_t, hwlib::pin_direct_from_in_t. 
 class Keypad {
 private:
 	KeypadButton buttons[16];
