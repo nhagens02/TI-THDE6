@@ -32,7 +32,7 @@ class RunGameControl : public rtos::task<>{
 		rtos::channel< struct shootdata, 256 > sendHitChannel;
 		rtos::flag buttonFlag;
 		rtos::pool <int> buttonIDPool;
-		rtos::channel< struct parameters, 512 > sendGameParametersChannel;
+		rtos::channel< struct parameters, 256 > sendGameParametersChannel;
 		rtos::flag flagGameOver;
 		rtos::flag untilStartTimerFlag;
 		DataToIrbyteControl& dataToIrbyteControl;
@@ -43,22 +43,21 @@ class RunGameControl : public rtos::task<>{
 		struct shootdata sData;
 		int bnID;
 
-	RunGameControl(DataToIrbyteControl& dataToIrbyteControl, DisplayController& displayControl, PlayerEntity& playerEntity)://, transferHitsControl& transferHitsControl,
-		task("Run Game Control"),
-		sendHitChannel(this, "sendHitChannel"),
-		buttonFlag(this, "buttonFlag"),
-		buttonIDPool("buttonIDPool"),
-		sendGameParametersChannel(this, "sendGameParametersChannel"),
-		flagGameOver(this, "flagGameOver"),
-		untilStartTimerFlag(this, "untilStartTimerFlag"),
-		dataToIrbyteControl(dataToIrbyteControl),
-		//transferHitsControl (transferHitsControl),
-		displayControl (displayControl),
-		playerEntity (playerEntity)
-
-	{}
-
 	public:
+		RunGameControl(DataToIrbyteControl& dataToIrbyteControl, DisplayController& displayControl, PlayerEntity& playerEntity) ://, transferHitsControl& transferHitsControl,
+			task("Run Game Control"),
+			sendHitChannel(this, "sendHitChannel"),
+			buttonFlag(this, "buttonFlag"),
+			buttonIDPool("buttonIDPool"),
+			sendGameParametersChannel(this, "sendGameParametersChannel"),
+			flagGameOver(this, "flagGameOver"),
+			untilStartTimerFlag(this, "untilStartTimerFlag"),
+			dataToIrbyteControl(dataToIrbyteControl),
+			//transferHitsControl (transferHitsControl),
+			displayControl(displayControl),
+			playerEntity(playerEntity)
+
+		{}
 		void sendHit(struct shootdata sData) { sendHitChannel.write(sData);}
 		void buttonPressed(int buttonID){buttonIDPool.write(buttonID); buttonFlag.set();}
 		void sendGameParameters(struct parameters para){sendGameParametersChannel.write(para);}
@@ -128,14 +127,14 @@ class RunGameControl : public rtos::task<>{
 						//entry events
 						//weaponID = sendHitChannel.read();
 						playerEntity.addData(sendHitChannel.read());
-						playerEntity.setLives(playerEntity.getlives - sendHitChannel.read());
-						soundControl.playSound(2);
-						hitReceivedTimer.start();
+						playerEntity.setLives(playerEntity.getlives() - 1);
+						//soundControl.playSound(2);
+						//hitReceivedTimer.set(800);
 
 						//other events
-						wait(hitReceivedTimerFlag);
+						//wait(hitReceivedTimer);
 
-						if (playerEntity.getLives >= 1) {
+						if (playerEntity.getlives() >= 1) {
 							state = run_game;
 							break;
 						}
@@ -148,30 +147,32 @@ class RunGameControl : public rtos::task<>{
 
 					case reload:
 						//entry events
-						soundControl.playSound(3);
-						reloadTimer.start();
+						//soundControl.playSound(3);
+						//reloadTimer.start();
 
 						//other events
-						wait(reloadTimerFlag);
-						state = rungame;
+						//wait(reloadTimerFlag);
+						state = run_game;
 						break;
 
 					case shoot:
 						//entry events
-						DataToIRByteControl.sendTrigger(playerEntity.getPlayerID(),playerEntity.getWeaponPower());
-						soundControl.playSound(1);
+						sData.playerID = playerEntity.getPlayerID();
+						sData.weaponStrength = playerEntity.getWeaponPower();
+						dataToIrbyteControl.sendTriggerChannel(sData);
+						//soundControl.playSound(1);
 
-						shootTimer.Start();
-						wait(shootTimerFlag);
-						state = rungame;
+						//shootTimer.Start();
+						//wait(shootTimer);
+						state = run_game;
 						break;
 
 					case gameOver:
 						displayControl.showMessage("game Over");
-						soundControl.showMessage(4);
+						//soundControl.showMessage(4);
 						displayControl.showMessage(playerEntity.getPlayerID());
-						displayControl.showMessage(playerEntity.getLives());
-						transferHitsControl.gameOver.set();
+						displayControl.showMessage(playerEntity.getlives());
+						//transferHitsControl.gameOver.set();
 						state = idle;
 						break;
 

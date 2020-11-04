@@ -5,6 +5,7 @@
 #include "hwlib.hpp"
 #include "rtos.hpp"
 #include "BitDetector.hpp"
+#include "ReceiveIrByteToDataControl.hpp"
 /// @file
 
 
@@ -19,6 +20,7 @@ class ReceiveIrMessageControl : public rtos::task<>{
 
 	private:
 		state_t state = idle;
+		ReceiveIrByteToDataControl receiveIrByteToDataControl;
 		rtos::channel<bool, 256> bitValueChannel;
 		uint_fast16_t message;
 		uint_fast16_t bitAmount;
