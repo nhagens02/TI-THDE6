@@ -9,7 +9,7 @@
 
 
 //class must use pool with public function
-class playerEntity {
+class PlayerEntity {
     private:
    		rtos::pool< int > playerIDPool;
    		rtos::pool< int > weaponIDPool;
@@ -22,7 +22,7 @@ class playerEntity {
    		//data_a.counter = 0;
 
 	public:
-		playerEntity( ):
+		PlayerEntity( ):
         playerIDPool( "playerID_pool" ),
         weaponIDPool( "weaponID_pool" ),
         livesPool( "lives_pool" ),

@@ -61,7 +61,7 @@ private:
 			{
 			case idle: {
 				//entry event
-				//hwlib::cout << "abuaiudias" << hwlib::endl;
+		
 				//other event
 				wait(send2ByteChannel);
 				state = sending;
@@ -70,14 +70,14 @@ private:
 			case sending:
 				//entry event
 				auto information = send2ByteChannel.read();
-				//hwlib::cout << "info:" << information << hwlib::endl;
+				
 				sendBytes(information);
 
 				//other event
 				state = idle;
 				break;
 
-			//default: {break; }
+			//default:break;
 			}
 		}
 	}

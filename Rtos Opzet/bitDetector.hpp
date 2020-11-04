@@ -1,6 +1,10 @@
+#ifndef BITDETECTOR_HPP
+#define BITDETECTOR_HPP
+
 #include "hwlib.hpp"
 #include "rtos.hpp"
-#include "IrReceiver.cpp"
+#include "IrReceiver.hpp"
+#include "ReceiveIrMessageControl.hpp"
 /// @file
 
 
@@ -11,12 +15,13 @@
 /// This class poll every 800 microseconds if ther is a change in signal.
 /// This class uses the ir protocol from the THDE casus. 
 /// This class uses rtos::task<>. 
-class bitDetector : public rtos::task<> {
+class BitDetector : public rtos::task<> {
 	enum state_t {idle, startReceiving};
 
 	private:
 		state_t state = idle;
 		IrReceiver irReceiver;
+		ReceiveIrMessageControl& receiveIrMessageControl;
 		//hwlib::target::pin_in(hwlib::target::pins::d6) irReceiverLed;
 		//s16BitConverter& s16BitConverter;
 		rtos::clock intervalHunderdSignalCheck;
@@ -24,70 +29,47 @@ class bitDetector : public rtos::task<> {
 	
 
 	public:
-		bitDetector(hwlib::pin_in& IrReceiverPin):
+		BitDetector(hwlib::pin_in& IrReceiverPin, ReceiveIrMessageControl& receiveIrMessageControl;):
 			task("bit detector signal"),
 			irReceiver ( IrReceiverPin ),
+			receiveIrMessageControl( receiveIrMessageControl ),
 			intervalHunderdSignalCheck(this, (200 * rtos::ms), "keypad interval checker")
 		{}
 
 
 	private:
 		void main(){
-
-
 			for(;;){
 				switch(state)
 				{
 					case idle:
 						//entry events
-						//intervalTimer.set(800);
 
 						//other events
 						wait(intervalHunderdSignalCheck);
 						bool signal = IrReceiver.getCurrentSignal();
 						if (signal == 1){
-							int timing_low = 0;
-							int timing_high = 0;
-							afterBitTimer.set(2400);
 							state = startReceiving;
+							break;
 						}
 						else {
 							state = idle;
+							break;
 						}
 						break;
 
 
 					case startReceiving:
 						//entry events
-						intervalTimer.set(800);
-
+						hwlib::wait_us(1200);
+						bool bitValue = IrReceiver.getCurrentSignal();
+						while (IrReceiver.getCurrentSignal()) { hwlib::wait_us(0); }
+						receiveIrMessageControl.bitValueChannel(bitValue);
+						
 						//other events
-						auto event = wait(intervalTimer + afterBitTimer);
-						if (event == intervalTimer) {
-							bool signal = IrReceiver.getCurrentSignal();
-							if (signal == 1) {
-								timing_high++;
-								state = startReceiving;
-							}
-							else if (signal == 0) {
-								timing_low++;
-								state = startReceiving;
-							}
-						}
-						if (event == afterBitTimer) {
-							if (timing_high == 1) && (timing_low == 2) {
-								//16BitConverter.sendBit(0);
-								state = idle;
-							}
-							else if (timing_high == 2) && (timing_low == 1) {
-								//16BitConverter.sendBit(1);
-								state = idle;
-							}
-							else {
-								state = idle;
-							}
-						}
+						state = idle;
 						break;
+
 					default:break;
 				}
 
@@ -99,3 +81,5 @@ class bitDetector : public rtos::task<> {
 
 
 };
+
+#endif // BITDETECTOR_HPP

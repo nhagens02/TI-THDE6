@@ -33,16 +33,16 @@ class RegisterGameParametersControl : public rtos::task<>{
 		int bnID;
 		rtos::channel< int, 1024 > buttonChannel;
 		rtos::channel< struct parameters, 1024 > SetParametersChannel;
-		playerEntity& PlayerEntity;
+		PlayerEntity& playerEntity;
 		DisplayController& displayControl;
 	
 
 	public:
-		RegisterGameParametersControl(playerEntity& PlayerEntity, DisplayController& displayControl):
+		RegisterGameParametersControl(PlayerEntity& playerEntity, DisplayController& displayControl):
 			task("register parameters control"),
 			buttonChannel(this, "button press Channel"),
 			SetParametersChannel(this, "parameters channel"),
-			PlayerEntity( PlayerEntity ),
+			playerEntity( playerEntity ),
 			displayControl( displayControl )
 			
 
@@ -66,12 +66,12 @@ class RegisterGameParametersControl : public rtos::task<>{
 					//other events
 					wait(buttonChannel);
 					bnID = buttonChannel.read();
-					if (bnID == 10) { //10 = a
+					if (bnID == 10) { //A = 10
 						playerEntity.setWeaponPower(0);
-						playerEntity.setPlayerID(0)
+						playerEntity.setPlayerID(0);
 						state = enterPlayerID;
 					}
-					else (bnID == BUTTON_B) {
+					else if (bnID == 11) { //B = 11
 						state = enterWeaponPower;
 					}
 					break;
@@ -79,70 +79,63 @@ class RegisterGameParametersControl : public rtos::task<>{
 				case enterPlayerID:
 					//entry events
 					displayControl.showMessage("\fcommand\n");
-					displayControl.showMessage("");
-					displayControl.showMessage("Enter PlayerID: [2 - 32]");
+					displayControl.showMessage("Enter PlayerID:\n");
+					displayControl.showMessage(playerEntity.getPlayerID());
 					playerEntity.setPlayerID(playerID);
 
 					//other events
 					wait(buttonChannel);
 					bnID = buttonChannel.read();
-					if (bnID == BUTTON_B) {
+					if (bnID == 11) { // 11 = B
 						if ((playerEntity.getPlayerID() >= 2) && (playerEntity.getPlayerID() <= 31) {
 							state = enterWeaponPower;
+							break;
 						}
 						else {
 							state = idle;
+							break;
 						}
 					}
-					else if ((bnID == BUTTON_0) || (bnID == BUTTON_1) || (bnID == BUTTON_2) || (bnID == BUTTON_3) || (bnID == BUTTON_4) || (bnID == BUTTON_5) || (bnID == BUTTON_6) || (bnID == BUTTON_7) || (bnID == BUTTON_8) || (bnID == BUTTON_9)) {
-						if (bnID == BUTTON_0) { playerEntity.setPlayerID(0); }
-						else if (bnID == BUTTON_1) { playerEntity.setPlayerID(playerEntity.getPlayerID() + 1); }
-						else if (bnID == BUTTON_2) { playerEntity.setPlayerID(playerEntity.getPlayerID() + 2); }
-						else if (bnID == BUTTON_3) { playerEntity.setPlayerID(playerEntity.getPlayerID() + 3); }
-						else if (bnID == BUTTON_4) { playerEntity.setPlayerID(playerEntity.getPlayerID() + 4); }
-						else if (bnID == BUTTON_5) { playerEntity.setPlayerID(playerEntity.getPlayerID() + 5); }
-						else if (bnID == BUTTON_6) { playerEntity.setPlayerID(playerEntity.getPlayerID() + 6); }
-						else if (bnID == BUTTON_7) { playerEntity.setPlayerID(playerEntity.getPlayerID() + 7); }
-						else if (bnID == BUTTON_8) { playerEntity.setPlayerID(playerEntity.getPlayerID() + 8); }
-						else if (bnID == BUTTON_9) { playerEntity.setPlayerID(playerEntity.getPlayerID() + 9); }
+					else if ((bnID >= 0) || (bnID <= 9)) {
+						playerEntity.setWeaponPower(playerEntity.getWeaponPower() * 10);
+						playerEntity.setWeaponPower(playerEntity.getWeaponPower() + bnID);
 						state = enterWeaponPower;
+						break;
 					}
 					else {
 						state = enterPlayerID;
+						break;
 					}
 					break;
 
 				case enterWeaponPower:
 					//entry events
-					displayControl.showMessage("Command");
-					displayControl.showMessage("Enter weapon Power: [1-9]");
+					displayControl.showMessage("\fCommand\n");
+					hwlib::wait_ms(0);
+					displayControl.showMessage("Enter weapon Power:\n");
 
 					//other events
 					wait(buttonChannel);
 					bnID == buttonChannel.read();
-					if (bnID == BUTTON_B) {
+					if (bnID == 11) { // 11 = B
 						if ((playerEntity.getWeaponID() >= 1) && (playerEntity.getWeaponID() <= 9) {
 							state = waitForGameData;
+								break;
 						}
 						else {
 							state = idle;
+							break;
 						}
 					}
-					else if ((bnID == BUTTON_0) || (bnID == BUTTON_1) || (bnID == BUTTON_2) || (bnID == BUTTON_3) || (bnID == BUTTON_4) || (bnID == BUTTON_5) || (bnID == BUTTON_6) || (bnID == BUTTON_7) || (bnID == BUTTON_8) || (bnID == BUTTON_9)) {
-						if (bnID == BUTTON_0) { playerEntity.setWeaponID(0); }
-						else if (bnID == BUTTON_1) { playerEntity.setWeaponID(1); }
-						else if (bnID == BUTTON_2) { playerEntity.setWeaponID(2); }
-						else if (bnID == BUTTON_3) { playerEntity.setWeaponID(3); }
-						else if (bnID == BUTTON_4) { playerEntity.setWeaponID(4); }
-						else if (bnID == BUTTON_5) { playerEntity.setWeaponID(5); }
-						else if (bnID == BUTTON_6) { playerEntity.setWeaponID(6); }
-						else if (bnID == BUTTON_7) { playerEntity.setWeaponID(7); }
-						else if (bnID == BUTTON_8) { playerEntity.setWeaponID(8); }
-						else if (bnID == BUTTON_9) { playerEntity.setWeaponID(9); }
+					else if ((bnID >= 0) || (bnID <= 9)) {
+						playerEntity.setWeaponPower(playerEntity.getWeaponPower() * 10);
+						playerEntity.setWeaponPower(playerEntity.getWeaponPower() + bnID);
 						state = enterWeaponPower;
+						break;
 					}
 					else {
 						state = enterWeaponPower;
+						break;
 					}
 					break;
 

@@ -85,7 +85,7 @@ int main( void ) {
 
 	auto display = DisplayController(scl, sda);
 
-	auto pe = playerEntity();
+	auto pe = PlayerEntity();
 	
 	auto IrLed_output = hwlib::target::d2_36kHz();;
 	//auto sendIrMessage = SendIRMessageControl(IrLed_output);

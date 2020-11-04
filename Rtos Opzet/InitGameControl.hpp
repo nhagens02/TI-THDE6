@@ -109,9 +109,6 @@ class InitGameControl : public rtos::task<>{
 										break;
 									}
 								}
-								else if (bnID == 0) {
-
-								}
 								else if ((bnID >=1) && (bnID <=9)) {
 									para.gameTime += bnID;
 								}
