@@ -27,7 +27,7 @@
 /// \details
 /// This class will be used by the game leader. 
 /// This class will be used to set the game parameters. 
-/// It set the gamemode, gameTime and Time until the game start. 
+/// It sets the gamemode, gameTime and Time until the game start. 
 /// This class uses rtos::task<>. 
 class InitGameControl : public rtos::task<>{
 	enum state_t {idle, init, enterPlayTime, setGameMode, SetTimeUntilStart, sendData};
