@@ -5,7 +5,11 @@
 #include "rtos.hpp"
 #include <string>
 
-
+/// \brief
+/// DisplayController CLASS
+/// \details
+/// This class will show the right information on the screen. 
+/// This class uses rtos::task<>. 
 class DisplayController : public rtos::task<> {
 	enum state_t {idle, };
 	private:
