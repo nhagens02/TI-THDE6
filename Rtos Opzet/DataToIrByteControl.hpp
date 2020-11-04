@@ -1,31 +1,12 @@
+#ifndef DATATOIRBYTECONTROL_HPP
+#define DATATOIRBYTECONTROL_HPP
+
+
 #include "hwlib.hpp"
 #include "rtos.hpp"
-#include "SendIrMessageControl.cpp"
+#include "SendIrMessageControl.hpp"
+#include "StructData.hpp"
 /// @file
-
-
-/// \brief
-/// Game parameters struct. 
-/// \details
-/// This struct contains the GameMode, gameTime and timeUntil start of a game.
-/// This is in seconds
-/// All variables are of the type int. 
-struct parameters {
-	int gameMode;
-	int gameTime;
-	int timeUntilStart;
-};
-
-
-/// \brief
-/// Shoot data struct
-/// \details
-/// This struct contains a playerID and weaponStrength. 
-/// This struct will be used to send data of a shot. 
-struct shootdata {
-	int playerID;
-	int weaponStrength;
-};
 
 
 /// \brief
@@ -170,3 +151,5 @@ class DataToIrbyteControl : public rtos::task<>{
 		}
 
 };
+
+#endif // DATATOIRBYTECONTROL_HPP

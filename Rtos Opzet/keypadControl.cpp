@@ -1,6 +1,8 @@
 #include "hwlib.hpp"
 #include "rtos.hpp"
 #include "keypad.hpp"
+#include "InitGameControl.hpp"
+#include "StructData.hpp"
 /// @file
 
 
@@ -21,6 +23,7 @@ class keypadControl : public rtos::task<>{
 		InitGameControl& initGameControl;
 		//registerGameParametersControl& registerGameParametersControl;
 		rtos::clock intervalKeyCheck;
+		
 
 		int checkIfAnKeyIsPressed() {
 			for (unsigned int i = 0; i <= 15; i++) {
@@ -37,6 +40,7 @@ class keypadControl : public rtos::task<>{
 		keypad(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4),
 		initGameControl ( initGameControl ),
 		intervalKeyCheck(this, (200* rtos::ms), "keypad interval checker")
+		//initGameControl(initGameControl)
 
 	{}
 
@@ -68,7 +72,7 @@ class keypadControl : public rtos::task<>{
 						//entry events
 						hwlib::cout << "keytest: " << key << hwlib::endl;
 						//RegisterGameParametersControl.buttonPressedChannel.write(bnID)
-						//InitGameControl.buttonPressedChannel.write(bnID)
+						initGameControl.buttonPressed(key);
 
 						//other events
 						state = idle;

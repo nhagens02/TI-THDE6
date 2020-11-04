@@ -1,13 +1,14 @@
 #include "hwlib.hpp"
 #include "rtos.hpp"
 #include <array>
-
-#include "DataToIrByteControl.cpp"
+#include "StructData.hpp"
+#include "DataToIrByteControl.hpp"
 
 //#include "sendIrMessageControl.cpp"
-#include "playerEntity.cpp"
-#include "InitGameControl.cpp"
+#include "playerEntity.hpp"
+#include "InitGameControl.hpp"
 #include "keypadControl.cpp"
+#include "DisplayController.hpp"
 //#include "bitDetector.cpp"
 
 //#include "IRLed.cpp"
@@ -74,7 +75,12 @@ int main( void ) {
 	hwlib::pin_direct_from_in_t pinIn4_(pinIn4__);
 	hwlib::pin_direct_from_in_t* pinIn4 = &pinIn4_;
 	
-	
+	auto scl = hwlib::target::pin_oc(hwlib::target::pins::scl);
+	auto sda = hwlib::target::pin_oc(hwlib::target::pins::sda);
+
+	auto i2c_bus = hwlib::i2c_bus_bit_banged_scl_sda(scl, sda);
+
+	auto oled = hwlib::glcd_oled(i2c_bus, 0x3c);
 
 	//namespace target = hwlib::target;
 
@@ -90,7 +96,7 @@ int main( void ) {
 
 	auto keyPad = keypadControl(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4, init);
 
-
+	auto display = DisplayController(scl, sda);
 
 	rtos::run();
 }

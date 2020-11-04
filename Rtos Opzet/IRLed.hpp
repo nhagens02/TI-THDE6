@@ -1,5 +1,9 @@
+#ifndef IRLED_HPP
+#define IRLED_HPP
+
 #include "hwlib.hpp"
 #include "rtos.hpp"
+
 
 class IRLed {
 private:
@@ -21,3 +25,4 @@ public:
 
 };
 
+#endif // IRLED_HPP

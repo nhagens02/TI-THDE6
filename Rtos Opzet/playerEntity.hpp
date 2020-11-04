@@ -1,11 +1,12 @@
+#ifndef PLAYERENTITY_HPP
+#define PLAYERENTITY_HPP
+
+
 #include "hwlib.hpp"
 #include "rtos.hpp"
 #include <array>
+#include "StructData.hpp"
 
-struct data_s{
-	std::array<int,500> array;
-    int counter = 0;
-};
 
 //class must use pool with public function
 class playerEntity {
@@ -41,3 +42,5 @@ class playerEntity {
 	    struct data_s getData(){return data_pool.read(); }
 
 };
+
+#endif // PLAYERENTITY_HPP

@@ -1,6 +1,11 @@
+#ifndef SENDIRMESSAGECONTROL_HPP
+#define SENDIRMESSAGECONTROL_HPP
+
+
 #include "hwlib.hpp"
 #include "rtos.hpp"
-#include "IRLed.cpp"
+#include "IRLed.hpp"
+#include "StructData.hpp"
 /// @file
 
 
@@ -92,3 +97,4 @@ public:
 	}
 };
 
+#endif // SENDIRMESSAGECONTROL_HPP
