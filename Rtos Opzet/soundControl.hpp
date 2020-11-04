@@ -6,17 +6,22 @@
 /// \details
 /// This class will manage wich sound needs to be played at a specific time. 
 /// This class needs a speaker pin of type hwlib::pin_oc. 
-class soundControl {
+class soundControl : public rtos::task<> {
+	enum state_t { idle, playSound };
 private:
 	hwlib::pin_oc& speakerPin;
+	rtos::pool < int > soundIDPool;
+	rtos::flag playSoundFlag;
 
 public:
 	soundControl(hwlib::pin_oc& speakerPin):
-		speakerPin(speakerPin)
+		task("speaker"),
+		speakerPin(speakerPin),
+		soundIDPool(this, "sound id Pool")
     {}
 
 		void await( long long unsigned int t ){
-		   while( t > hwlib::now_us() ){hwlib::sleep(0);}
+		   while( t > hwlib::now_us() ){hwlib::wait_ms(0);}
 		}
 		
 		void playSound( hwlib::pin_out & speakerPin, int f, int d, int fd = 1000 ){
@@ -32,6 +37,19 @@ public:
 		       speakerPin.flush();
 		       await( t += p );
 		   }
+		}
+
+	private:
+		void main() {
+			for (;;) {
+				switch (state)
+				{
+					case idle:
+
+
+						
+				}
+			}
 		}
 };
 

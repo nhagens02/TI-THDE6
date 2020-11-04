@@ -13,6 +13,7 @@
 //#include "bitDetector.cpp"
 
 //#include "IRLed.cpp"
+#include "RunGameControl.hpp"
 
 class test : public rtos::task<> {
 	DataToIrbyteControl& dataToIrByteControl;
