@@ -92,7 +92,7 @@ class RunGameControl : public rtos::task<>{
 						//timerControl.setTimer(para.gameTime);
 						break;
 					
-					case run_game:
+					case run_game: {
 						//entry events
 						displayControl.showMessage(para.gameMode);
 						displayControl.showMessage(para.gameTime);
@@ -113,22 +113,22 @@ class RunGameControl : public rtos::task<>{
 								state = reload;
 								break;
 							}
-							if (bnID == TriggerButton ) {
+							if (bnID == TriggerButton) {
 								state = shoot;
 								break;
 							}
-							else{
+							else {
 								state = run_game;
 								break;
 							}
 						}
 						break;
-
+					}
 					case hit_received:
 						//entry events
 						//weaponID = sendHitChannel.read();
-						playerEntity.addHit(sendHitChannel.read());
-						playerEntity.setLives(playerEntity.getLives - sendHitChannel.read());
+						playerEntity.addData(sendHitChannel.read());
+						playerEntity.setLives(playerEntity.getlives - sendHitChannel.read());
 						soundControl.playSound(2);
 						hitReceivedTimer.start();
 

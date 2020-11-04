@@ -17,7 +17,8 @@ public:
 	soundControl(hwlib::pin_oc& speakerPin):
 		task("speaker"),
 		speakerPin(speakerPin),
-		soundIDPool(this, "sound id Pool")
+		soundIDPool("sound id Pool"),
+		playSoundFlag(this, "playSoundFlag")
     {}
 
 		void await( long long unsigned int t ){

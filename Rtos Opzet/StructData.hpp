@@ -15,7 +15,8 @@ struct parameters {
 
 
 struct data_s {
-	std::array<int, 500> array;
+	std::array<int, 500> playerID;
+	std::array<int, 500> weaponStrength;
 	int counter = 0;
 };
 

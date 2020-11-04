@@ -42,7 +42,7 @@ class PlayerEntity {
 		void setLives(int lives){ livesPool.write(lives);}
 		int getlives(){return (livesPool.read());}
 
-        void addData(int playerID) { if (data_a.counter < 500) { data_a.array[data_a.counter] = playerID; data_a.counter++; } data_pool.write(data_a);}
+        void addData(struct shootdata sData) { if (data_a.counter < 500) { data_a.playerID[data_a.counter] = sData.playerID; data_a.weaponStrength[data_a.counter] = sData.weaponStrength; data_a.counter++; } data_pool.write(data_a); }
 	    struct data_s getData(){return data_pool.read(); }
 
 };
