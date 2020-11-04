@@ -9,7 +9,7 @@ struct KeypadButton {
 /// \brief
 /// Keypad CLASS
 /// \details
-/// This class will read the buttons that are pressed on the keypad. 
+/// This class provides a function wich returns if a given key is pressed or not. 
 /// This class uses hwlib::pin_direct_from_oc_t, hwlib::pin_direct_from_in_t. 
 class Keypad {
 private:
