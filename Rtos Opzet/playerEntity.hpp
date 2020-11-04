@@ -8,7 +8,11 @@
 #include "StructData.hpp"
 
 
-//class must use pool with public function
+/// \brief
+/// PlayerEntity CLASS
+/// \details
+/// This class will store all the data of a specific player. 
+/// This class uses rtos::pool. 
 class PlayerEntity {
     private:
    		rtos::pool< int > playerIDPool;
