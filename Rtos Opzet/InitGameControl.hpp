@@ -54,7 +54,7 @@ class InitGameControl : public rtos::task<>{
 						{
 							case idle:
 								//entry events
-
+								//task::suspend();//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 								//other events
 								//check deze state nog ff.
 								wait(buttonChannel);

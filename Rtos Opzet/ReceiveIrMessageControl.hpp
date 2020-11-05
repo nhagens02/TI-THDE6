@@ -55,7 +55,7 @@ public:
 
 						case idle:
 							//entry event
-							
+							//task::suspend();//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 							//other events
 							wait(bitValueChannel);
 							state = receivingBits;

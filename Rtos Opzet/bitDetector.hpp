@@ -24,12 +24,12 @@ class BitDetector : public rtos::task<> {
 		ReceiveIrMessageControl& receiveIrMessageControl;
 		rtos::clock intervalHunderdSignalCheck;
 		bool bitValue;
-		hwlib::target::pin_out anPinCheck = hwlib::target::pin_out(due::pins::d6);
+		//hwlib::target::pin_out anPinCheck = hwlib::target::pin_out(due::pins::d6);
 	
 
 	public:
 		BitDetector(hwlib::pin_in& IrReceiverPin, ReceiveIrMessageControl& receiveIrMessageControl):
-			task(1, "bit detector signal"),
+			task(5, "bit detector signal"),
 			irReceiver ( IrReceiverPin ),
 			receiveIrMessageControl( receiveIrMessageControl ),
 			intervalHunderdSignalCheck(this, (500 * rtos::us), "interval checker")
@@ -43,8 +43,9 @@ class BitDetector : public rtos::task<> {
 				{
 					case idle: {
 						//entry events
-						anPinCheck.write(0);
-						anPinCheck.flush();
+						//task::suspend();//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+						//anPinCheck.write(0);
+						//anPinCheck.flush();
 						//other events
 						wait(intervalHunderdSignalCheck);
 						bool signal = irReceiver.getCurrentSignal();
@@ -61,8 +62,8 @@ class BitDetector : public rtos::task<> {
 					case startReceiving:
 						//entry events
 						hwlib::wait_us(1200);
-						anPinCheck.write(1);
-						anPinCheck.flush();
+						//anPinCheck.write(1);
+						//anPinCheck.flush();
 						bitValue = irReceiver.getCurrentSignal();
 						//hwlib::cout << bitValue << hwlib::endl;
 						while (irReceiver.getCurrentSignal()) { hwlib::wait_us(0);  }

@@ -50,7 +50,7 @@ class RegisterGameParametersControl : public rtos::task<>{
 				{
 				case idle:
 					//entry events
-
+					task::suspend();//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 					//other events
 					wait(buttonChannel);
