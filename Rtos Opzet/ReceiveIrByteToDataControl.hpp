@@ -99,6 +99,7 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 								//registerGameParametersControl.SetParameters(para);
 								hwlib::cout << "timeUn: " << para.timeUntilStart << hwlib::endl;
 								//here
+								runGamecontrol.sendGameParameters(para);
 							}
 						}
 						else {
@@ -110,6 +111,7 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 							sData.weaponStrength = weaponStrength;
 							//runGameControl.sendHit(sData);
 							//here
+							
 						}
 					}
 				}
