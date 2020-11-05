@@ -6,7 +6,11 @@ struct KeypadButton {
 	hwlib::pin_direct_from_in_t* pinIn;
 };
 
-
+/// \brief
+/// Keypad CLASS
+/// \details
+/// This class provides a function wich returns if a given key is pressed or not. 
+/// This class uses hwlib::pin_direct_from_oc_t, hwlib::pin_direct_from_in_t. 
 class Keypad {
 private:
 	KeypadButton buttons[16];

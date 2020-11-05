@@ -3,6 +3,7 @@
 #include "keypad.hpp"
 #include "InitGameControl.hpp"
 #include "StructData.hpp"
+#include "RegisterGameParametersControl.hpp"
 /// @file
 
 
@@ -21,7 +22,7 @@ class keypadControl : public rtos::task<>{
 		Keypad keypad;
 		int key = -1;
 		InitGameControl& initGameControl;
-		//registerGameParametersControl& registerGameParametersControl;
+		RegisterGameParametersControl& registerGameParametersControl;
 		rtos::clock intervalKeyCheck;
 		
 
@@ -35,11 +36,12 @@ class keypadControl : public rtos::task<>{
 		}
 
 	public:
-	keypadControl(hwlib::pin_direct_from_oc_t* pinOut1, hwlib::pin_direct_from_oc_t* pinOut2, hwlib::pin_direct_from_oc_t* pinOut3, hwlib::pin_direct_from_oc_t* pinOut4, hwlib::pin_direct_from_in_t* pinIn1, hwlib::pin_direct_from_in_t* pinIn2, hwlib::pin_direct_from_in_t* pinIn3, hwlib::pin_direct_from_in_t* pinIn4, InitGameControl& initGameControl):
+	keypadControl(hwlib::pin_direct_from_oc_t* pinOut1, hwlib::pin_direct_from_oc_t* pinOut2, hwlib::pin_direct_from_oc_t* pinOut3, hwlib::pin_direct_from_oc_t* pinOut4, hwlib::pin_direct_from_in_t* pinIn1, hwlib::pin_direct_from_in_t* pinIn2, hwlib::pin_direct_from_in_t* pinIn3, hwlib::pin_direct_from_in_t* pinIn4, InitGameControl& initGameControl, RegisterGameParametersControl& registerGameParametersControl):
 		task("keypad controller"),
 		keypad(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4),
 		initGameControl ( initGameControl ),
-		intervalKeyCheck(this, (200* rtos::ms), "keypad interval checker")
+		registerGameParametersControl(registerGameParametersControl),
+		intervalKeyCheck(this, (340* rtos::ms), "keypad interval checker")
 		//initGameControl(initGameControl)
 
 	{}
@@ -57,6 +59,7 @@ class keypadControl : public rtos::task<>{
 					wait(intervalKeyCheck);
 					//wait(keypad.getKeyPressedChannel);
 					//bnID = keypad.getKeyPressedChannel.read();
+					//hwlib::cout << "test" << hwlib::endl;
 					key = checkIfAnKeyIsPressed();
 					if (key == -1) {
 						state = idle;
@@ -70,8 +73,8 @@ class keypadControl : public rtos::task<>{
 				}
 					case sendInput:
 						//entry events
-						hwlib::cout << "keytest: " << key << hwlib::endl;
-						//RegisterGameParametersControl.buttonPressedChannel.write(bnID)
+						//hwlib::cout << "keytest: " << key << hwlib::endl;
+						registerGameParametersControl.buttonPressed(key);
 						initGameControl.buttonPressed(key);
 
 						//other events

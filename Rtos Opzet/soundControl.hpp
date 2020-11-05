@@ -1,18 +1,27 @@
 #ifndef SOUNCONTROL.HPP
 #define SOUNDCONTROL_HPP
 
-class soundControl : public rtos::task<>{
-	enum state_t state = {idle,playSound};
+/// \brief
+/// soundControl CLASS
+/// \details
+/// This class will manage wich sound needs to be played at a specific time.
+/// This class needs a speaker pin of type hwlib::pin_oc.
+class soundControl : public rtos::task<> {
+	enum state_t { idle, playSound };
 private:
 	state_t state = idle;
 	rtos::pool playSoundIDPool;
 	rtos::flag playSoundFlag;
 	hwlib::pin_oc& speakerPin;
+	rtos::pool < int > soundIDPool;
+	rtos::flag playSoundFlag;
 
 public:
 	soundControl(hwlib::pin_oc& speakerPin):
-	task("Speaker Control"),
-		speakerPin(speakerPin)
+		task("speaker"),
+		speakerPin(speakerPin),
+		soundIDPool("sound id Pool"),
+		playSoundFlag(this, "playSoundFlag")
     {}
 
 		void await( long long unsigned int t ){
@@ -33,6 +42,19 @@ public:
 		       await( t += p );
 		   }
 		}
+
+	private:
+		void main() {
+			for (;;) {
+				switch (state)
+				{
+					case idle:
+
+
+
+				}
+			}
+		}
 };
 
-#endif
+#endif // SOUNDCONTROL_HPP

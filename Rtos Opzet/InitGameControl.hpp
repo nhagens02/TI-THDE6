@@ -11,23 +11,11 @@
 
 
 /// \brief
-/// Game parameters struct. 
-/// \details
-/// This struct contains the GameMode, gameTime and timeUntil start of a game.
-/// all variables are of the type int. 
-//struct parameters{
-//	int gameMode,
-//	int gameTime,
-//	int timeUntilStart;
-//};
-
-
-/// \brief
 /// InitGameControl CLASS
 /// \details
 /// This class will be used by the game leader. 
 /// This class will be used to set the game parameters. 
-/// It set the gamemode, gameTime and Time until the game start. 
+/// It sets the gamemode, gameTime and Time until the game start. 
 /// This class uses rtos::task<>. 
 class InitGameControl : public rtos::task<>{
 	enum state_t {idle, init, enterPlayTime, setGameMode, SetTimeUntilStart, sendData};
@@ -36,7 +24,7 @@ class InitGameControl : public rtos::task<>{
 		state_t state = idle;
 		struct parameters para;
 		int bnID;
-		rtos::channel< int, 1024 > buttonChannel;
+		rtos::channel< int, 512 > buttonChannel;
 		//keypadControl& KeypadControl;
 		//registerGameparametersControl& registerGameparametersControl;
 		DataToIrbyteControl& dataToIrByteControl;
@@ -109,9 +97,6 @@ class InitGameControl : public rtos::task<>{
 										break;
 									}
 								}
-								else if (bnID == 0) {
-
-								}
 								else if ((bnID >=1) && (bnID <=9)) {
 									para.gameTime += bnID;
 								}
@@ -132,7 +117,7 @@ class InitGameControl : public rtos::task<>{
 								bnID = buttonChannel.read();
 								//hwlib::cout << bnID << hwlib::endl;
 								if (bnID == 15) { //15 = #
-									if ((para.gameMode >= 1) && (para.gameMode <= 2)) {
+									if ((para.gameMode >= 0) && (para.gameMode <= 1)) {
 										state = SetTimeUntilStart;
 										break;
 									}
@@ -154,7 +139,7 @@ class InitGameControl : public rtos::task<>{
 
 							case SetTimeUntilStart:
 								//entry events
-								displayControl.showMessage("\fcommand\nEnter time until start of game:\n");
+								displayControl.showMessage("\fcommand\nEnter time until\nstart:");
 								displayControl.showMessage(para.timeUntilStart);
 								//displayControl.showMessage("");
 								//hwlib::cout << "Time until start" << hwlib::endl;
@@ -171,9 +156,12 @@ class InitGameControl : public rtos::task<>{
 										break;
 									}	
 								}
-								//else if () {
-
-								//}
+								else if ((bnID >= 0) || (bnID <= 9)) {
+									para.timeUntilStart = (para.timeUntilStart * 10);
+									para.timeUntilStart += bnID;
+									state = SetTimeUntilStart;
+									break;
+								}
 								else {
 									state = SetTimeUntilStart;
 									break;
@@ -182,18 +170,22 @@ class InitGameControl : public rtos::task<>{
 
 							case sendData:
 								//entry events
-								dataToIrByteControl.sendingGameParametersfun(para);
-								displayControl.showMessage("\fPress any button exept the * button\nto send parameters, press\n the * to go to start.");
+								displayControl.showMessage("\fPress * to send para\nPress # to go to\nStart.\n");
 								//other events
 								wait(buttonChannel);
 								bnID = buttonChannel.read();
-								if (bnID != 14) { // * = 14
+								if (bnID == 15) { // # = 15
 									//registerGameparametersControl.setparameters(para);
+									state = idle;
+									break;
+								}
+								else if (bnID == 14) { // * = 14
+									dataToIrByteControl.sendingGameParametersChannel(para);
 									state = sendData;
 									break;
 								}
 								else {
-									state = idle;
+									state = sendData;
 									break;
 								}
 								break;

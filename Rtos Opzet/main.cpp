@@ -9,9 +9,12 @@
 #include "InitGameControl.hpp"
 #include "keypadControl.cpp"
 #include "DisplayController.hpp"
-//#include "bitDetector.cpp"
+#include "RegisterGameParametersControl.hpp"
+#include "bitDetector.hpp"
+#include "ReceiveIrByteToDataControl.hpp"
 
 //#include "IRLed.cpp"
+#include "RunGameControl.hpp"
 
 class test : public rtos::task<> {
 	DataToIrbyteControl& dataToIrByteControl;
@@ -26,16 +29,16 @@ class test : public rtos::task<> {
 		para.timeUntilStart = 10;
 		for (;;) {
 			hwlib::wait_ms(2000);
-			dataToIrByteControl.sendTriggerfun(data);
-			hwlib::wait_ms(2000);
-			dataToIrByteControl.sendingGameParametersfun(para);
+			dataToIrByteControl.sendTriggerChannel(data);
+			//hwlib::wait_ms(2000);
+			//dataToIrByteControl.sendingGameParametersChannel(para);
 			//hwlib::cout << data.playerID << hwlib::endl;
 		}
 	}
 
 	public:
 		test(DataToIrbyteControl& dataToIrByteControl) :
-			task("test"),
+			task(3, "test"),
 			dataToIrByteControl(dataToIrByteControl)
 		{}
 
@@ -75,6 +78,18 @@ int main( void ) {
 	hwlib::pin_direct_from_in_t pinIn4_(pinIn4__);
 	hwlib::pin_direct_from_in_t* pinIn4 = &pinIn4_;
 	
+	auto tsop_signal = hwlib::target::pin_in(hwlib::target::pins::d8);
+	auto tsop_gnd = hwlib::target::pin_out(hwlib::target::pins::d9);
+	auto tsop_vdd = hwlib::target::pin_out(hwlib::target::pins::d10);
+
+	tsop_gnd.write(0);
+	tsop_vdd.write(1);
+	tsop_gnd.flush();
+	tsop_vdd.flush();
+
+
+	auto pe = PlayerEntity();
+
 	auto scl = hwlib::target::pin_oc(hwlib::target::pins::scl);
 	auto sda = hwlib::target::pin_oc(hwlib::target::pins::sda);
 
@@ -83,20 +98,33 @@ int main( void ) {
 	auto oled = hwlib::glcd_oled(i2c_bus, 0x3c);
 
 	auto display = DisplayController(scl, sda);
-
-	auto pe = playerEntity();
 	
+	auto regPar = RegisterGameParametersControl(pe, display);
+
+	
+	hwlib::cout << "test1" << hwlib::endl;
 	auto IrLed_output = hwlib::target::d2_36kHz();;
-	//auto sendIrMessage = SendIRMessageControl(IrLed_output);
+
 	auto dataToIrByteControl = DataToIrbyteControl(IrLed_output);
 	
-	auto test2 = test(dataToIrByteControl);
+
+
+	//auto test2 = test(dataToIrByteControl);
 
 	auto init = InitGameControl(dataToIrByteControl, display);
 
-	auto keyPad = keypadControl(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4, init);
-
 	
 
+	auto keyPad = keypadControl(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4, init, regPar);
+
+	auto runGame = RunGameControl(dataToIrByteControl, display, pe);
+
+	auto receiveIrByte = ReceiveIrByteToDataControl(regPar, runGame);
+
+	auto recIrMessage = ReceiveIrMessageControl(receiveIrByte);
+
+	auto bitDet = BitDetector(tsop_signal, recIrMessage);
+
+	hwlib::cout << "before start" << hwlib::endl;
 	rtos::run();
 }

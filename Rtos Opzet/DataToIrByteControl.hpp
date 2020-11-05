@@ -20,8 +20,8 @@ class DataToIrbyteControl : public rtos::task<>{
 	private:
 		state_t state = idle;
 		SendIRMessageControl sendIrMessageControl;
-		rtos::channel< struct parameters, 1024 > gameParametersChannel; 
-		rtos::channel< struct shootdata, 1024 > triggerChannel; 
+		rtos::channel< struct parameters, 128 > gameParametersChannel; 
+		rtos::channel< struct shootdata, 128 > triggerChannel; 
 		struct shootdata sData;
 		//int test;
 		//int test2;
@@ -32,14 +32,14 @@ class DataToIrbyteControl : public rtos::task<>{
 
 	public:
 		DataToIrbyteControl(hwlib::pin_out& ledpin):
-			task("dataToIRByteControl"),
+			task(1, "dataToIRByteControl"),
 			sendIrMessageControl(ledpin),
 			gameParametersChannel(this, "gameParametersChannel"),
 			triggerChannel(this, "triggerChannel")
 			
 		{}
-		void sendingGameParametersfun(struct parameters para){gameParametersChannel.write(para);}
-		void sendTriggerfun(struct shootdata trigger){triggerChannel.write(trigger);}
+		void sendingGameParametersChannel(struct parameters para){gameParametersChannel.write(para);}
+		void sendTriggerChannel(struct shootdata trigger){triggerChannel.write(trigger);}
 
 		void sendGameParameters(int gamemodeID, int gameTime, int timeUntilStart) {
 			//Gamemode and Gametime

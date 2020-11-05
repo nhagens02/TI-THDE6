@@ -1,55 +1,5 @@
 #include "hwlib.hpp"
 
-//enum pulseDurations {
-//	shortPulseMinimumDuration = 725,
-//	shortPulseMaximumDuration = 875,
-//	longPulseMinimumDuration = 1525,
-//	longPulseMaximumDuration = 1675
-//};
-
-//int read(hwlib::pin_in& tsop_signal) {
-//	tsop_signal.refresh();
-//	if (tsop_signal.read()) {
-//		// 1 puls is ontvangen
-//		hwlib::wait_us(792);
-//		bool bitValue = tsop_signal.read();
-//		hwlib::wait_us(792);
-//		if (tsop_signal.read()) {
-//			
-//			return -1;
-//		}
-//		return bitValue;
-//	}
-//	else {
-//		return -1;
-//	}
-//}
-
-//int count = 0;
-
-/*
-int read(hwlib::pin_in& tsop_signal) {
-	tsop_signal.refresh();
-	if (tsop_signal.read()) {
-		uint_fast32_t beforeTime = hwlib::now_us();
-		while (tsop_signal.read()) {}
-		uint_fast32_t pulseDuration = hwlib::now_us() - beforeTime;
-
-		count+=1;
-
-		hwlib::cout << count << "\n";
-
-		if (((pulseDuration) > longPulseMinimumDuration) && ((pulseDuration) < longPulseMaximumDuration)) {
-			return 1;
-		}
-		else if (((pulseDuration) > shortPulseMinimumDuration) && ((pulseDuration) < shortPulseMaximumDuration)) {
-			return 0;
-		}
-	}
-	return -1;
-}
-*/
-
 int read(hwlib::pin_in& tsop_signal) {
 	tsop_signal.refresh();
 	if (tsop_signal.read()) {
@@ -110,12 +60,6 @@ int main() {
 				timeSinceLastReceivedBit = hwlib::now_us() + 1600 - (bits[bitsSize] * 800);
 				bitsSize++;
 			}
-			/*else {
-				if (bitsSize > 0) {
-					hwlib::cout << bitsSize << "\n";
-				}
-				bitsSize = 0;
-			}*/
 			
 			
 			currentLoopTime = hwlib::now_us();

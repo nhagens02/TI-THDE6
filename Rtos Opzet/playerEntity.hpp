@@ -8,8 +8,12 @@
 #include "StructData.hpp"
 
 
-//class must use pool with public function
-class playerEntity {
+/// \brief
+/// PlayerEntity CLASS
+/// \details
+/// This class will store all the data of a specific player. 
+/// This class uses rtos::pool. 
+class PlayerEntity {
     private:
    		rtos::pool< int > playerIDPool;
    		rtos::pool< int > weaponIDPool;
@@ -22,7 +26,7 @@ class playerEntity {
    		//data_a.counter = 0;
 
 	public:
-		playerEntity( ):
+		PlayerEntity( ):
         playerIDPool( "playerID_pool" ),
         weaponIDPool( "weaponID_pool" ),
         livesPool( "lives_pool" ),
@@ -38,7 +42,7 @@ class playerEntity {
 		void setLives(int lives){ livesPool.write(lives);}
 		int getlives(){return (livesPool.read());}
 
-        void addData(int playerID) { if (data_a.counter < 500) { data_a.array[data_a.counter] = playerID; data_a.counter++; } data_pool.write(data_a);}
+        void addData(struct shootdata sData) { if (data_a.counter < 500) { data_a.playerID[data_a.counter] = sData.playerID; data_a.weaponStrength[data_a.counter] = sData.weaponStrength; data_a.counter++; } data_pool.write(data_a); }
 	    struct data_s getData(){return data_pool.read(); }
 
 };
