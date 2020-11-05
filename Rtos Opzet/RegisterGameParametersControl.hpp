@@ -10,18 +10,6 @@
 
 
 /// \brief
-/// Game parameters struct. 
-/// \details
-/// This struct contains the GameMode, gameTime and timeUntil start of a game.
-/// All variables are of the type int. 
-//struct parameters{
-//	int gameMode,
-//	int gameTime,
-//	int timeUntilStart;
-//};
-
-
-/// \brief
 /// RegisterGameParametersControl CLASS
 /// \details
 /// This class will set the player number and the weaponStrenght for the player. 
@@ -151,7 +139,7 @@ class RegisterGameParametersControl : public rtos::task<>{
 
 					//other events
 					wait(SetParametersChannel);
-					//runGameControl.sendGameParameters(SetParametersChannel.read());
+					runGameControl.sendGameParameters(SetParametersChannel.read());
 					state = idle;
 					break;
 				}

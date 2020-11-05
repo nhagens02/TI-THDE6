@@ -78,6 +78,18 @@ int main( void ) {
 	hwlib::pin_direct_from_in_t pinIn4_(pinIn4__);
 	hwlib::pin_direct_from_in_t* pinIn4 = &pinIn4_;
 	
+	auto tsop_signal = target::pin_in(target::pins::d8);
+	auto tsop_gnd = target::pin_out(target::pins::d9);
+	auto tsop_vdd = target::pin_out(target::pins::d10);
+
+	tsop_gnd.write(0);
+	tsop_vdd.write(1);
+	tsop_gnd.flush();
+	tsop_vdd.flush();
+
+
+	auto pe = PlayerEntity();
+
 	auto scl = hwlib::target::pin_oc(hwlib::target::pins::scl);
 	auto sda = hwlib::target::pin_oc(hwlib::target::pins::sda);
 
@@ -86,17 +98,15 @@ int main( void ) {
 	auto oled = hwlib::glcd_oled(i2c_bus, 0x3c);
 
 	auto display = DisplayController(scl, sda);
-
+	
 	auto regPar = RegisterGameParametersControl(pe, display);
 
-	auto pe = PlayerEntity();
+	
 	hwlib::cout << "test1" << hwlib::endl;
 	auto IrLed_output = hwlib::target::d2_36kHz();;
-	//auto sendIrMessage = SendIRMessageControl(IrLed_output);
+
 	auto dataToIrByteControl = DataToIrbyteControl(IrLed_output);
 	
-
-	auto recPin = hwlib::target::pin_in(hwlib::target::pins::d8);
 
 
 	//auto test2 = test(dataToIrByteControl);
@@ -113,7 +123,7 @@ int main( void ) {
 
 	auto recIrMessage = ReceiveIrMessageControl(receiveIrByte);
 
-	auto bitDet = BitDetector(recPin, recIrMessage);
+	auto bitDet = BitDetector(tsop_signal, recIrMessage);
 
 	hwlib::cout << "before start" << hwlib::endl;
 	rtos::run();
