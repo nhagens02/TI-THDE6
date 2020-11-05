@@ -6,7 +6,7 @@
 /// \brief
 /// SoundControl CLASS
 /// \details
-/// This class manages the playback of sounds of the lazergun. 
+/// This class manages the playback of sounds of the lazergun.
 /// This class uses the boundary object: Speaker.
 /// The class uses the soundEntity to get the sounds.
 /// This class uses rtos::task<>.
@@ -16,7 +16,7 @@ class SoundControl : public rtos::task<>{
 	private:
 		state_t state = idle;
 		rtos::pool playSoundIDPool;
-		rtos::flag playSoundFlag
+		rtos::flag playSoundFlag;
 		hwlib::pin_oc& speakerPin;
 
 	public:
@@ -46,14 +46,14 @@ class SoundControl : public rtos::task<>{
 						//entry events
 						auto sound = soundFiles.getSoundFiles(soundID);
 						playSound(sound);
-						
+
 						//other events
 						state = idle;
 						break;
 
 					default:break;
 
-				}	
+				}
 			}
 		}
 };
