@@ -84,3 +84,4 @@ _*
 *.ipch
 *.VC.*
 makefile.due
+temp/SoundControl.cpp
