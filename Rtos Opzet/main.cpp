@@ -46,7 +46,7 @@ class test : public rtos::task<> {
 
 int main( void ) {
 	
-	hwlib::wait_ms(600);
+	hwlib::wait_ms(1000);
 
 	hwlib::cout << "startup\n";
 	
