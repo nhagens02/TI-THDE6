@@ -139,7 +139,7 @@ class RegisterGameParametersControl : public rtos::task<>{
 
 					//other events
 					wait(SetParametersChannel);
-					runGameControl.sendGameParameters(SetParametersChannel.read());
+					//runGameControl.sendGameParameters(SetParametersChannel.read());
 					state = idle;
 					break;
 				}

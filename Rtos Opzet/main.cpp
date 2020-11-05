@@ -78,9 +78,9 @@ int main( void ) {
 	hwlib::pin_direct_from_in_t pinIn4_(pinIn4__);
 	hwlib::pin_direct_from_in_t* pinIn4 = &pinIn4_;
 	
-	auto tsop_signal = target::pin_in(target::pins::d8);
-	auto tsop_gnd = target::pin_out(target::pins::d9);
-	auto tsop_vdd = target::pin_out(target::pins::d10);
+	auto tsop_signal = hwlib::target::pin_in(hwlib::target::pins::d8);
+	auto tsop_gnd = hwlib::target::pin_out(hwlib::target::pins::d9);
+	auto tsop_vdd = hwlib::target::pin_out(hwlib::target::pins::d10);
 
 	tsop_gnd.write(0);
 	tsop_vdd.write(1);

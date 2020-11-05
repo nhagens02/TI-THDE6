@@ -83,7 +83,7 @@ private:
 	}
 public:
 	SendIRMessageControl(hwlib::pin_out& ledPin) :
-		task ("Irled"),
+		task (0, "sendIrMessageControl"),
 		irLed(ledPin),
 		send2ByteChannel(this, "send2byteChannel")
 		
