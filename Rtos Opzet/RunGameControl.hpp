@@ -70,6 +70,7 @@ class RunGameControl : public rtos::task<>{
 				switch(state)
 				{
 					case idle:
+						//task::suspend();//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 						//entry events
 						wait(sendGameParametersChannel);
 						para = sendGameParametersChannel.read();

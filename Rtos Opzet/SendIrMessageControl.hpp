@@ -65,6 +65,7 @@ private:
 				//other event
 				wait(send2ByteChannel);
 				state = sending;
+				//sleep_us((340 * rtos::ms));
 				break;
 			}
 			case sending:
@@ -83,7 +84,7 @@ private:
 	}
 public:
 	SendIRMessageControl(hwlib::pin_out& ledPin) :
-		task (0, "sendIrMessageControl"),
+		task (3, "sendIrMessageControl"),
 		irLed(ledPin),
 		send2ByteChannel(this, "send2byteChannel")
 		

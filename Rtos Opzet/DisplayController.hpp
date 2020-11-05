@@ -44,12 +44,12 @@ class DisplayController : public rtos::task<> {
 		{
 			w1.clear();
 			w2.clear();
+			oled.flush();
 		}
 
 		void showTime(const int & seconds){
 			//hwlib::cout << "t" << hwlib::endl;
 			d1 << "\f" << "Time:" << seconds;
-			//oled.flush();
 			oled.flush();
 		}
 
@@ -60,7 +60,6 @@ class DisplayController : public rtos::task<> {
 				//<< str
 				//<< "score: " << 42 << "\n"
 				//<< "==============\n";
-			//oled.flush();
 			oled.flush();
 		}
 
@@ -68,7 +67,8 @@ class DisplayController : public rtos::task<> {
 		void main() {
 			//auto test = "test";
 			for (;;) {
-				hwlib::wait_ms(4000);
+				//hwlib::wait_ms(10000000);
+				task::suspend();
 				//showTime(2);
 				//showMessage(test);
 		//		showMessage("test");

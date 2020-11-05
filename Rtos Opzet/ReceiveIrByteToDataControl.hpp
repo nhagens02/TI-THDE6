@@ -99,7 +99,7 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 								//registerGameParametersControl.SetParameters(para);
 								hwlib::cout << "timeUn: " << para.timeUntilStart << hwlib::endl;
 								//here
-								runGamecontrol.sendGameParameters(para);
+								runGameControl.sendGameParameters(para);
 							}
 						}
 						else {

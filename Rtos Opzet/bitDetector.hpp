@@ -24,14 +24,15 @@ class BitDetector : public rtos::task<> {
 		ReceiveIrMessageControl& receiveIrMessageControl;
 		rtos::clock intervalHunderdSignalCheck;
 		bool bitValue;
+		hwlib::target::pin_out anPinCheck = hwlib::target::pin_out(due::pins::d6);
 	
 
 	public:
 		BitDetector(hwlib::pin_in& IrReceiverPin, ReceiveIrMessageControl& receiveIrMessageControl):
-			task("bit detector signal"),
+			task(0, "bit detector signal"),
 			irReceiver ( IrReceiverPin ),
 			receiveIrMessageControl( receiveIrMessageControl ),
-			intervalHunderdSignalCheck(this, (200 * rtos::ms), "keypad interval checker")
+			intervalHunderdSignalCheck(this, (100 * rtos::us), "interval checker")
 		{}
 
 
@@ -42,7 +43,8 @@ class BitDetector : public rtos::task<> {
 				{
 					case idle: {
 						//entry events
-
+						anPinCheck.write(0);
+						anPinCheck.flush();
 						//other events
 						wait(intervalHunderdSignalCheck);
 						bool signal = irReceiver.getCurrentSignal();
@@ -59,8 +61,11 @@ class BitDetector : public rtos::task<> {
 					case startReceiving:
 						//entry events
 						hwlib::wait_us(1200);
+						anPinCheck.write(1);
+						anPinCheck.flush();
 						bitValue = irReceiver.getCurrentSignal();
-						while (irReceiver.getCurrentSignal()) { hwlib::wait_us(0); }
+						//hwlib::cout << bitValue << hwlib::endl;
+						while (irReceiver.getCurrentSignal()) { hwlib::wait_us(0);  }
 						receiveIrMessageControl.sendBit(bitValue);
 						
 						//other events

@@ -53,6 +53,7 @@ class keypadControl : public rtos::task<>{
 				switch(state)
 				{
 				case idle: {
+					//task::suspend();//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 					//entry events
 
 					//other events

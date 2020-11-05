@@ -4,7 +4,6 @@
 #include "StructData.hpp"
 #include "DataToIrByteControl.hpp"
 
-//#include "sendIrMessageControl.cpp"
 #include "playerEntity.hpp"
 #include "InitGameControl.hpp"
 #include "keypadControl.cpp"
@@ -13,8 +12,8 @@
 #include "bitDetector.hpp"
 #include "ReceiveIrByteToDataControl.hpp"
 
-//#include "IRLed.cpp"
 #include "RunGameControl.hpp"
+
 
 class test : public rtos::task<> {
 	DataToIrbyteControl& dataToIrByteControl;
@@ -45,9 +44,8 @@ class test : public rtos::task<> {
 };
 
 
-
-
 int main( void ) {
+	
 	hwlib::wait_ms(600);
 
 	hwlib::cout << "startup\n";

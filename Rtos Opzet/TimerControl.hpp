@@ -4,9 +4,6 @@
 /// @file
 
 
-
-
-
 /// \brief
 /// TimerControl CLASS
 /// \details

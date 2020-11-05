@@ -22,13 +22,15 @@ class ReceiveIrMessageControl : public rtos::task<> {
 		state_t state = idle;
 		rtos::channel<bool, 64> bitValueChannel;
 		ReceiveIrByteToDataControl& receiveIrByteToDataControl;
-		uint_fast16_t message;
-		uint_fast16_t bitAmount;
+		uint_fast16_t message = 0;
+		uint_fast16_t bitAmount = 0;
+		rtos::timer exitTimer;
 public:
 	ReceiveIrMessageControl(ReceiveIrByteToDataControl& receiveIrByteToDataControl):
 		task ( "ReceiveIrMessageControl" ),
 		bitValueChannel ( this, "Bits channel" ),
-		receiveIrByteToDataControl ( receiveIrByteToDataControl )
+		receiveIrByteToDataControl ( receiveIrByteToDataControl ),
+		exitTimer(this, "exit transmission timer")
 		{}
 
 	void receiveBit(bool bit) {
@@ -36,6 +38,10 @@ public:
 		bitAmount++;
 		if (bitAmount == 16) {
 			receiveIrByteToDataControl.receiveMessage(message);
+			hwlib::cout << message << hwlib::endl;
+			//Reset to 0 for new transmission.
+			bitAmount = 0;
+			message = 0;
 		}
 	}
 	void sendBit(bool bit){ bitValueChannel.write(bit);}
@@ -57,10 +63,20 @@ public:
 						case receivingBits:
 							//entry events
 							//receiveIrByteToDataControl.getMessage(GetReceivingBits());
-							for (int i = 0; i < 17;i++) {
+							for (int i = 0; i < 16;i++) {
 								receiveBit(bitValueChannel.read());
-								wait(bitValueChannel);
+								exitTimer.set(4 * rtos::ms);
+								auto event = wait( bitValueChannel + exitTimer );
+								if (event == exitTimer) {
+									//hwlib::cout << message;
+									message = 0;
+									bitAmount = 0;
+									state = idle;
+									break;
+								}
 							}
+							//hwlib::cout << "endl rec: " << hwlib::endl;
+
 							state = idle;
 							break;
 
