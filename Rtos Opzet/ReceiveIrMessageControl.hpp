@@ -15,18 +15,22 @@
 /// This class will use the class: "IrReceiver", to receive the 16 bits of data.
 /// The class uses the THDE IR protocol. 
 /// This class uses rtos::task<>. 
-class ReceiveIrMessageControl : public rtos::task<>{
+class ReceiveIrMessageControl : public rtos::task<> {
 	enum state_t {idle,receivingBits};
 
 	private:
 		state_t state = idle;
-		ReceiveIrByteToDataControl receiveIrByteToDataControl;
-		rtos::channel<bool, 256> bitValueChannel;
+		rtos::channel<bool, 64> bitValueChannel;
+		ReceiveIrByteToDataControl& receiveIrByteToDataControl;
 		uint_fast16_t message;
 		uint_fast16_t bitAmount;
 public:
-	ReceiveIrMessageControl()
-	{}
+	ReceiveIrMessageControl(ReceiveIrByteToDataControl& receiveIrByteToDataControl):
+		task ( "ReceiveIrMessageControl" ),
+		bitValueChannel ( this, "Bits channel" ),
+		receiveIrByteToDataControl ( receiveIrByteToDataControl )
+		{}
+
 	void receiveBit(bool bit) {
 		message += (bit << (15 - bitAmount));
 		bitAmount++;
@@ -50,7 +54,6 @@ public:
 							wait(bitValueChannel);
 							state = receivingBits;
 							break;
-
 						case receivingBits:
 							//entry events
 							//receiveIrByteToDataControl.getMessage(GetReceivingBits());

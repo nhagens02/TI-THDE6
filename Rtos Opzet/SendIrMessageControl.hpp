@@ -21,7 +21,7 @@ private:
 	IRLed irLed;
 	int index = 0;
 	state_t state = idle;
-	rtos::channel< uint16_t, 1024 > send2ByteChannel;
+	rtos::channel< uint16_t, 128 > send2ByteChannel;
 	void sendZero(){
 		uint_fast32_t currentTime = hwlib::now_us();
 		irLed.turnOn();

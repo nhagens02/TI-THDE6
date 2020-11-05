@@ -4,7 +4,11 @@
 #include "hwlib.hpp"
 #include "rtos.hpp"
 #include "bitDetector.hpp"
+#include "StructData.hpp"
+#include "RunGameControl.hpp"
+#include "RegisterGameParametersControl.hpp"
 /// @file
+
 
 /// \brief
 /// gameModes enum
@@ -32,26 +36,31 @@ enum gameTimes {
 /// If the class received game parameters the class will trigger the function the RegisterGameParametersControl class to send the game parameters.
 /// If the class received a shot. The runGameControl class wil be trigged with the playerData and the weaponstrenght. 
 /// This class uses rtos::task<>. 
-class ReceiveIRByteToDataControl : public rtos::task<> {
+class ReceiveIrByteToDataControl : public rtos::task<> {
 	enum state_t {idle, decodeData};
 
 	private:
 		state_t state = idle;
-		rtos::channel messageChannel;
-		RunGameControl& RunGameControl;
-		registerGameParameters& registerGameParameters;
-		receiveIrMessageControl& receiveIrMessageControl;
+		rtos::channel <int, 128> messageChannel;
+		struct parameters para;
+		struct shootdata sData;
+		RegisterGameParametersControl& registerGameParametersControl;
+		RunGameControl& runGameControl;
 		uint_fast8_t gamemode = 0;
 		uint_fast8_t gametime = 0;
 		uint_fast16_t previousMessage = 0;
+		uint16_t message;
 		bool previousTransmitWasFirstDataTransmit = 0;
-		
-
-	ReceiveIRByteToDataControl():
-
-	{}	
 
 	public:
+		ReceiveIrByteToDataControl(RegisterGameParametersControl& registerGameParametersControl, RunGameControl& runGameControl):
+			task("receiveirbyte"),
+			messageChannel(this, "Message Channel"),
+			registerGameParametersControl ( registerGameParametersControl ),
+			runGameControl ( runGameControl )
+
+		{}
+
 		void getMessage(uint16_t message) { messageChannel.write(message); }
 		void receiveMessage(uint_fast16_t message) {
 			if (message != previousMessage) {
@@ -59,11 +68,11 @@ class ReceiveIRByteToDataControl : public rtos::task<> {
 				if ((message >> 15) == 1) {
 					message -= 32768; // set first bit to 0
 
-					//Check XOR
+					//Check exclusiveOr
 					uint_fast8_t player = message >> 10;
-					uint_fast8_t data = (message - (player << 10) >> 5);
-					uint_fast8_txor = message - (message - (player << 10)) - (message - (data << 5));
-					if ((player || data) == xor) {
+					uint_fast8_t data = (message - ((player << 10) >> 5));
+					uint_fast8_t exclusiveOr = (message - (message - (player << 10)) - (message - (data << 5)));
+					if ((player || data) == exclusiveOr) {
 
 
 						if ((message >> 10) == 0) { // player = 0
@@ -75,12 +84,21 @@ class ReceiveIRByteToDataControl : public rtos::task<> {
 								message -= (gamemode << 8);
 								gametime = message >> 5;
 								message -= (gametime << 5);
+								para.gameMode = gamemode;
+								para.gameTime = gametime;
+								hwlib::cout << "gameTime : " << para.gameTime << hwlib::endl;
+								hwlib::cout << "gameMode : " << para.gameMode << hwlib::endl;
+								//here
 
 							}
 							else {
 								// decode timeUntilStart and call function
 								uint_fast8_t timeUntilStart = message >> 5;
 								previousTransmitWasFirstDataTransmit = 0;
+								para.timeUntilStart = timeUntilStart;
+								//registerGameParametersControl.SetParameters(para);
+								hwlib::cout << "timeUn: " << para.timeUntilStart << hwlib::endl;
+								//here
 							}
 						}
 						else {
@@ -88,6 +106,10 @@ class ReceiveIRByteToDataControl : public rtos::task<> {
 							uint_fast8_t player = message >> 10;
 							message -= (player << 10);
 							uint_fast8_t weaponStrength = message >> 5;
+							sData.playerID = player;
+							sData.weaponStrength = weaponStrength;
+							//runGameControl.sendHit(sData);
+							//here
 						}
 					}
 				}
@@ -108,14 +130,14 @@ class ReceiveIRByteToDataControl : public rtos::task<> {
 
 						//other events
 						wait(messageChannel);
-						uint16_t message = messageChanel.read();
-						state = decode;
+						message = messageChannel.read();
+						state = decodeData;
 						break;
 
 					case decodeData:
 						//entry events
-						decode(message)
-
+						
+						receiveMessage(message);
 						//other events
 						state = idle;
 						break;

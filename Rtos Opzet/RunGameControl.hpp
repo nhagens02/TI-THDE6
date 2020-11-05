@@ -29,10 +29,10 @@ class RunGameControl : public rtos::task<>{
 
 	private:
 		state_t state = idle;
-		rtos::channel< struct shootdata, 256 > sendHitChannel;
+		rtos::channel< struct shootdata, 128 > sendHitChannel;
 		rtos::flag buttonFlag;
 		rtos::pool <int> buttonIDPool;
-		rtos::channel< struct parameters, 256 > sendGameParametersChannel;
+		rtos::channel< struct parameters, 128 > sendGameParametersChannel;
 		rtos::flag flagGameOver;
 		rtos::flag untilStartTimerFlag;
 		DataToIrbyteControl& dataToIrbyteControl;

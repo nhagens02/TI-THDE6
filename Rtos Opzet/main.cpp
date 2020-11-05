@@ -10,7 +10,8 @@
 #include "keypadControl.cpp"
 #include "DisplayController.hpp"
 #include "RegisterGameParametersControl.hpp"
-//#include "bitDetector.cpp"
+#include "bitDetector.hpp"
+#include "ReceiveIrByteToDataControl.hpp"
 
 //#include "IRLed.cpp"
 #include "RunGameControl.hpp"
@@ -86,21 +87,33 @@ int main( void ) {
 
 	auto display = DisplayController(scl, sda);
 
+	auto regPar = RegisterGameParametersControl(pe, display);
+
 	auto pe = PlayerEntity();
-	
+	hwlib::cout << "test1" << hwlib::endl;
 	auto IrLed_output = hwlib::target::d2_36kHz();;
 	//auto sendIrMessage = SendIRMessageControl(IrLed_output);
 	auto dataToIrByteControl = DataToIrbyteControl(IrLed_output);
 	
+
+	auto recPin = hwlib::target::pin_in(hwlib::target::pins::d8);
+
+
 	//auto test2 = test(dataToIrByteControl);
 
 	auto init = InitGameControl(dataToIrByteControl, display);
 
-	auto regPar = RegisterGameParametersControl(pe, display);
+	
 
 	auto keyPad = keypadControl(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4, init, regPar);
 
 	auto runGame = RunGameControl(dataToIrByteControl, display, pe);
+
+	auto receiveIrByte = ReceiveIrByteToDataControl(regPar, runGame);
+
+	auto recIrMessage = ReceiveIrMessageControl(receiveIrByte);
+
+	auto bitDet = BitDetector(recPin, recIrMessage);
 
 	hwlib::cout << "before start" << hwlib::endl;
 	rtos::run();
