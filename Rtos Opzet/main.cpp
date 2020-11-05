@@ -37,7 +37,7 @@ class test : public rtos::task<> {
 
 	public:
 		test(DataToIrbyteControl& dataToIrByteControl) :
-			task(3, "test"),
+			task(4, "test"),
 			dataToIrByteControl(dataToIrByteControl)
 		{}
 

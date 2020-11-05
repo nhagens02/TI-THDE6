@@ -29,7 +29,7 @@ class BitDetector : public rtos::task<> {
 
 	public:
 		BitDetector(hwlib::pin_in& IrReceiverPin, ReceiveIrMessageControl& receiveIrMessageControl):
-			task(0, "bit detector signal"),
+			task(1, "bit detector signal"),
 			irReceiver ( IrReceiverPin ),
 			receiveIrMessageControl( receiveIrMessageControl ),
 			intervalHunderdSignalCheck(this, (100 * rtos::us), "interval checker")

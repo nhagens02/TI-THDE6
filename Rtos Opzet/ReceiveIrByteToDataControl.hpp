@@ -34,7 +34,7 @@ enum gameTimes {
 /// \details
 /// This class is used to convert the 16 bits to data to trigger functions in the game. 
 /// If the class received game parameters the class will trigger the function the RegisterGameParametersControl class to send the game parameters.
-/// If the class received a shot. The runGameControl class wil be trigged with the playerData and the weaponstrenght. 
+/// If the class received a shot. The runGameControl class wil be trigged with the playerData and the weaponstrength. 
 /// This class uses rtos::task<>. 
 class ReceiveIrByteToDataControl : public rtos::task<> {
 	enum state_t {idle, decodeData};
