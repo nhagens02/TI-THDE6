@@ -11,18 +11,6 @@
 
 
 /// \brief
-/// Game parameters struct. 
-/// \details
-/// This struct contains the GameMode, gameTime and timeUntil start of a game.
-/// all variables are of the type int. 
-//struct parameters{
-//	int gameMode,
-//	int gameTime,
-//	int timeUntilStart;
-//};
-
-
-/// \brief
 /// InitGameControl CLASS
 /// \details
 /// This class will be used by the game leader. 

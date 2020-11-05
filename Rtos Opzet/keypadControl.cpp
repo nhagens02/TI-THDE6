@@ -41,7 +41,7 @@ class keypadControl : public rtos::task<>{
 		keypad(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4),
 		initGameControl ( initGameControl ),
 		registerGameParametersControl(registerGameParametersControl),
-		intervalKeyCheck(this, (300* rtos::ms), "keypad interval checker")
+		intervalKeyCheck(this, (340* rtos::ms), "keypad interval checker")
 		//initGameControl(initGameControl)
 
 	{}

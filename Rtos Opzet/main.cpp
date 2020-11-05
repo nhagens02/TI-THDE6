@@ -30,7 +30,7 @@ class test : public rtos::task<> {
 		for (;;) {
 			hwlib::wait_ms(2000);
 			dataToIrByteControl.sendTriggerChannel(data);
-			hwlib::wait_ms(2000);
+			//hwlib::wait_ms(2000);
 			//dataToIrByteControl.sendingGameParametersChannel(para);
 			//hwlib::cout << data.playerID << hwlib::endl;
 		}
@@ -38,7 +38,7 @@ class test : public rtos::task<> {
 
 	public:
 		test(DataToIrbyteControl& dataToIrByteControl) :
-			task("test"),
+			task(3, "test"),
 			dataToIrByteControl(dataToIrByteControl)
 		{}
 
