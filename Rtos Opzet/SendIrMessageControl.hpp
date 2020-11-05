@@ -23,37 +23,22 @@ private:
 	state_t state = idle;
 	rtos::channel< uint16_t, 64 > send2ByteChannel;
 	void sendZero(){
-		uint_fast32_t currentTime = hwlib::now_us();
 		irLed.turnOn();
-		while ((currentTime + 800) > (hwlib::now_us())) {
-			//do nothing
-			hwlib::wait_us(0);
-		}
-
-		currentTime = hwlib::now_us();
+		hwlib::wait_us(800);
 		irLed.turnOff();
 
-		while ((currentTime + 1600) > (hwlib::now_us())) {
-			//do nothing
-			hwlib::wait_us(0);
-		}
+		hwlib::wait_us(1600);
 	}
 	void sendOne() {
-		uint_fast32_t currentTime = hwlib::now_us();
+		//uint_fast32_t currentTime = hwlib::now_us();
 		irLed.turnOn();
 
-		while ((currentTime + 1600) > (hwlib::now_us())) {
-			//do nothing
-			hwlib::wait_us(0);
-		}
+		hwlib::wait_us(1600);
 
-		currentTime = hwlib::now_us();
+		//currentTime = hwlib::now_us();
 		irLed.turnOff();
 
-		while ((currentTime + 800) > (hwlib::now_us())) {
-			//do nothing
-			hwlib::wait_us(0);
-		}
+		hwlib::wait_us(800);
 	}
 	void main() {
 		for (;;) {
