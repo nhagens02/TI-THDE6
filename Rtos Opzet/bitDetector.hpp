@@ -32,7 +32,7 @@ class BitDetector : public rtos::task<> {
 			task(1, "bit detector signal"),
 			irReceiver ( IrReceiverPin ),
 			receiveIrMessageControl( receiveIrMessageControl ),
-			intervalHunderdSignalCheck(this, (100 * rtos::us), "interval checker")
+			intervalHunderdSignalCheck(this, (500 * rtos::us), "interval checker")
 		{}
 
 
