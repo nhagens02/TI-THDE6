@@ -31,6 +31,7 @@ class keypadControl : public rtos::task<>{
 				if (keypad.getKeyPressed(i)) {
 					return i;
 				}
+				hwlib::wait_us(0);
 			}
 			return -1;
 		}

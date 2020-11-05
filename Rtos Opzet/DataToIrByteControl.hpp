@@ -55,6 +55,7 @@ class DataToIrbyteControl : public rtos::task<>{
 				if (information & (1 << (i + 9)))x = 1;
 				if (information & (1 << (i + 4)))y = 1;
 				information += (x ^ y) << (i - 1);
+				hwlib::wait_us(0);
 			}
 			sendIrMessageControl.sendBytes(information);
 			hwlib::wait_ms(3);
@@ -74,6 +75,7 @@ class DataToIrbyteControl : public rtos::task<>{
 				if (information & (1 << (i + 9)))x = 1;
 				if (information & (1 << (i + 4)))y = 1;
 				information += (x ^ y) << (i - 1);
+				hwlib::wait_us(0);
 			}
 			sendIrMessageControl.sendBytes(information);
 			hwlib::wait_ms(3);
@@ -94,6 +96,7 @@ class DataToIrbyteControl : public rtos::task<>{
 				if (information & (1 << (i + 9)))x = 1;
 				if (information & (1 << (i + 4)))y = 1;
 				information += (x ^ y) << (i - 1);
+				hwlib::wait_us(0);
 			}
 			sendIrMessageControl.sendBytes(information);
 			hwlib::wait_ms(3);
