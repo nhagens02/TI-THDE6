@@ -24,21 +24,21 @@ private:
 	rtos::channel< uint16_t, 64 > send2ByteChannel;
 	void sendZero(){
 		irLed.turnOn();
-		hwlib::wait_us(800);
+		hwlib::wait_us_busy(800);
 		irLed.turnOff();
 
-		hwlib::wait_us(1600);
+		hwlib::wait_us_busy(1600);
 	}
 	void sendOne() {
 		//uint_fast32_t currentTime = hwlib::now_us();
 		irLed.turnOn();
 
-		hwlib::wait_us(1600);
+		hwlib::wait_us_busy(1600);
 
 		//currentTime = hwlib::now_us();
 		irLed.turnOff();
 
-		hwlib::wait_us(800);
+		hwlib::wait_us_busy(800);
 	}
 	void main() {
 		for (;;) {
