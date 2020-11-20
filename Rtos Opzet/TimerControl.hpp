@@ -18,7 +18,7 @@ class TimerControl : public rtos::task<>{
 		state_t state = idle;
 		rtos::timer setTimer;
 		rtos::flag setTimerFlag;
-		rtos::pool setTimerPool;
+		rtos::pool<int> setTimerPool;
 		rtos::timer endTimerFlag;
 
 
