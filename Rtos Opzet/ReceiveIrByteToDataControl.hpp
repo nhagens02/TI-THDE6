@@ -86,8 +86,8 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 								message -= (gametime << 5);
 								para.gameMode = gamemode;
 								para.gameTime = gametime;
-								hwlib::cout << "gameTime : " << para.gameTime << hwlib::endl;
-								hwlib::cout << "gameMode : " << para.gameMode << hwlib::endl;
+								//hwlib::cout << "gameTime : " << para.gameTime << hwlib::endl;
+								//hwlib::cout << "gameMode : " << para.gameMode << hwlib::endl;
 								//here
 
 							}
@@ -97,7 +97,7 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 								previousTransmitWasFirstDataTransmit = 0;
 								para.timeUntilStart = timeUntilStart;
 								//registerGameParametersControl.SetParameters(para);
-								hwlib::cout << "timeUn: " << para.timeUntilStart << hwlib::endl;
+								//hwlib::cout << "timeUn: " << para.timeUntilStart << hwlib::endl;
 								//here
 								runGameControl.sendGameParameters(para);
 							}

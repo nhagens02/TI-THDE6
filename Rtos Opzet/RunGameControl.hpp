@@ -74,6 +74,9 @@ class RunGameControl : public rtos::task<>{
 						//entry events
 						wait(sendGameParametersChannel);
 						para = sendGameParametersChannel.read();
+						hwlib::cout << para.gameMode << hwlib::endl;
+						hwlib::cout << para.gameTime << hwlib::endl;
+						hwlib::cout << para.timeUntilStart << hwlib::endl;
 						state = start_timer_until_gamestart;
 						break;
 
