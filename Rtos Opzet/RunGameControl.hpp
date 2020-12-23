@@ -83,6 +83,7 @@ class RunGameControl : public rtos::task<>{
 					case start_timer_until_gamestart:
 						//entry events
 						//timerControl.setUntilStartTimer(timeUntilStart);
+						hwlib::cout << "before timer" << hwlib::endl;
 						wait(untilStartTimerFlag);
 						//other events
 						state = start_game;

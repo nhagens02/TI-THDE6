@@ -107,7 +107,7 @@ int main( void ) {
 	
 
 
-	auto test2 = test(dataToIrByteControl);
+	//auto test2 = test(dataToIrByteControl);
 
 	auto init = InitGameControl(dataToIrByteControl, display);
 

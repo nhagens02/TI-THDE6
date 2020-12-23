@@ -58,9 +58,12 @@ class DataToIrbyteControl : public rtos::task<>{
 				hwlib::wait_us(0);
 			}
 			sendIrMessageControl.sendBytes(information);
-			hwlib::wait_ms(3);
+			//hwlib::wait_ms(3);
+			hwlib::wait_us_busy(3000);
+
 			sendIrMessageControl.sendBytes(information);
-			hwlib::wait_ms(3);
+			hwlib::wait_us_busy(3000);
+			//hwlib::wait_ms(3);
 
 			//Time until start
 
