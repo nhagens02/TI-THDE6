@@ -106,13 +106,11 @@ int main( void ) {
 	auto dataToIrByteControl = DataToIrbyteControl(IrLed_output);
 	
 
-
 	//auto test2 = test(dataToIrByteControl);
 
 	auto init = InitGameControl(dataToIrByteControl, display);
 
 	
-
 	auto keyPad = keypadControl(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4, init, regPar);
 
 	auto runGame = RunGameControl(dataToIrByteControl, display, pe);

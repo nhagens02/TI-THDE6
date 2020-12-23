@@ -96,8 +96,8 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 								uint_fast8_t timeUntilStart = message >> 5;
 								previousTransmitWasFirstDataTransmit = 0;
 								para.timeUntilStart = timeUntilStart;
-								//registerGameParametersControl.SetParameters(para);
-								//hwlib::cout << "timeUn: " << para.timeUntilStart << hwlib::endl;
+								registerGameParametersControl.SetParameters(para);
+								hwlib::cout << "timeUn: " << para.timeUntilStart << hwlib::endl;
 								//here
 								runGameControl.sendGameParameters(para);
 							}
@@ -109,7 +109,7 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 							uint_fast8_t weaponStrength = message >> 5;
 							sData.playerID = player;
 							sData.weaponStrength = weaponStrength;
-							//runGameControl.sendHit(sData);
+							runGameControl.sendHit(sData);
 							//here
 							
 						}
