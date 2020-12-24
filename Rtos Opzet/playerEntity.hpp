@@ -32,7 +32,7 @@ class PlayerEntity {
         playerIDPool( "playerID_pool" ),
         weaponIDPool( "weaponID_pool" ),
         livesPool( "lives_pool" ),
-        ammoPool('ammo_pool'),
+        ammoPool("ammo_pool"),
         data_pool( "data_pool" )
         {}
         //pool mag ook opslag
