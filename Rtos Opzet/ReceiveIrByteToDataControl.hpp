@@ -132,13 +132,12 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 
 						//other events
 						wait(messageChannel);
-						message = messageChannel.read();
 						state = decodeData;
 						break;
 
 					case decodeData:
 						//entry events
-						
+						message = messageChannel.read();
 						receiveMessage(message);
 						//other events
 						state = idle;

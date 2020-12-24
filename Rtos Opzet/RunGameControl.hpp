@@ -72,8 +72,14 @@ class RunGameControl : public rtos::task<>{
 					case idle:
 						//task::suspend();//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 						//entry events
-						wait(sendGameParametersChannel);
+						wait(sendGameParametersChannel);//wait disabled for testing
 						para = sendGameParametersChannel.read();
+
+						//para.gameMode = 1;
+						//para.gameTime = 5;
+						//para.timeUntilStart = 10;
+
+					
 						hwlib::cout << para.gameMode << hwlib::endl;
 						hwlib::cout << para.gameTime << hwlib::endl;
 						hwlib::cout << para.timeUntilStart << hwlib::endl;

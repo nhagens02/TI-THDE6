@@ -41,7 +41,7 @@ class TimerControl : public rtos::task<>{
 
 
 						//other events
-						wait(flagSetTimer);
+						wait(setTimerFlag);
 						struct timer_struct timerData = setTimerPool.read();
 						if (timerData.runGameTime == false) {
 							untilGameTimer.set(timerData.time);

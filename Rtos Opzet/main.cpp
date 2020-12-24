@@ -101,7 +101,7 @@ int main( void ) {
 
 	
 	hwlib::cout << "test1" << hwlib::endl;
-	auto IrLed_output = hwlib::target::d2_36kHz();;
+	auto IrLed_output = hwlib::target::d2_36kHz();
 
 	auto dataToIrByteControl = DataToIrbyteControl(IrLed_output);
 	

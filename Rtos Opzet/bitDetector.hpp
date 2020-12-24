@@ -32,7 +32,7 @@ class BitDetector : public rtos::task<> {
 			task(0, "bit detector signal"),
 			irReceiver ( IrReceiverPin ),
 			receiveIrMessageControl( receiveIrMessageControl ),
-			intervalHunderdSignalCheck(this, (200 * rtos::us), "interval checker")
+			intervalHunderdSignalCheck(this, (100 * rtos::us), "interval checker")
 		{}
 
 
@@ -62,12 +62,12 @@ class BitDetector : public rtos::task<> {
 					case startReceiving:
 						//entry events
 						//hwlib::wait_us(1200);
-						hwlib::wait_us_busy(1000);
+						hwlib::wait_us_busy(1200);
 						//anPinCheck.write(1);
 						//anPinCheck.flush();
 						bitValue = irReceiver.getCurrentSignal();
 						//hwlib::cout << bitValue << hwlib::endl;
-						while (irReceiver.getCurrentSignal()) { hwlib::wait_us(0);  }
+						while (irReceiver.getCurrentSignal()) { /*hwlib::wait_us(0);*/  }
 						receiveIrMessageControl.sendBit(bitValue);
 						
 						//other events
