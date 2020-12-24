@@ -86,8 +86,8 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 								message -= (gametime << 5);
 								para.gameMode = gamemode;
 								para.gameTime = gametime;
-								//hwlib::cout << "gameTime : " << para.gameTime << hwlib::endl;
-								//hwlib::cout << "gameMode : " << para.gameMode << hwlib::endl;
+								hwlib::cout << "gameTime : " << para.gameTime << hwlib::endl;
+								hwlib::cout << "gameMode : " << para.gameMode << hwlib::endl;
 								//here
 
 							}
@@ -96,8 +96,8 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 								uint_fast8_t timeUntilStart = message >> 5;
 								previousTransmitWasFirstDataTransmit = 0;
 								para.timeUntilStart = timeUntilStart;
-								//registerGameParametersControl.SetParameters(para);
-								//hwlib::cout << "timeUn: " << para.timeUntilStart << hwlib::endl;
+								registerGameParametersControl.SetParameters(para);
+								hwlib::cout << "timeUn: " << para.timeUntilStart << hwlib::endl;
 								//here
 								runGameControl.sendGameParameters(para);
 							}
@@ -109,7 +109,7 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 							uint_fast8_t weaponStrength = message >> 5;
 							sData.playerID = player;
 							sData.weaponStrength = weaponStrength;
-							//runGameControl.sendHit(sData);
+							runGameControl.sendHit(sData);
 							//here
 							
 						}
@@ -132,13 +132,12 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 
 						//other events
 						wait(messageChannel);
-						message = messageChannel.read();
 						state = decodeData;
 						break;
 
 					case decodeData:
 						//entry events
-						
+						message = messageChannel.read();
 						receiveMessage(message);
 						//other events
 						state = idle;

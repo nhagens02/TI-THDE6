@@ -34,7 +34,7 @@ class RunGameControl : public rtos::task<>{
 		rtos::pool <int> buttonIDPool;
 		rtos::channel< struct parameters, 128 > sendGameParametersChannel;
 		rtos::flag flagGameOver;
-		rtos::flag untilStartTimerFlag;
+		rtos::flag StartGameFlag;
 		DataToIrbyteControl& dataToIrbyteControl;
 		//transferHitsControl& transferHitsControl;
 		DisplayController& displayControl;
@@ -51,7 +51,7 @@ class RunGameControl : public rtos::task<>{
 			buttonIDPool("buttonIDPool"),
 			sendGameParametersChannel(this, "sendGameParametersChannel"),
 			flagGameOver(this, "flagGameOver"),
-			untilStartTimerFlag(this, "untilStartTimerFlag"),
+			StartGameFlag(this, "StartGameFlag"),
 			dataToIrbyteControl(dataToIrbyteControl),
 			//transferHitsControl (transferHitsControl),
 			displayControl(displayControl),
@@ -61,8 +61,8 @@ class RunGameControl : public rtos::task<>{
 		void sendHit(struct shootdata sData) { sendHitChannel.write(sData);}
 		void buttonPressed(int buttonID){buttonIDPool.write(buttonID); buttonFlag.set();}
 		void sendGameParameters(struct parameters para){sendGameParametersChannel.write(para);}
-		void gameOverFlag(){flagGameOver.set();}
-		void untilStartTimerFlagset() { untilStartTimerFlag.set(); }
+		void gameOver(){flagGameOver.set();}
+		void StartGame() { StartGameFlag.set(); }
 
 	private:
 		void main(){
@@ -72,8 +72,14 @@ class RunGameControl : public rtos::task<>{
 					case idle:
 						//task::suspend();//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 						//entry events
-						wait(sendGameParametersChannel);
+						wait(sendGameParametersChannel);//wait disabled for testing
 						para = sendGameParametersChannel.read();
+
+						//para.gameMode = 1;
+						//para.gameTime = 5;
+						//para.timeUntilStart = 10;
+
+					
 						hwlib::cout << para.gameMode << hwlib::endl;
 						hwlib::cout << para.gameTime << hwlib::endl;
 						hwlib::cout << para.timeUntilStart << hwlib::endl;
@@ -83,7 +89,8 @@ class RunGameControl : public rtos::task<>{
 					case start_timer_until_gamestart:
 						//entry events
 						//timerControl.setUntilStartTimer(timeUntilStart);
-						wait(untilStartTimerFlag);
+						hwlib::cout << "before timer" << hwlib::endl;
+						wait(StartGameFlag);
 						//other events
 						state = start_game;
 						break;

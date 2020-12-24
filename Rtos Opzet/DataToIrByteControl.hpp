@@ -55,12 +55,17 @@ class DataToIrbyteControl : public rtos::task<>{
 				if (information & (1 << (i + 9)))x = 1;
 				if (information & (1 << (i + 4)))y = 1;
 				information += (x ^ y) << (i - 1);
-				hwlib::wait_us(0);
+				//hwlib::wait_us(0);
 			}
+			//hwlib::wait_us(0);
 			sendIrMessageControl.sendBytes(information);
-			hwlib::wait_ms(3);
+			//hwlib::wait_ms(3);
+			hwlib::wait_us_busy(3000);
+
 			sendIrMessageControl.sendBytes(information);
-			hwlib::wait_ms(3);
+			//hwlib::wait_ms(3);
+			hwlib::wait_us_busy(4200);
+			
 
 			//Time until start
 
@@ -75,13 +80,18 @@ class DataToIrbyteControl : public rtos::task<>{
 				if (information & (1 << (i + 9)))x = 1;
 				if (information & (1 << (i + 4)))y = 1;
 				information += (x ^ y) << (i - 1);
-				hwlib::wait_us(0);
+				//hwlib::wait_us(0);
 			}
+			//hwlib::wait_us(0);
 			sendIrMessageControl.sendBytes(information);
-			hwlib::wait_ms(3);
+			//hwlib::wait_ms(3);
+			hwlib::wait_us_busy(3000);
+
 			sendIrMessageControl.sendBytes(information);
-			hwlib::wait_ms(3);
+			//hwlib::wait_ms(3);
+			hwlib::wait_us_busy(4200);
 		}
+
 		void sendTrigger(int playerID, int weaponStrength) {
 			//hwlib::cout << "test function" << hwlib::endl;
 			uint16_t information = 0;
@@ -96,7 +106,7 @@ class DataToIrbyteControl : public rtos::task<>{
 				if (information & (1 << (i + 9)))x = 1;
 				if (information & (1 << (i + 4)))y = 1;
 				information += (x ^ y) << (i - 1);
-				hwlib::wait_us(0);
+				//hwlib::wait_us(0);
 			}
 			sendIrMessageControl.sendBytes(information);
 			hwlib::wait_ms(3);

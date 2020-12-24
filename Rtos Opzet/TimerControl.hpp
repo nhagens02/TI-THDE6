@@ -12,22 +12,31 @@
 /// If the bool runGameTime is false. The time in the struct will contain in how many minutes the game will start.
 /// This class uses rtos::task<>.
 class TimerControl : public rtos::task<>{
-	enum state state_t {idle, timer};
+	enum state_t {idle, timeUntilStartState ,gameTimerState};
 
 	private:
 		state_t state = idle;
-		rtos::timer setTimer;
+		//rtos::timer set_Timer;
 		rtos::flag setTimerFlag;
-		rtos::pool<int> setTimerPool;
-		rtos::timer endTimerFlag;
+		rtos::pool<struct timer_struct> setTimerPool;
+		//rtos::flag endTimerFlag;
+		rtos::timer untilGameTimer;
+		rtos::timer startGameTimer;
+		struct parameters timerData;
 
 
 	TimerControl():
-
+		task("Timer Controller"),
+		//set_Timer(this, "timer"),
+		setTimerFlag(this, "Flag for timer set"),
+		setTimerPool("pool with struct: timer_struct"),
+		//endTimerFlag(this, "end timer flag"),
+		untilGameTimer(this, "Game finished timer"),
+		startGameTimer(this, "Start Game Timer")
 	{}
 
 	public:
-		void setTimer(struct timer_struct timer_s) {setTimerPool.write(timer_s); flagSetTimer.set();}
+		void setTimer(struct parameters timerData) {setTimerPool.write(timerData); setTimerFlag.set();}
 		void endTimer() {endTimerFlag.set();}
 
 	private:
@@ -39,38 +48,46 @@ class TimerControl : public rtos::task<>{
 					case idle:
 						//entry events
 
-
 						//other events
-						wait(flagSetTimer);
-						struct timer_struct timerData = setTimerPool.read();
-						if (timerData.runGameTime == false) {
-							untilGameTimer.set(timerData.time);
-							state = timer;
-						}
-						else if (timerData.runGameTime == true) {
-							startGameTimer.set(timerData.time);
-							state = timer;
-						}
+						wait(setTimerFlag);
+						timerData = setTimerPool.read();
+						state = timeUntilStartState;
 						break;
 
+					case timeUntilStartState:
+						untilGameTimer.set( (2 * timerData.timeUntilStart) * rtos::ms);
+						wait(untilGameTimer);
+						//RunGameControl.StartGame();
+						state = gameTimerState;
+						break;
+
+					case gameTimerState:
+						startGameTimer.set( (/* here must calulation for timer*/ ) * rtos::ms);
+						wait(startGameTimer);
+						//RunGameControl.gameOver();
+						state = idle;
+						break;
+					/*
 					case timer:
 						//entry events
-						DisplayControl.showMessage(TimerControl.timeremaining());
+						//DisplayControl.showMessage(TimerControl.timeremaining());
 
 						//other events
-						events = wait(untilGameTimerFlag + startGameTimerFlag);
-						if (events == untilGameTimerFlag) {
+						auto events = wait(untilGameTimer + startGameTimer);
+						if (events == untilGameTimer) {
 							endTimerFlag.set();
 							state = idle;
 							break;
 						}
-						if (events == startGameTimerFlag) {
-							runGameControl.gameOver();
+						if (events == startGameTimer) {
+							//runGameControl.gameOver();
 							state = idle;
 							break;
 						}
+						state = idle;
 						break;
-					default:break;
+					*/
+					//default:break;
 
 				}
 			}

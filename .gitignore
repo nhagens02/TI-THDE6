@@ -85,3 +85,5 @@ _*
 *.VC.*
 makefile.due
 temp/SoundControl.cpp
+SendTest/Makefile
+SendTest/main.cpp

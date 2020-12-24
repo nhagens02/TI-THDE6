@@ -20,7 +20,7 @@ class ReceiveIrMessageControl : public rtos::task<> {
 
 	private:
 		state_t state = idle;
-		rtos::channel<bool, 64> bitValueChannel;
+		rtos::channel<bool, 128> bitValueChannel;
 		ReceiveIrByteToDataControl& receiveIrByteToDataControl;
 		uint_fast16_t message = 0;
 		uint_fast16_t bitAmount = 0;
@@ -52,7 +52,6 @@ public:
 			for(;;){
 					switch(state)
 					{
-
 						case idle:
 							//entry event
 							//task::suspend();//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -68,7 +67,7 @@ public:
 								exitTimer.set(4 * rtos::ms);
 								auto event = wait( bitValueChannel + exitTimer );
 								if (event == exitTimer) {
-									//hwlib::cout << message;
+									//hwlib::cout << message << hwlib::endl;
 									message = 0;
 									bitAmount = 0;
 									state = idle;

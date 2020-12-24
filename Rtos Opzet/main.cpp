@@ -11,6 +11,7 @@
 #include "RegisterGameParametersControl.hpp"
 #include "bitDetector.hpp"
 #include "ReceiveIrByteToDataControl.hpp"
+#include "TimerControl.hpp"
 
 #include "RunGameControl.hpp"
 
@@ -101,18 +102,16 @@ int main( void ) {
 
 	
 	hwlib::cout << "test1" << hwlib::endl;
-	auto IrLed_output = hwlib::target::d2_36kHz();;
+	auto IrLed_output = hwlib::target::d2_36kHz();
 
 	auto dataToIrByteControl = DataToIrbyteControl(IrLed_output);
 	
 
-
-	auto test2 = test(dataToIrByteControl);
+	//auto test2 = test(dataToIrByteControl);
 
 	auto init = InitGameControl(dataToIrByteControl, display);
 
 	
-
 	auto keyPad = keypadControl(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4, init, regPar);
 
 	auto runGame = RunGameControl(dataToIrByteControl, display, pe);
