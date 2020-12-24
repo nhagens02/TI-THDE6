@@ -34,7 +34,7 @@ class RunGameControl : public rtos::task<>{
 		rtos::pool <int> buttonIDPool;
 		rtos::channel< struct parameters, 128 > sendGameParametersChannel;
 		rtos::flag flagGameOver;
-		rtos::flag untilStartTimerFlag;
+		rtos::flag StartGameFlag;
 		DataToIrbyteControl& dataToIrbyteControl;
 		//transferHitsControl& transferHitsControl;
 		DisplayController& displayControl;
@@ -51,7 +51,7 @@ class RunGameControl : public rtos::task<>{
 			buttonIDPool("buttonIDPool"),
 			sendGameParametersChannel(this, "sendGameParametersChannel"),
 			flagGameOver(this, "flagGameOver"),
-			untilStartTimerFlag(this, "untilStartTimerFlag"),
+			StartGameFlag(this, "StartGameFlag"),
 			dataToIrbyteControl(dataToIrbyteControl),
 			//transferHitsControl (transferHitsControl),
 			displayControl(displayControl),
@@ -61,8 +61,8 @@ class RunGameControl : public rtos::task<>{
 		void sendHit(struct shootdata sData) { sendHitChannel.write(sData);}
 		void buttonPressed(int buttonID){buttonIDPool.write(buttonID); buttonFlag.set();}
 		void sendGameParameters(struct parameters para){sendGameParametersChannel.write(para);}
-		void gameOverFlag(){flagGameOver.set();}
-		void untilStartTimerFlagset() { untilStartTimerFlag.set(); }
+		void gameOver(){flagGameOver.set();}
+		void StartGame() { StartGameFlag.set(); }
 
 	private:
 		void main(){
@@ -90,7 +90,7 @@ class RunGameControl : public rtos::task<>{
 						//entry events
 						//timerControl.setUntilStartTimer(timeUntilStart);
 						hwlib::cout << "before timer" << hwlib::endl;
-						wait(untilStartTimerFlag);
+						wait(StartGameFlag);
 						//other events
 						state = start_game;
 						break;
