@@ -11,6 +11,7 @@
 #include "RegisterGameParametersControl.hpp"
 #include "bitDetector.hpp"
 #include "ReceiveIrByteToDataControl.hpp"
+#include "TimerControl.hpp"
 
 #include "RunGameControl.hpp"
 

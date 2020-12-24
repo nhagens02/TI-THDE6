@@ -12,22 +12,31 @@
 /// If the bool runGameTime is false. The time in the struct will contain in how many minutes the game will start.
 /// This class uses rtos::task<>.
 class TimerControl : public rtos::task<>{
-	enum state state_t {idle, timer};
+	enum state_t {idle, timer};
 
 	private:
 		state_t state = idle;
-		rtos::timer setTimer;
+		rtos::timer set_Timer;
 		rtos::flag setTimerFlag;
-		rtos::pool<int> setTimerPool;
-		rtos::timer endTimerFlag;
+		rtos::pool<struct timer_struct> setTimerPool;
+		rtos::flag endTimerFlag;
+		rtos::timer untilGameTimer;
+		rtos::timer startGameTimer;
+		struct timer_struct timerData;
 
 
 	TimerControl():
-
+		task("Timer Controller"),
+		set_Timer(this, "timer"),
+		setTimerFlag(this, "Flag for timer set"),
+		setTimerPool("pool with struct: timer_struct"),
+		endTimerFlag(this, "end timer flag"),
+		untilGameTimer(this, "Game finished timer"),
+		startGameTimer(this, "Start Game Timer")
 	{}
 
 	public:
-		void setTimer(struct timer_struct timer_s) {setTimerPool.write(timer_s); flagSetTimer.set();}
+		void setTimer(struct timer_struct timer_s) {setTimerPool.write(timer_s); setTimerFlag.set();}
 		void endTimer() {endTimerFlag.set();}
 
 	private:
@@ -42,35 +51,40 @@ class TimerControl : public rtos::task<>{
 
 						//other events
 						wait(setTimerFlag);
-						struct timer_struct timerData = setTimerPool.read();
+						timerData = setTimerPool.read();
 						if (timerData.runGameTime == false) {
 							untilGameTimer.set(timerData.time);
 							state = timer;
+							break;
 						}
 						else if (timerData.runGameTime == true) {
 							startGameTimer.set(timerData.time);
 							state = timer;
+							break;
 						}
+						state = idle;
 						break;
 
 					case timer:
 						//entry events
-						DisplayControl.showMessage(TimerControl.timeremaining());
+						//DisplayControl.showMessage(TimerControl.timeremaining());
 
 						//other events
-						events = wait(untilGameTimerFlag + startGameTimerFlag);
-						if (events == untilGameTimerFlag) {
+						auto events = wait(untilGameTimer + startGameTimer);
+						if (events == untilGameTimer) {
 							endTimerFlag.set();
 							state = idle;
 							break;
 						}
-						if (events == startGameTimerFlag) {
-							runGameControl.gameOver();
+						if (events == startGameTimer) {
+							//runGameControl.gameOver();
 							state = idle;
 							break;
 						}
+						state = idle;
 						break;
-					default:break;
+
+					//default:break;
 
 				}
 			}
