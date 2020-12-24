@@ -24,6 +24,7 @@ class InitGameControl : public rtos::task<>{
 		state_t state = idle;
 		struct parameters para;
 		int bnID;
+		int now = 0;
 		rtos::channel< int, 128 > buttonChannel;
 		//keypadControl& KeypadControl;
 		//registerGameparametersControl& registerGameparametersControl;
@@ -149,6 +150,7 @@ class InitGameControl : public rtos::task<>{
 								if (bnID == 15) { //15 = #
 									if ((para.timeUntilStart >= 1) && (para.timeUntilStart <= 31)) {
 										state = sendData;
+										now = hwlib::now_us();
 										break;
 									}
 									else {
@@ -169,6 +171,7 @@ class InitGameControl : public rtos::task<>{
 								break;
 
 							case sendData:
+								//current time = ;
 								//entry events
 								displayControl.showMessage("\fPress * to send para\nPress # to go to\nStart.\n");
 								//other events
@@ -180,6 +183,20 @@ class InitGameControl : public rtos::task<>{
 									break;
 								}
 								else if (bnID == 14) { // * = 14
+									//current time 
+									hwlib::cout << "now: " << now << hwlib::endl;
+									int time = ((hwlib::now_us() - now ) / 1000000) / 2;
+									hwlib::cout << "time: " << time << hwlib::endl;
+									hwlib::cout << "timeUntil start before: " << para.timeUntilStart << hwlib::endl;
+									//if (time >= 2000) { //2 sec
+									para.timeUntilStart -= time;
+									//}
+									//para.timeUntilStart -= time;
+									//if (para.timeUntilStart <= 0) {
+									//	state = idle;
+									//	break;
+									//}
+									hwlib::cout << "time until start: " << para.timeUntilStart << hwlib::endl;
 									dataToIrByteControl.sendingGameParametersChannel(para);
 									state = sendData;
 									break;

@@ -18,26 +18,26 @@ class TimerControl : public rtos::task<>{
 		state_t state = idle;
 		//rtos::timer set_Timer;
 		rtos::flag setTimerFlag;
-		rtos::pool<struct timer_struct> setTimerPool;
+		rtos::pool<struct parameters> setTimerPool;
 		//rtos::flag endTimerFlag;
 		rtos::timer untilGameTimer;
 		rtos::timer startGameTimer;
 		struct parameters timerData;
 
 
-	TimerControl():
-		task("Timer Controller"),
-		//set_Timer(this, "timer"),
-		setTimerFlag(this, "Flag for timer set"),
-		setTimerPool("pool with struct: timer_struct"),
-		//endTimerFlag(this, "end timer flag"),
-		untilGameTimer(this, "Game finished timer"),
-		startGameTimer(this, "Start Game Timer")
-	{}
-
 	public:
+		TimerControl() :
+			task("Timer Controller"),
+			//set_Timer(this, "timer"),
+			setTimerFlag(this, "Flag for timer set"),
+			setTimerPool("pool with struct: timer_struct"),
+			//endTimerFlag(this, "end timer flag"),
+			untilGameTimer(this, "Game finished timer"),
+			startGameTimer(this, "Start Game Timer")
+		{}
+
 		void setTimer(struct parameters timerData) {setTimerPool.write(timerData); setTimerFlag.set();}
-		void endTimer() {endTimerFlag.set();}
+		//void endTimer() {endTimerFlag.set();}
 
 	private:
 		void main(){
@@ -55,18 +55,20 @@ class TimerControl : public rtos::task<>{
 						break;
 
 					case timeUntilStartState:
-						untilGameTimer.set( (2 * timerData.timeUntilStart) * rtos::ms);
+						untilGameTimer.set( (2000 * timerData.timeUntilStart) * rtos::ms);//example if timeUntil Start = 2, 2*2000 = 4 sec wait time.
 						wait(untilGameTimer);
 						//RunGameControl.StartGame();
 						state = gameTimerState;
 						break;
 
 					case gameTimerState:
-						startGameTimer.set( (/* here must calulation for timer*/ ) * rtos::ms);
+						startGameTimer.set( (/* here must calulation for timer*/ 1 ) * rtos::ms);
 						wait(startGameTimer);
 						//RunGameControl.gameOver();
 						state = idle;
 						break;
+					
+					default:break;
 					/*
 					case timer:
 						//entry events

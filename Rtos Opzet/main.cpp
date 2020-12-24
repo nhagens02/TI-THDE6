@@ -122,6 +122,8 @@ int main( void ) {
 
 	auto bitDet = BitDetector(tsop_signal, recIrMessage);
 
+	auto timerControl = TimerControl();
+
 	hwlib::cout << "before start" << hwlib::endl;
 	rtos::run();
 }

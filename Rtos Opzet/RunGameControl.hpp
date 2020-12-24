@@ -25,7 +25,7 @@ enum eButtonID {reloadButton, TriggerButton};
 /// This class will check if the buttons reload and trigger buttons are being pressed and and processed that.
 /// This class uses rtos::task<>. 
 class RunGameControl : public rtos::task<>{
-	enum state_t {idle, saveParameters, start_game, run_game, gameOver, hit_received, weaponButtonPressed, shoot, reload, sendDataToComputer, start_timer_until_gamestart};
+	enum state_t {idle, saveParameters, start_game, run_game, gameOverState, hit_received, weaponButtonPressed, shoot, reload, sendDataToComputer, start_timer_until_gamestart};
 
 	private:
 		state_t state = idle;
@@ -110,7 +110,7 @@ class RunGameControl : public rtos::task<>{
 						//other events
 						auto event = wait(flagGameOver + sendHitChannel + buttonFlag);
 						if (event == flagGameOver) {
-							state = gameOver;
+							state = gameOverState;
 							break;
 						}
 						if (event == sendHitChannel) {
@@ -150,7 +150,7 @@ class RunGameControl : public rtos::task<>{
 							break;
 						}
 						else{
-							state = gameOver;
+							state = gameOverState;
 							break;
 							//misch aanpassen naar flag setten en terug naar run game gaan.
 						}
@@ -178,7 +178,7 @@ class RunGameControl : public rtos::task<>{
 						state = run_game;
 						break;
 
-					case gameOver:
+					case gameOverState:
 						displayControl.showMessage("game Over");
 						//soundControl.showMessage(4);
 						displayControl.showMessage(playerEntity.getPlayerID());
