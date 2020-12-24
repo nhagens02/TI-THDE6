@@ -18,10 +18,12 @@ class PlayerEntity {
    		rtos::pool< int > playerIDPool;
    		rtos::pool< int > weaponIDPool;
    		rtos::pool< int > livesPool;
+        rtos::pool< int > ammoPool;
    		rtos::pool < struct data_s > data_pool;
    		int playerID;
    		int weaponID;
    		int lives;
+        int ammo;
    		struct data_s data_a;
    		//data_a.counter = 0;
 
@@ -30,6 +32,7 @@ class PlayerEntity {
         playerIDPool( "playerID_pool" ),
         weaponIDPool( "weaponID_pool" ),
         livesPool( "lives_pool" ),
+        ammoPool('ammo_pool'),
         data_pool( "data_pool" )
         {}
         //pool mag ook opslag
@@ -41,6 +44,9 @@ class PlayerEntity {
 
 		void setLives(int lives){ livesPool.write(lives);}
 		int getlives(){return (livesPool.read());}
+
+        void setAmmo(int ammo) { ammoPool.write(ammo); }
+        int getAmmo() { return (ammoPool.read()); }
 
         void addData(struct shootdata sData) { if (data_a.counter < 500) { data_a.playerID[data_a.counter] = sData.playerID; data_a.weaponStrength[data_a.counter] = sData.weaponStrength; data_a.counter++; } data_pool.write(data_a); }
 	    struct data_s getData(){return data_pool.read(); }
