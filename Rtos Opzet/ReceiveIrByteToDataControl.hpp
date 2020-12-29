@@ -70,20 +70,20 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 
 					//Check exclusiveOr
 					uint_fast8_t player = message >> 10;
-					uint_fast8_t data = (message - ((player << 10) >> 5));
-					uint_fast8_t exclusiveOr = (message - (message - (player << 10)) - (message - (data << 5)));
+					//uint_fast8_t data = (message - ((player << 10) >> 5));
+					uint_fast8_t data = (message << 6) >> 11;
+					//uint_fast8_t exclusiveOr = (message - (message - (player << 10)) - (message - (data << 5)));
+					uint_fast8_t exclusiveOr = (message << 11) >> 11;
 					if ((player || data) == exclusiveOr) {
 
 
-						if ((message >> 10) == 0) { // player = 0
+						if (player == 0) { // player = 0
 							// decode data
 							if (previousTransmitWasFirstDataTransmit == 0) {
 								// decode gamemode and gametime
 								previousTransmitWasFirstDataTransmit = 1;
-								gamemode = message >> 8;
-								message -= (gamemode << 8);
-								gametime = message >> 5;
-								message -= (gametime << 5);
+								gamemode = data >> 3;
+								gametime = (data << 2) >> 2;
 								para.gameMode = gamemode;
 								para.gameTime = gametime;
 								hwlib::cout << "gameTime : " << para.gameTime << hwlib::endl;
