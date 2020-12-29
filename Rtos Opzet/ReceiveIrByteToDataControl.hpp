@@ -75,6 +75,17 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 					uint_fast8_t data = (message << 6) >> 11;
 					//uint_fast8_t exclusiveOr = (message - (message - (player << 10)) - (message - (data << 5)));
 					uint_fast8_t exclusiveOr = (message << 11) >> 11;
+					//calculate xor
+					uint_fast8_t calculatedXOR = 0;
+					for (int i = 5; i > 0; i--) {
+						bool x = 0;
+						bool y = 0;
+						if (player & (1 << i))x = 1;
+						if (data & (1 << i))y = 1;
+						calculatedXOR += (x ^ y) << (i - 1);
+						//hwlib::wait_us(0);
+					}
+
 					if ((player || data) == exclusiveOr) {
 
 
