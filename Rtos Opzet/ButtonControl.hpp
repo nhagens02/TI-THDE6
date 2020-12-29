@@ -15,16 +15,16 @@ class ButtonControl : public rtos::task<> {
 		state_t state = idle;
 		rtos::clock intervalKeyCheck;
 		RunGameControl& runGameControl;
-		hwlib::pin_in& but_1;// shoot button 
-		hwlib::pin_in& but_2;// reload button
+		hwlib::pin_in& triggerButtonPin;// shoot button 
+		hwlib::pin_in& reloadButtonPin; // reload button
 		
 	public:
-		ButtonControl(RunGameControl& runGameControl, hwlib::pin_in& but_1, hwlib::pin_in& but_2):
+		ButtonControl(RunGameControl& runGameControl, hwlib::pin_in& triggerButtonPin, hwlib::pin_in& reloadButtonPin):
 			task("Button controller"),
 			intervalKeyCheck(this, (340 * rtos::ms), "Button interval checker"),
 			runGameControl(runGameControl),
-			but_1(but_1),
-			but_2(but_2)
+			triggerButtonPin(triggerButtonPin),
+			reloadButtonPin(reloadButtonPin)
 		{}
 
 	private:
@@ -43,15 +43,15 @@ class ButtonControl : public rtos::task<> {
 
 					case checkAndSendButton:
 						//entry events
-						but_1.refresh();
-						if (!(but_1.read())) {
+						triggerButtonPin.refresh();
+						if (!(triggerButtonPin.read())) {
 							eButtonID b = triggerButton;
 							runGameControl.buttonPressed(b);
 							state = idle;
 							break;
 						}
-						but_2.refresh();
-						if (!(but_2.read())) {
+						reloadButtonPin.refresh();
+						if (!(reloadButtonPin.read())) {
 							eButtonID b = reloadButton;
 							runGameControl.buttonPressed(b);
 							state = idle;
