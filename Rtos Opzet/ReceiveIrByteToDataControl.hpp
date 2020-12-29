@@ -64,6 +64,7 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 		void getMessage(uint_fast16_t message) { messageChannel.write(message); }
 		void receiveMessage(uint_fast16_t message) {
 			if (message != previousMessage) {
+				previousMessage = message;
 				//decode
 				if ((message >> 15) == 1) {
 					message -= 32768; // set first bit to 0
@@ -116,7 +117,6 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 					}
 				}
 			}
-			previousMessage = message;
 			//change state
 		}
 
