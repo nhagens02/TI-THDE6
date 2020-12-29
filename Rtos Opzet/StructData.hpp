@@ -1,6 +1,15 @@
 #ifndef STRUCTDATA_HPP
 #define STRUCTDATA_HPP
 
+
+/// \brief
+/// enum eButtonID
+/// \details
+/// This enum will define the possible states for the button's.
+/// The Buttons in the class RunGameControl are: reloadButton, TriggerButton.
+enum eButtonID { triggerButton, reloadButton };
+
+
 /// \brief
 /// Game parameters struct. 
 /// \details
@@ -43,5 +52,6 @@ struct shootdata {
 	int playerID;
 	int weaponStrength;
 };
+
 
 #endif // STRUCTDATA_HPP

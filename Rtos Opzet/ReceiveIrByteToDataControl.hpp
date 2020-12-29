@@ -49,7 +49,7 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 		uint_fast8_t gamemode = 0;
 		uint_fast8_t gametime = 0;
 		uint_fast16_t previousMessage = 0;
-		uint16_t message;
+		uint_fast16_t message;
 		bool previousTransmitWasFirstDataTransmit = 0;
 
 	public:
@@ -61,7 +61,7 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 
 		{}
 
-		void getMessage(uint16_t message) { messageChannel.write(message); }
+		void getMessage(uint_fast16_t message) { messageChannel.write(message); }
 		void receiveMessage(uint_fast16_t message) {
 			if (message != previousMessage) {
 				//decode

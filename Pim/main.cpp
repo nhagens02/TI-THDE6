@@ -64,8 +64,8 @@ int getBit(auto &tsop_signal, auto &ir) {
 
 
 
-//uint16_t GetReceivingBits() {
-//	uint16_t result = 0;
+//uint_fast16_t GetReceivingBits() {
+//	uint_fast16_t result = 0;
 //	for (int i = 0; i <= 15; i++) {
 	//	wait(bitsChannel);
 	//	bool bit = bitsChannel.read();

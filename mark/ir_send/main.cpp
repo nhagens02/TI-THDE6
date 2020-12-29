@@ -23,9 +23,9 @@ void IRcarrier(unsigned int IRtimemicroseconds)
 	}
 }
 
-void sendIRMessage(uint16_t code) {
+void sendIRMessage(uint_fast16_t code) {
 	for(uint8_t i = 0; i < 16; i++) {
-		if(code & (1 << ((sizeof(uint16_t) * 8) - 1))) {
+		if(code & (1 << ((sizeof(uint_fast16_t) * 8) - 1))) {
 			IRcarrier(1600);
 			hwlib::wait_us(800);
 		}
@@ -49,7 +49,7 @@ void detectButtonPress() {
 		if (state != lastBtnState) {
 			lastBtnState = state;
 			if (!state) {
-				//uint16_t code = 0b1010101010101010;
+				//uint_fast16_t code = 0b1010101010101010;
 				auto start = hwlib::now_us();
 				sendIRMessage(code);
 				auto stop = hwlib::now_us();

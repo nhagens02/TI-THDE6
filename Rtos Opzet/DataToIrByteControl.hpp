@@ -43,10 +43,10 @@ class DataToIrbyteControl : public rtos::task<>{
 
 		void sendGameParameters(int gamemodeID, int gameTime, int timeUntilStart) {
 			//Gamemode and Gametime
-			uint16_t information = 0;
+			uint_fast16_t information = 0;
 			if ((gamemodeID > 1) || (gameTime > 7) || (timeUntilStart > 31))return;
 			information += 1 << 15;
-			information += gamemodeID << 7;
+			information += gamemodeID << 8;
 			information += gameTime << 5;
 			//XOR
 			for (int i = 5; i > 0; i--) {
@@ -94,7 +94,7 @@ class DataToIrbyteControl : public rtos::task<>{
 
 		void sendTrigger(int playerID, int weaponStrength) {
 			//hwlib::cout << "test function" << hwlib::endl;
-			uint16_t information = 0;
+			uint_fast16_t information = 0;
 			if ((playerID > 31) || (weaponStrength > 31))return;
 			information += 1 << 15;
 			information += playerID << 10;
@@ -126,7 +126,6 @@ class DataToIrbyteControl : public rtos::task<>{
 					//hwlib::cout << "after wait" << hwlib::endl;
 					if (event == triggerChannel) {
 						//hwlib::cout << "in if" << hwlib::endl;
-						sData = triggerChannel.read();
 						//hwlib::cout << sData.playerID << hwlib::endl;
 						//hwlib::cout << sData.weaponStrength << hwlib::endl;
 						state = sendingTrigger;
@@ -146,6 +145,7 @@ class DataToIrbyteControl : public rtos::task<>{
 				
 				case sendingTrigger:
 					//entry events
+					sData = triggerChannel.read();
 					sendTrigger(sData.playerID, sData.weaponStrength);
 					//other events
 					//hwlib::cout << "aftertrigger" << hwlib::endl;

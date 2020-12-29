@@ -13,6 +13,8 @@
 #include "ReceiveIrByteToDataControl.hpp"
 #include "TimerControl.hpp"
 
+#include "ButtonControl.hpp"
+
 #include "RunGameControl.hpp"
 
 class TimerTest : public rtos::task<> {
@@ -141,6 +143,11 @@ int main( void ) {
 	auto bitDet = BitDetector(tsop_signal, recIrMessage);
 
 	auto timerControl = TimerControl();
+
+	auto triggerButton =hwlib::target::pin_in(hwlib::target::pins::d3);
+	auto reloadButton = hwlib::target::pin_in(hwlib::target::pins::d4);
+
+	auto buttonControl = ButtonControl(runGame, triggerButton, reloadButton);
 
 	hwlib::cout << "before start" << hwlib::endl;
 	rtos::run();
