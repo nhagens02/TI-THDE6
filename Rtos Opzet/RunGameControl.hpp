@@ -41,6 +41,7 @@ class RunGameControl : public rtos::task<>{
 		PlayerEntity& playerEntity;
 		struct parameters para;
 		struct shootdata sData;
+		struct shootdata weaponChanData;
 		int bnID;
 
 	public:
@@ -136,8 +137,9 @@ class RunGameControl : public rtos::task<>{
 					}
 					case hit_received:
 						//entry events
-						//weaponID = sendHitChannel.read();
-						playerEntity.addData(sendHitChannel.read());
+						weaponChanData = sendHitChannel.read();
+
+						playerEntity.addData(weaponChanData);
 						playerEntity.setLives(playerEntity.getlives() - 1);
 						//soundControl.playSound(2);
 						//hitReceivedTimer.set(800);
@@ -160,6 +162,12 @@ class RunGameControl : public rtos::task<>{
 						//entry events
 						//soundControl.playSound(3);
 						//reloadTimer.start();
+						if (playerEntity.getWeaponPower() == 1) {
+							playerEntity.setAmmo(100);
+						}
+						if (playerEntity.getWeaponPower() == 2) {
+							playerEntity.setAmmo(100);
+						}
 
 						//other events
 						//wait(reloadTimerFlag);
