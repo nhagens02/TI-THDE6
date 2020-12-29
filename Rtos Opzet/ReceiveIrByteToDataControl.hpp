@@ -50,7 +50,7 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 		uint_fast8_t gametime = 0;
 		uint_fast16_t previousMessage = 0;
 		uint_fast16_t message;
-		bool previousTransmitWasFirstDataTransmit = 0;
+		bool previousTransmitWasFirstDataTransmit = false;
 
 	public:
 		ReceiveIrByteToDataControl(RegisterGameParametersControl& registerGameParametersControl, RunGameControl& runGameControl):
@@ -79,9 +79,9 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 
 						if (player == 0) { // player = 0
 							// decode data
-							if (previousTransmitWasFirstDataTransmit == 0) {
+							if (!previousTransmitWasFirstDataTransmit) {
 								// decode gamemode and gametime
-								previousTransmitWasFirstDataTransmit = 1;
+								previousTransmitWasFirstDataTransmit = true;
 								gamemode = data >> 3;
 								gametime = (data << 2) >> 2;
 								para.gameMode = gamemode;
@@ -94,7 +94,7 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 							else {
 								// decode timeUntilStart and call function
 								uint_fast8_t timeUntilStart = message >> 5;
-								previousTransmitWasFirstDataTransmit = 0;
+								previousTransmitWasFirstDataTransmit = false;
 								para.timeUntilStart = timeUntilStart;
 								registerGameParametersControl.SetParameters(para);
 								hwlib::cout << "timeUn: " << para.timeUntilStart << hwlib::endl;
