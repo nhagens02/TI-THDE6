@@ -100,7 +100,7 @@ int main( void ) {
 	tsop_vdd.flush();
 
 
-	auto pe = PlayerEntity();
+	PlayerEntity pe;
 
 	auto scl = hwlib::target::pin_oc(hwlib::target::pins::scl);
 	auto sda = hwlib::target::pin_oc(hwlib::target::pins::sda);
@@ -109,38 +109,38 @@ int main( void ) {
 
 	auto oled = hwlib::glcd_oled(i2c_bus, 0x3c);
 
-	auto display = DisplayController(scl, sda);
+	DisplayController display(scl, sda);
 	
-	auto regPar = RegisterGameParametersControl(pe, display);
+	RegisterGameParametersControl regPar(pe, display);
 
 	
 	hwlib::cout << "test1" << hwlib::endl;
 	auto IrLed_output = hwlib::target::d2_36kHz();
 
-	auto dataToIrByteControl = DataToIrbyteControl(IrLed_output);
+	DataToIrbyteControl dataToIrByteControl(IrLed_output);
 	
 
 	//auto test2 = test(dataToIrByteControl);
 
-	auto init = InitGameControl(dataToIrByteControl, display);
+	InitGameControl init(dataToIrByteControl, display);
 
 	
-	auto keyPad = keypadControl(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4, init, regPar);
+	keypadControl keyPad(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4, init, regPar);
 
-	auto runGame = RunGameControl(dataToIrByteControl, display, pe);
+	RunGameControl runGame(dataToIrByteControl, display, pe);
 
-	auto receiveIrByte = ReceiveIrByteToDataControl(regPar, runGame);
+	ReceiveIrByteToDataControl receiveIrByte(regPar, runGame);
 
-	auto recIrMessage = ReceiveIrMessageControl(receiveIrByte);
+	ReceiveIrMessageControl recIrMessage(receiveIrByte);
 
-	auto bitDet = BitDetector(tsop_signal, recIrMessage);
+	BitDetector bitDet(tsop_signal, recIrMessage);
 
-	auto timerControl = TimerControl();
+	TimerControl timerControl;
 
 	auto triggerButton =hwlib::target::pin_in(hwlib::target::pins::d3);
 	auto reloadButton = hwlib::target::pin_in(hwlib::target::pins::d4);
 
-	auto buttonControl = ButtonControl(runGame, triggerButton, reloadButton);
+	ButtonControl buttonControl(runGame, triggerButton, reloadButton);
 
 	hwlib::cout << "before start" << hwlib::endl;
 	rtos::run();
