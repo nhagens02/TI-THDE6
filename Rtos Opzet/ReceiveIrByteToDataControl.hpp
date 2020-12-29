@@ -86,7 +86,7 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 						//hwlib::wait_us(0);
 					}
 
-					if ((player || data) == exclusiveOr) {
+					if (calculatedXOR == exclusiveOr) {
 
 
 						if (player == 0) { // player = 0
