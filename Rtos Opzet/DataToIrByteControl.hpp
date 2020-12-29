@@ -46,7 +46,7 @@ class DataToIrbyteControl : public rtos::task<>{
 			uint16_t information = 0;
 			if ((gamemodeID > 1) || (gameTime > 7) || (timeUntilStart > 31))return;
 			information += 1 << 15;
-			information += gamemodeID << 7;
+			information += gamemodeID << 8;
 			information += gameTime << 5;
 			//XOR
 			for (int i = 5; i > 0; i--) {

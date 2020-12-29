@@ -89,7 +89,7 @@ class InitGameControl : public rtos::task<>{
 								wait(buttonChannel);
 								bnID = buttonChannel.read();
 								if (bnID == 15) { //15 = #
-									if ((para.gameTime >= 1) && (para.gameTime <= 15)) {
+									if ((para.gameTime >= 0) && (para.gameTime <= 7)) {
 										state = setGameMode;
 										break;
 									}
@@ -98,8 +98,10 @@ class InitGameControl : public rtos::task<>{
 										break;
 									}
 								}
-								else if ((bnID >=1) && (bnID <=9)) {
-									para.gameTime += bnID;
+								else if ((bnID >=0) && (bnID <=7)) {
+									para.gameTime = bnID;
+									state = enterPlayTime;
+									break;
 								}
 								else {
 									state = enterPlayTime;
@@ -184,19 +186,19 @@ class InitGameControl : public rtos::task<>{
 								}
 								else if (bnID == 14) { // * = 14
 									//current time 
-									hwlib::cout << "now: " << now << hwlib::endl;
-									int time = ((hwlib::now_us() - now ) / 1000000) / 2;
-									hwlib::cout << "time: " << time << hwlib::endl;
-									hwlib::cout << "timeUntil start before: " << para.timeUntilStart << hwlib::endl;
+									//hwlib::cout << "now: " << now << hwlib::endl;
+									//int time = ((hwlib::now_us() - now ) / 1000000) / 2;
+									//hwlib::cout << "time: " << time << hwlib::endl;
+									//hwlib::cout << "timeUntil start before: " << para.timeUntilStart << hwlib::endl;
 									//if (time >= 2000) { //2 sec
-									para.timeUntilStart -= time;
+									//para.timeUntilStart -= time;
 									//}
 									//para.timeUntilStart -= time;
 									//if (para.timeUntilStart <= 0) {
 									//	state = idle;
 									//	break;
 									//}
-									hwlib::cout << "time until start: " << para.timeUntilStart << hwlib::endl;
+									//hwlib::cout << "time until start: " << para.timeUntilStart << hwlib::endl;
 									dataToIrByteControl.sendingGameParametersChannel(para);
 									state = sendData;
 									break;
