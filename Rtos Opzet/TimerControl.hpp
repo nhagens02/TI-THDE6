@@ -52,7 +52,7 @@ class TimerControl : public rtos::task<>{
 
 						hwlib::cout << "waiting for game countdown to start. . .\n";
 						wait(this->untilGameTimer);
-
+						runGameControl.startGame();
 						this->state = gameTimerState;
 
 						break;

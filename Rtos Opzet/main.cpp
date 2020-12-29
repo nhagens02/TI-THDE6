@@ -135,7 +135,7 @@ int main( void ) {
 
 	BitDetector bitDet(tsop_signal, recIrMessage);
 
-	//TimerControl timerControl;
+	TimerControl timerControl(runGame);
 
 	auto triggerButton =hwlib::target::pin_in(hwlib::target::pins::d3);
 	auto reloadButton = hwlib::target::pin_in(hwlib::target::pins::d4);
