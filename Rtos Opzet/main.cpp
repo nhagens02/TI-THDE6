@@ -13,6 +13,8 @@
 #include "ReceiveIrByteToDataControl.hpp"
 #include "TimerControl.hpp"
 
+#include "ButtonControl.hpp"
+
 #include "RunGameControl.hpp"
 
 

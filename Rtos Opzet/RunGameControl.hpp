@@ -9,13 +9,6 @@
 #include "playerEntity.hpp"
 /// @file
 
-/// \brief
-/// enum eButtonID
-/// \details
-/// This enum will define the possible states for the button's.
-/// The Buttons in the class RunGameControl are: reloadButton, TriggerButton.
-enum eButtonID {reloadButton, TriggerButton};
-
 
 /// \brief
 /// CLASS
@@ -31,7 +24,7 @@ class RunGameControl : public rtos::task<>{
 		state_t state = idle;
 		rtos::channel< struct shootdata, 128 > sendHitChannel;
 		rtos::flag buttonFlag;
-		rtos::pool <int> buttonIDPool;
+		rtos::pool <eButtonID> buttonIDPool;
 		rtos::channel< struct parameters, 128 > sendGameParametersChannel;
 		rtos::flag flagGameOver;
 		rtos::flag StartGameFlag;
@@ -51,7 +44,7 @@ class RunGameControl : public rtos::task<>{
 			buttonFlag(this, "buttonFlag"),
 			buttonIDPool("buttonIDPool"),
 			sendGameParametersChannel(this, "sendGameParametersChannel"),
-			flagGameOver(this, "flagGameOver"),
+			flagGameOver(this, "game over flag"),
 			StartGameFlag(this, "StartGameFlag"),
 			dataToIrbyteControl(dataToIrbyteControl),
 			//transferHitsControl (transferHitsControl),
@@ -60,10 +53,10 @@ class RunGameControl : public rtos::task<>{
 
 		{}
 		void sendHit(struct shootdata sData) { sendHitChannel.write(sData);}
-		void buttonPressed(int buttonID){buttonIDPool.write(buttonID); buttonFlag.set();}
+		void buttonPressed(eButtonID ButtonID){buttonIDPool.write(ButtonID); buttonFlag.set();}
 		void sendGameParameters(struct parameters para){sendGameParametersChannel.write(para);}
-		void gameOver(){flagGameOver.set();}
-		void StartGame() { StartGameFlag.set(); }
+		void gameOver() {flagGameOver.set();}
+		void StartGame() {StartGameFlag.set();}
 
 	private:
 		void main(){
@@ -108,6 +101,7 @@ class RunGameControl : public rtos::task<>{
 						displayControl.showMessage(para.gameMode);
 						displayControl.showMessage(para.gameTime);
 						displayControl.showMessage(playerEntity.getlives());
+
 						//other events
 						auto event = wait(flagGameOver + sendHitChannel + buttonFlag);
 						if (event == flagGameOver) {
@@ -124,7 +118,7 @@ class RunGameControl : public rtos::task<>{
 								state = reload;
 								break;
 							}
-							if (bnID == TriggerButton) {
+							if (bnID == triggerButton) {
 								state = shoot;
 								break;
 							}
@@ -161,16 +155,20 @@ class RunGameControl : public rtos::task<>{
 					case reload:
 						//entry events
 						//soundControl.playSound(3);
-						//reloadTimer.start();
 						if (playerEntity.getWeaponPower() == 1) {
 							playerEntity.setAmmo(100);
+							hwlib::wait_us(2000000);
 						}
-						if (playerEntity.getWeaponPower() == 2) {
-							playerEntity.setAmmo(100);
+						else if (playerEntity.getWeaponPower() == 2) {
+							playerEntity.setAmmo(50);
+							hwlib::wait_us(1000000);
+						}
+						else if (playerEntity.getWeaponPower() == 3) {
+							playerEntity.setAmmo(15);
+							hwlib::wait_us(500000);
 						}
 
 						//other events
-						//wait(reloadTimerFlag);
 						state = run_game;
 						break;
 

@@ -17,6 +17,7 @@
 /// This class uses rtos::task<>.
 class SendIRMessageControl : public rtos::task<> {
 	enum state_t {idle, sending};
+
 private:
 	IRLed irLed;
 	int index = 0;

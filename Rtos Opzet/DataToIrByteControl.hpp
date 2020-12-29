@@ -126,7 +126,6 @@ class DataToIrbyteControl : public rtos::task<>{
 					//hwlib::cout << "after wait" << hwlib::endl;
 					if (event == triggerChannel) {
 						//hwlib::cout << "in if" << hwlib::endl;
-						sData = triggerChannel.read();
 						//hwlib::cout << sData.playerID << hwlib::endl;
 						//hwlib::cout << sData.weaponStrength << hwlib::endl;
 						state = sendingTrigger;
@@ -146,6 +145,7 @@ class DataToIrbyteControl : public rtos::task<>{
 				
 				case sendingTrigger:
 					//entry events
+					sData = triggerChannel.read();
 					sendTrigger(sData.playerID, sData.weaponStrength);
 					//other events
 					//hwlib::cout << "aftertrigger" << hwlib::endl;
