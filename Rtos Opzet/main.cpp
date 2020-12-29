@@ -15,6 +15,24 @@
 
 #include "RunGameControl.hpp"
 
+class TimerTest : public rtos::task<> {
+	public:
+		TimerTest(TimerControl &timerControl) : task("TimerTest"), timerControl(timerControl) {
+			this->run = true;
+		}
+	private:
+		TimerControl &timerControl;
+		bool run;
+
+		void main() {
+			for(;;) {
+				if(run) {
+					this->timerControl.setTimer(parameters{1, 5, 2});
+					this->run = false;
+				}
+			}
+		}
+};
 
 class test : public rtos::task<> {
 	DataToIrbyteControl& dataToIrByteControl;

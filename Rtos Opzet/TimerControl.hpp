@@ -23,17 +23,19 @@ class TimerControl : public rtos::task<>{
 		rtos::timer untilGameTimer;
 		rtos::timer startGameTimer;
 		struct parameters timerData;
+		RunGameControl& runGameControl;
 
 
 	public:
-		TimerControl() :
+		TimerControl(RunGameControl& runGameControl) :
 			task("Timer Controller"),
 			//set_Timer(this, "timer"),
 			setTimerFlag(this, "Flag for timer set"),
 			setTimerPool("pool with struct: timer_struct"),
 			//endTimerFlag(this, "end timer flag"),
 			untilGameTimer(this, "Game finished timer"),
-			startGameTimer(this, "Start Game Timer")
+			startGameTimer(this, "Start Game Timer"),
+			runGameControl(runGameControl)
 		{}
 
 		void setTimer(struct parameters timerData) {setTimerPool.write(timerData); setTimerFlag.set();}
@@ -46,25 +48,31 @@ class TimerControl : public rtos::task<>{
 				switch(state)
 				{
 					case idle:
-						//entry events
+						hwlib::cout << "waiting for game data. . .\n";
+						wait(this->setTimerFlag);
 
-						//other events
-						wait(setTimerFlag);
 						timerData = setTimerPool.read();
 						state = timeUntilStartState;
+						
 						break;
 
 					case timeUntilStartState:
-						untilGameTimer.set( (2000 * timerData.timeUntilStart) * rtos::ms);//example if timeUntil Start = 2, 2*2000 = 4 sec wait time.
-						wait(untilGameTimer);
-						//RunGameControl.StartGame();
-						state = gameTimerState;
+						untilGameTimer.set((2000 * timerData.timeUntilStart) * rtos::ms); //example if timeUntil Start = 2, 2*2000 = 4 sec wait time.
+
+						hwlib::cout << "waiting for game countdown to start. . .\n";
+						wait(this->untilGameTimer);
+
+						this->runGameControl.StartGame();
+						this->state = gameTimerState;
+
 						break;
 
 					case gameTimerState:
-						startGameTimer.set( (/* here must calulation for timer*/ 1 ) * rtos::ms);
+						this->startGameTimer.set( (/* here must calulation for timer*/ 1 ) * rtos::ms);
+
+						hwlib::cout << "waiting for game to end. . .\n";
 						wait(startGameTimer);
-						//RunGameControl.gameOver();
+
 						state = idle;
 						break;
 					
@@ -90,7 +98,6 @@ class TimerControl : public rtos::task<>{
 						break;
 					*/
 					//default:break;
-
 				}
 			}
 		}
