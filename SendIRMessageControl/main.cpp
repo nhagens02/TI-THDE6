@@ -22,7 +22,7 @@ public:
 
 	void sendGameParameters(int gamemodeID, int gameTime, int timeUntilStart) {
 		//Gamemode and Gametime
-		uint16_t information = 0;
+		uint_fast16_t information = 0;
 		if ((gamemodeID > 1) || (gameTime > 7) || (timeUntilStart > 31))return;
 		information += 1 << 15;
 		information += gamemodeID << 7;
@@ -60,7 +60,7 @@ public:
 		hwlib::wait_ms(3);
 	}
 	void sendTrigger(int playerID, int weaponStrength) {
-		uint16_t information = 0;
+		uint_fast16_t information = 0;
 		if ((playerID > 31) || (weaponStrength > 31))return;
 		information += 1 << 15;
 		information += playerID << 10;

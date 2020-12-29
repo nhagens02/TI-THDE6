@@ -22,7 +22,7 @@ private:
 	IRLed irLed;
 	int index = 0;
 	state_t state = idle;
-	rtos::channel< uint16_t, 64 > send2ByteChannel;
+	rtos::channel< uint_fast16_t, 64 > send2ByteChannel;
 	void sendZero(){
 		irLed.turnOn();
 		hwlib::wait_us_busy(800);
@@ -76,7 +76,7 @@ public:
 		
 	{}
 
-	void sendBytes(uint16_t information) {
+	void sendBytes(uint_fast16_t information) {
 		//hwlib::cout << "i am here" << hwlib::endl;
 		for (int i = 16; i > 0; i--) {
 			if (information & (1 << (i-1))) sendOne(); else { sendZero(); }

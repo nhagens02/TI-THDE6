@@ -29,7 +29,7 @@ public:
 		irLed(ledPin)
 	{}
 
-	void sendBytes(uint16_t information) {
+	void sendBytes(uint_fast16_t information) {
 		for (int i = 16; i > 0; i--) {
 			if (information & (1 << (i-1))) sendOne(); else { sendZero(); }
 		}

@@ -43,7 +43,7 @@ class DataToIrbyteControl : public rtos::task<>{
 
 		void sendGameParameters(int gamemodeID, int gameTime, int timeUntilStart) {
 			//Gamemode and Gametime
-			uint16_t information = 0;
+			uint_fast16_t information = 0;
 			if ((gamemodeID > 1) || (gameTime > 7) || (timeUntilStart > 31))return;
 			information += 1 << 15;
 			information += gamemodeID << 8;
@@ -94,7 +94,7 @@ class DataToIrbyteControl : public rtos::task<>{
 
 		void sendTrigger(int playerID, int weaponStrength) {
 			//hwlib::cout << "test function" << hwlib::endl;
-			uint16_t information = 0;
+			uint_fast16_t information = 0;
 			if ((playerID > 31) || (weaponStrength > 31))return;
 			information += 1 << 15;
 			information += playerID << 10;
