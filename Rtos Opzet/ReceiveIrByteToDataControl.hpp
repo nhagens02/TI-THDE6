@@ -7,6 +7,7 @@
 #include "StructData.hpp"
 #include "RunGameControl.hpp"
 #include "RegisterGameParametersControl.hpp"
+#include "TimerControl.hpp"
 /// @file
 
 
@@ -46,6 +47,7 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 		struct shootdata sData;
 		RegisterGameParametersControl& registerGameParametersControl;
 		RunGameControl& runGameControl;
+		TimerControl& timerControl;
 		uint16_t gamemode = 0;
 		uint16_t gametime = 0;
 		uint16_t previousMessage = 0;
@@ -53,11 +55,12 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 		bool previousTransmitWasFirstDataTransmit = false;
 
 	public:
-		ReceiveIrByteToDataControl(RegisterGameParametersControl& registerGameParametersControl, RunGameControl& runGameControl):
+		ReceiveIrByteToDataControl(RegisterGameParametersControl& registerGameParametersControl, RunGameControl& runGameControl, TimerControl& timerControl):
 			task("receiveirbyte"),
 			messageChannel(this, "Message Channel"),
 			registerGameParametersControl ( registerGameParametersControl ),
-			runGameControl ( runGameControl )
+			runGameControl ( runGameControl ),
+			timerControl ( timerControl )
 
 		{}
 
@@ -110,6 +113,7 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 								para.timeUntilStart = timeUntilStart;
 								registerGameParametersControl.SetParameters(para);
 								runGameControl.sendGameParameters(para);
+								timerControl.setTimer(para);
 							}
 						}
 						else {

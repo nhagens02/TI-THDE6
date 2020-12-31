@@ -26,7 +26,6 @@ class InitGameControl : public rtos::task<>{
 		int bnID;
 		int now = 0;
 		rtos::channel< int, 128 > buttonChannel;
-		//keypadControl& KeypadControl;
 		//registerGameparametersControl& registerGameparametersControl;
 		DataToIrbyteControl& dataToIrByteControl;
 		DisplayController& displayControl;
@@ -39,8 +38,6 @@ class InitGameControl : public rtos::task<>{
 			task("init game controller"),
 			buttonChannel(this, "button press Channel"),
 			//registerGameparametersControl(registerGameparametersControl),
-			//dataToIRByteControl(dataToIRByteControl),
-			//KeypadControl( KeypadControl ),
 			dataToIrByteControl(dataToIrByteControl),
 			displayControl( displayControl )
 		{}
