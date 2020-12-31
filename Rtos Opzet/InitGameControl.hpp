@@ -181,6 +181,7 @@ class InitGameControl : public rtos::task<>{
 								//other events
 								wait(buttonChannel);
 								bnID = buttonChannel.read();
+								//thing.
 								if (bnID == 15) { // # = 15
 									runGameControl.sendGameParameters(para);
 									timerControl.setTimer(para);

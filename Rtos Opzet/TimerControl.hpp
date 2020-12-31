@@ -40,7 +40,7 @@ class TimerControl : public rtos::task<>{
 			for(;;) {
 				switch(this->state) {
 					case idle:
-						hwlib::cout << "waiting for game data. . .\n";
+						hwlib::cout << "before setTimerFlag\n";
 						wait(this->setTimerFlag);
 
 						this->timerData = this->setTimerPool.read();
