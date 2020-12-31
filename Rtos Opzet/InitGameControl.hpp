@@ -1,7 +1,6 @@
 #ifndef INITGAMECONTROL_HPP
 #define INITGAMECONTROL_HPP
 
-
 #include "hwlib.hpp"
 #include "rtos.hpp"
 #include "StructData.hpp"
@@ -10,7 +9,6 @@
 #include "RunGameControl.hpp"
 #include "TimerControl.hpp"
 /// @file
-
 
 /// \brief
 /// InitGameControl CLASS
@@ -28,197 +26,99 @@ class InitGameControl : public rtos::task<>{
 		int bnID;
 		int now = 0;
 		rtos::channel< int, 128 > buttonChannel;
-		//registerGameparametersControl& registerGameparametersControl;
 		DataToIrbyteControl& dataToIrByteControl;
 		DisplayController& displayControl;
 		RunGameControl& runGameControl;
 		TimerControl& timerControl;
 
-
-
-	public: //registerGameparametersControl& registerGameparametersControl, keypadControl& KeypadControl,
-		InitGameControl(DataToIrbyteControl& dataToIrByteControl, DisplayController& displayControl, RunGameControl& runGameControl, TimerControl& timerControl):
+	public:
+		InitGameControl(DataToIrbyteControl& dataToIrByteControl, DisplayController& displayControl, RunGameControl& runGameControl, TimerControl& timerControl) :
 			task("init game controller"),
 			buttonChannel(this, "button press Channel"),
-			//registerGameparametersControl(registerGameparametersControl),
 			dataToIrByteControl(dataToIrByteControl),
 			displayControl( displayControl ),
 			runGameControl( runGameControl ),
 			timerControl(timerControl)
 		{}
-
 		void buttonPressed(int buttonID){buttonChannel.write(buttonID);}
 
 	private:
-			void main(){
+		void main(){
+			for(;;)
+			{
+				switch(this->state)
+				{
+					case idle:
+						wait(this->buttonChannel);
+						bnID = this->buttonChannel.read();
 
-				for(;;){
-						switch(state)
-						{
-							case idle:
-								//entry events
-								//task::suspend();//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-								//other events
-								//check deze state nog ff.
-								wait(buttonChannel);
-								bnID = buttonChannel.read();
-								if (bnID == 12) { //bnID =12 = BUTTON C
-									state = init;
-									break;
-								}
-								else {
-									state = idle;
-									break;
-								}
-								break;
-
-							case init:
-								//displayControl.showMessage("\fcommand\nEnter play time: ");
-								//displayControl.showMessage("");
-								para.gameTime = 0;
-								para.gameMode = 0;
-								para.timeUntilStart = 0;
-								state = enterPlayTime;
-								break;
-
-							case enterPlayTime:
-								//entry events
-								displayControl.showMessage("\fcommand\nEnter play time:\n");
-								displayControl.showMessage(para.gameTime);
-								//hwlib::cout << "playtimeTest" << hwlib::endl;
-								//hwlib::cout << "Time: " << para.gameTime << hwlib::endl;
-								//other events
-								wait(buttonChannel);
-								bnID = buttonChannel.read();
-								if (bnID == 15) { //15 = #
-									if ((para.gameTime >= 0) && (para.gameTime <= 7)) {
-										state = setGameMode;
-										break;
-									}
-									else {
-										state = init;
-										break;
-									}
-								}
-								else if ((bnID >=0) && (bnID <=7)) {
-									para.gameTime = bnID;
-									state = enterPlayTime;
-									break;
-								}
-								else {
-									state = enterPlayTime;
-									break;
-								}
-								break;
-
-							case setGameMode:
-								//entry events
-								displayControl.showMessage("\fcommand\nEnter game Mode:\n");
-								displayControl.showMessage(para.gameMode);
-								//hwlib::cout << "GameMode" << hwlib::endl;
-								//hwlib::cout << "gameMode: " << para.gameMode << hwlib::endl;
-								//other events
-								wait(buttonChannel);
-								bnID = buttonChannel.read();
-								//hwlib::cout << bnID << hwlib::endl;
-								if (bnID == 15) { //15 = #
-									if ((para.gameMode >= 0) && (para.gameMode <= 1)) {
-										state = SetTimeUntilStart;
-										break;
-									}
-									else {
-										state = init;
-										break;
-									}
-								}
-								else if ((bnID >= 0) || (bnID <= 1)) {
-									para.gameMode = bnID;
-									state = setGameMode;
-									break;
-								}
-								else {
-									state = setGameMode;
-									break;
-								}
-								break;
-
-							case SetTimeUntilStart:
-								//entry events
-								displayControl.showMessage("\fcommand\nEnter time until\nstart:");
-								displayControl.showMessage(para.timeUntilStart);
-								//displayControl.showMessage("");
-								//hwlib::cout << "Time until start" << hwlib::endl;
-								//hwlib::cout << "time: " << para.timeUntilStart << hwlib::endl;
-								wait(buttonChannel);
-								bnID = buttonChannel.read();
-								if (bnID == 15) { //15 = #
-									if ((para.timeUntilStart >= 1) && (para.timeUntilStart <= 31)) {
-										state = sendData;
-										now = hwlib::now_us();
-										break;
-									}
-									else {
-										state = init;
-										break;
-									}	
-								}
-								else if ((bnID >= 0) || (bnID <= 9)) {
-									para.timeUntilStart = (para.timeUntilStart * 10);
-									para.timeUntilStart += bnID;
-									state = SetTimeUntilStart;
-									break;
-								}
-								else {
-									state = SetTimeUntilStart;
-									break;
-								}
-								break;
-
-							case sendData:
-								//current time = ;
-								//entry events
-								displayControl.showMessage("\fPress * to send para\nPress # to go to\nStart.\n");
-								//other events
-								wait(buttonChannel);
-								bnID = buttonChannel.read();
-								if (bnID == 15) { // # = 15
-									runGameControl.sendGameParameters(para);
-									timerControl.setTimer(para);
-									state = idle;
-									break;
-								}
-								else if (bnID == 14) { // * = 14
-									//current time 
-									//hwlib::cout << "now: " << now << hwlib::endl;
-									//int time = ((hwlib::now_us() - now ) / 1000000) / 2;
-									//hwlib::cout << "time: " << time << hwlib::endl;
-									//hwlib::cout << "timeUntil start before: " << para.timeUntilStart << hwlib::endl;
-									//if (time >= 2000) { //2 sec
-									//para.timeUntilStart -= time;
-									//}
-									//para.timeUntilStart -= time;
-									//if (para.timeUntilStart <= 0) {
-									//	state = idle;
-									//	break;
-									//}
-									//hwlib::cout << "time until start: " << para.timeUntilStart << hwlib::endl;
-									dataToIrByteControl.sendingGameParametersChannel(para);
-									state = sendData;
-									break;
-								}
-								else {
-									state = sendData;
-									break;
-								}
-								state = sendData;
-								break;
-								
-							default:break;
+						if (bnID == 12) { //bnID 12 = BUTTON C
+							this->para = {0, 0, 0};
+							this->state = enterPlayTime;
 						}
+						break;
+					case enterPlayTime:
+						this->displayControl.showMessage("\fcommand\nEnter play time:\n");
+						this->displayControl.showMessage(this->para.gameTime);
+
+						wait(this->buttonChannel);
+						bnID = this->buttonChannel.read();
+
+						if (bnID == 15 && this->para.gameTime <= 7) { //bnID 15 = BUTTON #
+							this->state = setGameMode;
+						}
+						else if (bnID >= 0 && bnID <= 7) {
+							this->para.gameTime = bnID;
+						}
+						break;
+					case setGameMode:
+						this->displayControl.showMessage("\fcommand\nEnter game Mode:\n");
+						this->displayControl.showMessage(this->para.gameMode);
+
+						wait(this->buttonChannel);
+						bnID = this->buttonChannel.read();
+
+						if (bnID == 15 && this->para.gameMode <= 1) { //bnID 15 = BUTTON #
+							this->state = SetTimeUntilStart;
+						}
+						else if (bnID <= 1) {
+							this->para.gameMode = bnID;
+						}
+						break;
+					case SetTimeUntilStart:
+						this->displayControl.showMessage("\fcommand\nEnter time until\nstart:");
+						this->displayControl.showMessage(this->para.timeUntilStart);
+
+						wait(this->buttonChannel);
+						bnID = this->buttonChannel.read();
+						
+						if (bnID == 15 && this->para.timeUntilStart >= 1 && this->para.timeUntilStart <= 31) { //bnID 15 = BUTTON #
+							this->state = sendData;
+						}
+						else if (bnID >= 0 && bnID <= 9) {
+							this->para.timeUntilStart = this->para.timeUntilStart * 10;
+							this->para.timeUntilStart += bnID;
+						}
+						break;
+					case sendData:
+						this->displayControl.showMessage("\fPress * to send para\nPress # to go to\nStart.\n");
+
+						wait(this->buttonChannel);
+						bnID = this->buttonChannel.read();
+
+						if (bnID == 15) { //bnID 15 = BUTTON #
+							this->runGameControl.sendGameParameters(this->para);
+							this->timerControl.setTimer(this->para);
+							this->state = idle;
+						}
+						else if (bnID == 14) { //bnID 14 = BUTTON *
+							this->dataToIrByteControl.sendingGameParametersChannel(para);
+						}
+						break;
+					default:break;
 				}
 			}
-
+		}
 };
-
 
 #endif // INITGAMECONTROL_HPP
