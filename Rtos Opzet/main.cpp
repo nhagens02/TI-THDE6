@@ -125,11 +125,13 @@ int main( void ) {
 	
 
 	
-	keypadControl keyPad(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4, init, regPar);
+	
 
 	RunGameControl runGame(dataToIrByteControl, display, pe);
 
-	InitGameControl init(dataToIrByteControl, display);
+	InitGameControl init(dataToIrByteControl, display, runGame);
+
+	keypadControl keyPad(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4, init, regPar);
 
 	TimerControl timerControl(runGame);
 

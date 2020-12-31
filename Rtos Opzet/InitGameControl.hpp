@@ -7,6 +7,7 @@
 #include "StructData.hpp"
 #include "DataToIrByteControl.hpp"
 #include "DisplayController.hpp"
+#include "RunGameControl.hpp"
 /// @file
 
 
@@ -22,7 +23,7 @@ class InitGameControl : public rtos::task<>{
 
 	private:
 		state_t state = idle;
-		parameters para;
+		struct parameters para;
 		int bnID;
 		int now = 0;
 		rtos::channel< int, 128 > buttonChannel;
@@ -177,7 +178,7 @@ class InitGameControl : public rtos::task<>{
 								wait(buttonChannel);
 								bnID = buttonChannel.read();
 								if (bnID == 15) { // # = 15
-									//registerGameparametersControl.setparameters(para);
+									runGameControl.sendGameParameters(para);
 									state = idle;
 									break;
 								}
