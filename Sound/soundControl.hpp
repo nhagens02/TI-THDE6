@@ -58,6 +58,10 @@ public:
 			makeSound(speakerPin, 1000, 500'000, 1000);
 		}
 
+		void hit(hwlib::pin_oc& speakerPin) {
+			makeSound(speakerPin, 1000, 300'000, 100);
+		}
+
 
 	private:
 		void main() {
@@ -78,6 +82,9 @@ public:
 							pew(speakerPin);
 						}
 						break;
+						else if (soundID == 3) {
+							hit(speakerPin);
+						}
 					
 					default:break;
 				}
