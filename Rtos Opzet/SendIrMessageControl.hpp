@@ -77,7 +77,6 @@ public:
 	{}
 
 	void sendBytes(uint_fast16_t information) {
-		//hwlib::cout << "i am here" << hwlib::endl;
 		for (int i = 16; i > 0; i--) {
 			if (information & (1 << (i-1))) sendOne(); else { sendZero(); }
 		}

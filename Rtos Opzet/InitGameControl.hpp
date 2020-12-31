@@ -8,6 +8,7 @@
 #include "DataToIrByteControl.hpp"
 #include "DisplayController.hpp"
 #include "RunGameControl.hpp"
+#include "TimerControl.hpp"
 /// @file
 
 
@@ -31,16 +32,19 @@ class InitGameControl : public rtos::task<>{
 		DataToIrbyteControl& dataToIrByteControl;
 		DisplayController& displayControl;
 		RunGameControl& runGameControl;
+		TimerControl& timerControl;
+
 
 
 	public: //registerGameparametersControl& registerGameparametersControl, keypadControl& KeypadControl,
-		InitGameControl(DataToIrbyteControl& dataToIrByteControl, DisplayController& displayControl, RunGameControl& runGameControl):
+		InitGameControl(DataToIrbyteControl& dataToIrByteControl, DisplayController& displayControl, RunGameControl& runGameControl, TimerControl& timerControl):
 			task("init game controller"),
 			buttonChannel(this, "button press Channel"),
 			//registerGameparametersControl(registerGameparametersControl),
 			dataToIrByteControl(dataToIrByteControl),
 			displayControl( displayControl ),
-			runGameControl( runGameControl )
+			runGameControl( runGameControl ),
+			timerControl(timerControl)
 		{}
 
 		void buttonPressed(int buttonID){buttonChannel.write(buttonID);}
@@ -179,6 +183,7 @@ class InitGameControl : public rtos::task<>{
 								bnID = buttonChannel.read();
 								if (bnID == 15) { // # = 15
 									runGameControl.sendGameParameters(para);
+									timerControl.setTimer(para);
 									state = idle;
 									break;
 								}
@@ -205,6 +210,7 @@ class InitGameControl : public rtos::task<>{
 									state = sendData;
 									break;
 								}
+								state = sendData;
 								break;
 								
 							default:break;

@@ -122,18 +122,16 @@ int main( void ) {
 
 	//auto test2 = test(dataToIrByteControl);
 
-	
-
-	
-	
 
 	RunGameControl runGame(dataToIrByteControl, display, pe);
 
-	InitGameControl init(dataToIrByteControl, display, runGame);
+	TimerControl timerControl(runGame);
+
+	InitGameControl init(dataToIrByteControl, display, runGame, timerControl);
 
 	keypadControl keyPad(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4, init, regPar);
 
-	TimerControl timerControl(runGame);
+	
 
 	ReceiveIrByteToDataControl receiveIrByte(regPar, runGame, timerControl);
 

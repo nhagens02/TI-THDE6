@@ -186,6 +186,10 @@ class RunGameControl : public rtos::task<>{
 
 					case shoot:
 						//entry events
+						if (playerEntity.getAmmo() <= 0) {
+							state = run_game;
+							break;
+						}
 						sData.playerID = playerEntity.getPlayerID();
 						sData.weaponStrength = playerEntity.getWeaponPower();
 						dataToIrbyteControl.sendTriggerChannel(sData);
@@ -197,10 +201,13 @@ class RunGameControl : public rtos::task<>{
 						break;
 
 					case gameOverState:
-						displayControl.showMessage("game Over");
+						displayControl.showMessage("game Over\n");
 						//soundControl.showMessage(4);
 						displayControl.showMessage(playerEntity.getPlayerID());
+						displayControl.showMessage("\n");
+						hwlib::wait_ms(0);
 						displayControl.showMessage(playerEntity.getlives());
+						hwlib::wait_ms(0);
 						//transferHitsControl.gameOver.set();
 						state = idle;
 						break;
