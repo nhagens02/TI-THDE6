@@ -122,6 +122,7 @@ class DataToIrbyteControl : public rtos::task<>{
 						state = idle;
 						break;
 					}
+					state = idle;
 					break;
 				}
 				

@@ -74,9 +74,9 @@ class RunGameControl : public rtos::task<>{
 						//para.timeUntilStart = 10;
 
 					
-						hwlib::cout << para.gameMode << hwlib::endl;
-						hwlib::cout << para.gameTime << hwlib::endl;
-						hwlib::cout << para.timeUntilStart << hwlib::endl;
+						//hwlib::cout << para.gameMode << hwlib::endl;
+						//hwlib::cout << para.gameTime << hwlib::endl;
+						//hwlib::cout << para.timeUntilStart << hwlib::endl;
 						playerEntity.setLives(5);
 						state = start_timer_until_gamestart;
 						break;
@@ -89,14 +89,6 @@ class RunGameControl : public rtos::task<>{
 						//other events
 						state = run_game;
 						break;
-	
-					/*case start_game:
-						//entry events
-						displayControl.showMessage(para.gameMode);
-						displayControl.showMessage(para.gameTime);
-						//timerControl.setTimer(para.gameTime);
-						break;
-						*/
 					
 					case run_game: {
 						//entry events
@@ -142,10 +134,13 @@ class RunGameControl : public rtos::task<>{
 					}
 					case hit_received:
 						//entry events
+						
 						weaponChanData = sendHitChannel.read();
+						hwlib::cout << "hit_received: " << weaponChanData.playerID << ':' << weaponChanData.weaponStrength << hwlib::endl;
 
 						playerEntity.addData(weaponChanData);
 						playerEntity.setLives(playerEntity.getlives() - 1);
+						hwlib::cout << "test" << hwlib::endl;
 						//soundControl.playSound(2);
 						//hitReceivedTimer.set(800);
 
@@ -154,13 +149,16 @@ class RunGameControl : public rtos::task<>{
 
 						if (playerEntity.getlives() >= 1) {
 							state = run_game;
+							hwlib::cout << "test2" << hwlib::endl;
 							break;
 						}
 						else {
 							state = gameOverState;
+							hwlib::cout << "test3" << hwlib::endl;
 							break;
 							//misch aanpassen naar flag setten en terug naar run game gaan.
 						}
+						hwlib::cout << "test4" << hwlib::endl;
 						state = gameOverState;
 						break;
 
@@ -174,10 +172,6 @@ class RunGameControl : public rtos::task<>{
 						else if (playerEntity.getWeaponPower() == 2) {
 							playerEntity.setAmmo(50);
 							hwlib::wait_us(1000000);
-						}
-						else if (playerEntity.getWeaponPower() == 3) {
-							playerEntity.setAmmo(15);
-							hwlib::wait_us(500000);
 						}
 
 						//other events
@@ -201,6 +195,7 @@ class RunGameControl : public rtos::task<>{
 						break;
 
 					case gameOverState:
+						hwlib::cout << "game over\n";
 						displayControl.showMessage("game Over\n");
 						//soundControl.showMessage(4);
 						displayControl.showMessage(playerEntity.getPlayerID());
