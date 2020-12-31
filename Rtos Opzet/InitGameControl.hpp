@@ -29,17 +29,17 @@ class InitGameControl : public rtos::task<>{
 		//registerGameparametersControl& registerGameparametersControl;
 		DataToIrbyteControl& dataToIrByteControl;
 		DisplayController& displayControl;
-
-	
+		RunGameControl& runGameControl;
 
 
 	public: //registerGameparametersControl& registerGameparametersControl, keypadControl& KeypadControl,
-		InitGameControl(DataToIrbyteControl& dataToIrByteControl, DisplayController& displayControl):
+		InitGameControl(DataToIrbyteControl& dataToIrByteControl, DisplayController& displayControl, RunGameControl& runGameControl):
 			task("init game controller"),
 			buttonChannel(this, "button press Channel"),
 			//registerGameparametersControl(registerGameparametersControl),
 			dataToIrByteControl(dataToIrByteControl),
-			displayControl( displayControl )
+			displayControl( displayControl ),
+			runGameControl( runGameControl )
 		{}
 
 		void buttonPressed(int buttonID){buttonChannel.write(buttonID);}

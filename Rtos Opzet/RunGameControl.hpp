@@ -156,7 +156,7 @@ class RunGameControl : public rtos::task<>{
 							state = run_game;
 							break;
 						}
-						else{
+						else {
 							state = gameOverState;
 							break;
 							//misch aanpassen naar flag setten en terug naar run game gaan.
