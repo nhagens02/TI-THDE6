@@ -118,13 +118,14 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 						}
 						else {
 							// decode hit
-							uint_fast8_t player = message >> 10;
+							uint8_t player = message >> 10;
+							hwlib::cout << "player: " << player << hwlib::endl;
 							message -= (player << 10);
-							uint_fast8_t weaponStrength = message >> 5;
+							uint8_t weaponStrength = message >> 5;
+							hwlib::cout << "weaponStrength: " << weaponStrength << hwlib::endl;
 							sData.playerID = player;
 							sData.weaponStrength = weaponStrength;
 							runGameControl.sendHit(sData);
-							//here
 							
 						}
 					}
