@@ -3,7 +3,6 @@
 #include <array>
 #include "StructData.hpp"
 #include "DataToIrByteControl.hpp"
-
 #include "playerEntity.hpp"
 #include "InitGameControl.hpp"
 #include "keypadControl.cpp"
@@ -12,9 +11,8 @@
 #include "bitDetector.hpp"
 #include "ReceiveIrByteToDataControl.hpp"
 #include "TimerControl.hpp"
-
+#include "soundControl.hpp"
 #include "ButtonControl.hpp"
-
 #include "RunGameControl.hpp"
 
 class TimerTest : public rtos::task<> {
@@ -64,6 +62,9 @@ int main( void ) {
 
 	hwlib::cout << "startup\n";
 	
+	auto speakerPin = hwlib::target::pin_oc( hwlib::target::pins::d7 );
+   	auto soundClass = soundControl(speakerPin);
+
 	due::pin_oc pinOut1__ = hwlib::target::pin_oc(hwlib::target::pins::d53);
 	hwlib::pin_direct_from_oc_t pinOut1_(pinOut1__);
 	hwlib::pin_direct_from_oc_t* pinOut1 = &pinOut1_;

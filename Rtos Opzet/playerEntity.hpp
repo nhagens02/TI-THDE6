@@ -1,12 +1,10 @@
 #ifndef PLAYERENTITY_HPP
 #define PLAYERENTITY_HPP
 
-
 #include "hwlib.hpp"
 #include "rtos.hpp"
 #include <array>
 #include "StructData.hpp"
-
 
 /// \brief
 /// PlayerEntity CLASS
