@@ -22,7 +22,7 @@ class InitGameControl : public rtos::task<>{
 
 	private:
 		state_t state = idle;
-		struct parameters para;
+		parameters para;
 		int bnID;
 		int now = 0;
 		rtos::channel< int, 128 > buttonChannel;

@@ -43,8 +43,8 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 	private:
 		state_t state = idle;
 		rtos::channel <uint16_t, 128> messageChannel;
-		struct parameters para;
-		struct shootdata sData;
+		parameters para;
+		shootdata sData;
 		RegisterGameParametersControl& registerGameParametersControl;
 		RunGameControl& runGameControl;
 		TimerControl& timerControl;
