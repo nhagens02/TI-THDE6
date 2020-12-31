@@ -26,7 +26,7 @@ struct parameters {
 struct data_s {
 	std::array<int, 500> playerID;
 	std::array<int, 500> weaponStrength;
-	int counter = 0;
+	unsigned int counter = 0;
 };
 
 

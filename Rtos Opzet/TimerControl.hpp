@@ -22,7 +22,7 @@ class TimerControl : public rtos::task<>{
 			setTimerFlag(this, "flag for timer set"),
 			setTimerPool("pool with struct: timer_struct"),
 			untilGameTimer(this, "game finished timer"),
-			startGameTimer(this, "start Game Timer"),
+			gameTimer(this, "Game Timer"),
 			runGameControl(runGameControl)
 		{}
 		void setTimer(struct parameters timerData) {setTimerPool.write(timerData); setTimerFlag.set();}
@@ -32,7 +32,7 @@ class TimerControl : public rtos::task<>{
 		rtos::flag setTimerFlag;
 		rtos::pool<struct parameters> setTimerPool;
 		rtos::timer untilGameTimer;
-		rtos::timer startGameTimer;
+		rtos::timer gameTimer;
 		struct parameters timerData;
 		RunGameControl& runGameControl;
 
@@ -50,21 +50,29 @@ class TimerControl : public rtos::task<>{
 					case timeUntilStartState:
 						this->untilGameTimer.set((2000 * timerData.timeUntilStart) * rtos::ms); //example if timeUntil Start = 2, 2*2000 = 4 sec wait time.
 
-						hwlib::cout << "waiting for game countdown to start. . .\n";
+						hwlib::cout << "wait for untilGameTimer Start\n";
 						wait(this->untilGameTimer);
-
+						hwlib::cout << "untilgameTimer is finished\n";
+						runGameControl.startGame();
 						this->state = gameTimerState;
-
 						break;
+
 					case gameTimerState:
-						this->startGameTimer.set(1000*rtos::ms);
+						if(timerData.gameTime == 0){ this->gameTimer.set(60000 * rtos::ms); }
+						else if (timerData.gameTime == 1) { this->gameTimer.set(120000 * rtos::ms); }
+						else if (timerData.gameTime == 2) { this->gameTimer.set(240000 * rtos::ms); }
+						else if (timerData.gameTime == 3) { this->gameTimer.set(360000 * rtos::ms); }
+						else if (timerData.gameTime == 4) { this->gameTimer.set(480000 * rtos::ms); }
+						else if (timerData.gameTime == 5) { this->gameTimer.set(600000 * rtos::ms); }
+						else if (timerData.gameTime == 6) { this->gameTimer.set(720000 * rtos::ms); }
+						else if (timerData.gameTime == 7) { this->gameTimer.set(840000 * rtos::ms); }
 
 						hwlib::cout << "waiting for game to start. . .\n";
-						wait(this->startGameTimer);
-
-						hwlib::cout << "game started!\n";
-						this->runGameControl.StartGame();
-						this->suspend();
+						wait(this->gameTimer);
+						hwlib::cout << "game over...\n";
+						this->runGameControl.gameOver();
+						//this->suspend();
+						state = idle;
 
 						break;
 					default:break;

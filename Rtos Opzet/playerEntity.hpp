@@ -20,21 +20,23 @@ class PlayerEntity {
    		rtos::pool< int > livesPool;
         rtos::pool< int > ammoPool;
    		rtos::pool < struct data_s > data_pool;
-   		int playerID;
-   		int weaponID;
-   		int lives;
-        int ammo;
    		struct data_s data_a;
-   		//data_a.counter = 0;
 
 	public:
 		PlayerEntity( ):
         playerIDPool( "playerID_pool" ),
         weaponIDPool( "weaponID_pool" ),
         livesPool( "lives_pool" ),
-        ammoPool("ammo_pool"),
+        ammoPool( "ammo_pool" ),
         data_pool( "data_pool" )
-        {}
+        {
+            //default values
+            playerIDPool.write(1);
+            weaponIDPool.write(1);
+            ammoPool.write(100);
+            livesPool.write(5);
+            data_pool.write(data_a);
+        }
         //pool mag ook opslag
 		void setPlayerID(int playerID){ playerIDPool.write(playerID);}
 		int getPlayerID(){return (playerIDPool.read());}

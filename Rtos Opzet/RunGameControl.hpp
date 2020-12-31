@@ -18,7 +18,7 @@
 /// This class will check if the buttons reload and trigger buttons are being pressed and and processed that.
 /// This class uses rtos::task<>. 
 class RunGameControl : public rtos::task<>{
-	enum state_t {idle, saveParameters, start_game, run_game, gameOverState, hit_received, weaponButtonPressed, shoot, reload, sendDataToComputer, start_timer_until_gamestart};
+	enum state_t {idle, saveParameters, run_game, gameOverState, hit_received, weaponButtonPressed, shoot, reload, sendDataToComputer, start_timer_until_gamestart};
 
 	private:
 		state_t state = idle;
@@ -56,7 +56,7 @@ class RunGameControl : public rtos::task<>{
 		void buttonPressed(eButtonID ButtonID){buttonIDPool.write(ButtonID); buttonFlag.set();}
 		void sendGameParameters(struct parameters para){sendGameParametersChannel.write(para);}
 		void gameOver() {flagGameOver.set();}
-		void StartGame() {StartGameFlag.set();}
+		void startGame(){StartGameFlag.set();}
 
 	private:
 		void main(){
@@ -77,6 +77,7 @@ class RunGameControl : public rtos::task<>{
 						hwlib::cout << para.gameMode << hwlib::endl;
 						hwlib::cout << para.gameTime << hwlib::endl;
 						hwlib::cout << para.timeUntilStart << hwlib::endl;
+						playerEntity.setLives(5);
 						state = start_timer_until_gamestart;
 						break;
 
@@ -86,21 +87,31 @@ class RunGameControl : public rtos::task<>{
 						hwlib::cout << "before timer" << hwlib::endl;
 						wait(StartGameFlag);
 						//other events
-						state = start_game;
+						state = run_game;
 						break;
-
-					case start_game:
+	
+					/*case start_game:
 						//entry events
 						displayControl.showMessage(para.gameMode);
 						displayControl.showMessage(para.gameTime);
 						//timerControl.setTimer(para.gameTime);
 						break;
+						*/
 					
 					case run_game: {
 						//entry events
-						displayControl.showMessage(para.gameMode);
-						displayControl.showMessage(para.gameTime);
+						displayControl.showMessage("\f");
+						//hwlib::wait_ms(0);
+						//displayControl.showMessage(para.gameMode);
+						//displayControl.showMessage("\n");
+						hwlib::wait_ms(0);
+						//displayControl.showMessage(para.gameTime);
+						//displayControl.showMessage("\n");
+						//hwlib::wait_ms(0);
+						displayControl.showMessage("lives: ");
 						displayControl.showMessage(playerEntity.getlives());
+						displayControl.showMessage("\n");
+						hwlib::wait_ms(0);
 
 						//other events
 						auto event = wait(flagGameOver + sendHitChannel + buttonFlag);
@@ -145,11 +156,12 @@ class RunGameControl : public rtos::task<>{
 							state = run_game;
 							break;
 						}
-						else{
+						else {
 							state = gameOverState;
 							break;
 							//misch aanpassen naar flag setten en terug naar run game gaan.
 						}
+						state = gameOverState;
 						break;
 
 					case reload:
@@ -174,6 +186,10 @@ class RunGameControl : public rtos::task<>{
 
 					case shoot:
 						//entry events
+						if (playerEntity.getAmmo() <= 0) {
+							state = run_game;
+							break;
+						}
 						sData.playerID = playerEntity.getPlayerID();
 						sData.weaponStrength = playerEntity.getWeaponPower();
 						dataToIrbyteControl.sendTriggerChannel(sData);
@@ -185,10 +201,13 @@ class RunGameControl : public rtos::task<>{
 						break;
 
 					case gameOverState:
-						displayControl.showMessage("game Over");
+						displayControl.showMessage("game Over\n");
 						//soundControl.showMessage(4);
 						displayControl.showMessage(playerEntity.getPlayerID());
+						displayControl.showMessage("\n");
+						hwlib::wait_ms(0);
 						displayControl.showMessage(playerEntity.getlives());
+						hwlib::wait_ms(0);
 						//transferHitsControl.gameOver.set();
 						state = idle;
 						break;

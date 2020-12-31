@@ -122,20 +122,24 @@ int main( void ) {
 
 	//auto test2 = test(dataToIrByteControl);
 
-	InitGameControl init(dataToIrByteControl, display);
-
-	
-	keypadControl keyPad(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4, init, regPar);
 
 	RunGameControl runGame(dataToIrByteControl, display, pe);
 
-	ReceiveIrByteToDataControl receiveIrByte(regPar, runGame);
+	TimerControl timerControl(runGame);
+
+	InitGameControl init(dataToIrByteControl, display, runGame, timerControl);
+
+	keypadControl keyPad(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4, init, regPar);
+
+	
+
+	ReceiveIrByteToDataControl receiveIrByte(regPar, runGame, timerControl);
 
 	ReceiveIrMessageControl recIrMessage(receiveIrByte);
 
 	BitDetector bitDet(tsop_signal, recIrMessage);
 
-	TimerControl timerControl;
+	
 
 	auto triggerButton =hwlib::target::pin_in(hwlib::target::pins::d3);
 	auto reloadButton = hwlib::target::pin_in(hwlib::target::pins::d4);
