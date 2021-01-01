@@ -32,7 +32,7 @@ class PlayerEntity {
             playerIDPool.write(1);
             weaponIDPool.write(1);
             ammoPool.write(100);
-            livesPool.write(5);
+            livesPool.write(10);
             data_pool.write(data_a);
         }
         //pool mag ook opslag

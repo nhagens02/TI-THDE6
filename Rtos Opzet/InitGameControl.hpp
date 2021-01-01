@@ -147,4 +147,5 @@ class InitGameControl : public rtos::task<>{
 		}
 };
 
+
 #endif // INITGAMECONTROL_HPP

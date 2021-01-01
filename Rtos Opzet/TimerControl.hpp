@@ -44,11 +44,18 @@ class TimerControl : public rtos::task<>{
 		RunGameControl& runGameControl;
 
 		void main() {
+<<<<<<< HEAD
 			for(;;)
 			{
 				switch(this->state)
 				{
 					case this->idle:
+=======
+			for(;;) {
+				switch(this->state) {
+					case idle:
+						hwlib::cout << "before setTimerFlag\n";
+>>>>>>> 32214e574ea7020705d64e0046e6f4d852e5296a
 						wait(this->setTimerFlag);
 
 						this->timerData = this->setTimerPool.read();

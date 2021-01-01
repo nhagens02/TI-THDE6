@@ -100,7 +100,6 @@ int main( void ) {
 	tsop_gnd.flush();
 	tsop_vdd.flush();
 
-
 	PlayerEntity pe;
 
 	auto scl = hwlib::target::pin_oc(hwlib::target::pins::scl);
