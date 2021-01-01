@@ -6,8 +6,6 @@
 #include "rtos.hpp"
 /// @file
 
-enum state_t {idle, timeUntilStartState ,gameTimerState};
-
 /// \brief
 /// TimerControl CLASS
 /// \details
@@ -16,6 +14,8 @@ enum state_t {idle, timeUntilStartState ,gameTimerState};
 /// If the bool runGameTime is false. The time in the struct will contain in how many minutes the game will start.
 /// This class uses rtos::task<>.
 class TimerControl : public rtos::task<>{
+	enum state_t {idle, timeUntilStartState, gameTimerState};
+
 	public:
 		TimerControl(RunGameControl& runGameControl) :
 			task("Timer Controller"),
@@ -24,11 +24,18 @@ class TimerControl : public rtos::task<>{
 			untilGameTimer(this, "game finished timer"),
 			gameTimer(this, "Game Timer"),
 			runGameControl(runGameControl)
-		{}
-		void setTimer(struct parameters timerData) {setTimerPool.write(timerData); setTimerFlag.set();}
+		{
+			this->state = this->idle;
+		}
+
+		void setTimer(struct parameters timerData)
+		{
+			setTimerPool.write(timerData);
+			setTimerFlag.set();
+		}
 
 	private:
-		state_t state = idle;
+		state_t state;
 		rtos::flag setTimerFlag;
 		rtos::pool<struct parameters> setTimerPool;
 		rtos::timer untilGameTimer;
@@ -37,42 +44,40 @@ class TimerControl : public rtos::task<>{
 		RunGameControl& runGameControl;
 
 		void main() {
-			for(;;) {
-				switch(this->state) {
-					case idle:
-						hwlib::cout << "waiting for game data. . .\n";
+			for(;;)
+			{
+				switch(this->state)
+				{
+					case this->idle:
 						wait(this->setTimerFlag);
 
 						this->timerData = this->setTimerPool.read();
 						this->state = timeUntilStartState;
 						
 						break;
-					case timeUntilStartState:
-						this->untilGameTimer.set((2000 * timerData.timeUntilStart) * rtos::ms); //example if timeUntil Start = 2, 2*2000 = 4 sec wait time.
+					case this->timeUntilStartState:
+						this->untilGameTimer.set((2000 * this->timerData.timeUntilStart) * rtos::ms); //example if timeUntil Start = 2, 2*2000 = 4 sec wait time.
 
-						hwlib::cout << "wait for untilGameTimer Start\n";
 						wait(this->untilGameTimer);
-						hwlib::cout << "untilgameTimer is finished\n";
-						runGameControl.startGame();
-						this->state = gameTimerState;
+
+						this->runGameControl.startGame();
+						this->state = this->gameTimerState;
+
 						break;
+					case this->gameTimerState:
+						if(this->timerData.gameTime == 0){ this->gameTimer.set(60000 * rtos::ms); }
+						else if (this->timerData.gameTime == 1) { this->gameTimer.set(120000 * rtos::ms); }
+						else if (this->timerData.gameTime == 2) { this->gameTimer.set(240000 * rtos::ms); }
+						else if (this->timerData.gameTime == 3) { this->gameTimer.set(360000 * rtos::ms); }
+						else if (this->timerData.gameTime == 4) { this->gameTimer.set(480000 * rtos::ms); }
+						else if (this->timerData.gameTime == 5) { this->gameTimer.set(600000 * rtos::ms); }
+						else if (this->timerData.gameTime == 6) { this->gameTimer.set(720000 * rtos::ms); }
+						else if (this->timerData.gameTime == 7) { this->gameTimer.set(840000 * rtos::ms); }
 
-					case gameTimerState:
-						if(timerData.gameTime == 0){ this->gameTimer.set(60000 * rtos::ms); }
-						else if (timerData.gameTime == 1) { this->gameTimer.set(120000 * rtos::ms); }
-						else if (timerData.gameTime == 2) { this->gameTimer.set(240000 * rtos::ms); }
-						else if (timerData.gameTime == 3) { this->gameTimer.set(360000 * rtos::ms); }
-						else if (timerData.gameTime == 4) { this->gameTimer.set(480000 * rtos::ms); }
-						else if (timerData.gameTime == 5) { this->gameTimer.set(600000 * rtos::ms); }
-						else if (timerData.gameTime == 6) { this->gameTimer.set(720000 * rtos::ms); }
-						else if (timerData.gameTime == 7) { this->gameTimer.set(840000 * rtos::ms); }
-
-						hwlib::cout << "waiting for game to start. . .\n";
 						wait(this->gameTimer);
-						hwlib::cout << "game over...\n";
+						
 						this->runGameControl.gameOver();
-						//this->suspend();
-						state = idle;
+						this->state = this->idle;
 
 						break;
 					default:break;
@@ -81,4 +86,4 @@ class TimerControl : public rtos::task<>{
 		}
 };
 
-#endif
+#endif // TIMERCONTROL_HPP

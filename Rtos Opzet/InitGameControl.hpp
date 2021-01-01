@@ -21,11 +21,14 @@ class InitGameControl : public rtos::task<>{
 	enum state_t {idle, init, enterPlayTime, setGameMode, SetTimeUntilStart, sendData};
 
 	private:
-		state_t state = idle;
 		struct parameters para;
+		uint64_t preTimer;
+		bool isSending;
+		state_t state;
 		int bnID;
-		int now = 0;
+
 		rtos::channel< int, 128 > buttonChannel;
+		rtos::clock intervalKeyCheck;
 		DataToIrbyteControl& dataToIrByteControl;
 		DisplayController& displayControl;
 		RunGameControl& runGameControl;
@@ -35,12 +38,20 @@ class InitGameControl : public rtos::task<>{
 		InitGameControl(DataToIrbyteControl& dataToIrByteControl, DisplayController& displayControl, RunGameControl& runGameControl, TimerControl& timerControl) :
 			task("init game controller"),
 			buttonChannel(this, "button press Channel"),
+			intervalKeyCheck(this, (250*rtos::ms), "keypad interval checker"),
 			dataToIrByteControl(dataToIrByteControl),
 			displayControl( displayControl ),
 			runGameControl( runGameControl ),
 			timerControl(timerControl)
-		{}
-		void buttonPressed(int buttonID){buttonChannel.write(buttonID);}
+		{
+			this->state = this->sendData;
+			this->isSending = false;
+		}
+
+		void buttonPressed(int buttonID)
+		{
+			buttonChannel.write(buttonID);
+		}
 
 	private:
 		void main(){
@@ -48,73 +59,88 @@ class InitGameControl : public rtos::task<>{
 			{
 				switch(this->state)
 				{
-					case idle:
+					case this->idle:
 						wait(this->buttonChannel);
-						bnID = this->buttonChannel.read();
+						this->bnID = this->buttonChannel.read();
 
-						if (bnID == 12) { //bnID 12 = BUTTON C
+						if (this->bnID == 12) { //bnID 12 = BUTTON C
 							this->para = {0, 0, 0};
-							this->state = enterPlayTime;
+							this->state = this->enterPlayTime;
 						}
 						break;
-					case enterPlayTime:
+					case this->enterPlayTime:
 						this->displayControl.showMessage("\fcommand\nEnter play time:\n");
 						this->displayControl.showMessage(this->para.gameTime);
 
 						wait(this->buttonChannel);
-						bnID = this->buttonChannel.read();
+						this->bnID = this->buttonChannel.read();
 
-						if (bnID == 15 && this->para.gameTime <= 7) { //bnID 15 = BUTTON #
+						if (this->bnID == 15 && this->para.gameTime <= 7) { //bnID 15 = BUTTON #
 							this->state = setGameMode;
 						}
-						else if (bnID >= 0 && bnID <= 7) {
-							this->para.gameTime = bnID;
+						else if (this->bnID >= 0 && this->bnID <= 7) {
+							this->para.gameTime = this->bnID;
 						}
 						break;
-					case setGameMode:
+					case this->setGameMode:
 						this->displayControl.showMessage("\fcommand\nEnter game Mode:\n");
 						this->displayControl.showMessage(this->para.gameMode);
 
 						wait(this->buttonChannel);
-						bnID = this->buttonChannel.read();
+						this->bnID = this->buttonChannel.read();
 
-						if (bnID == 15 && this->para.gameMode <= 1) { //bnID 15 = BUTTON #
-							this->state = SetTimeUntilStart;
+						if (this->bnID == 15 && this->para.gameMode <= 1) { //bnID 15 = BUTTON #
+							this->state = this->SetTimeUntilStart;
 						}
-						else if (bnID <= 1) {
-							this->para.gameMode = bnID;
+						else if (this->bnID <= 1) {
+							this->para.gameMode = this->bnID;
 						}
 						break;
-					case SetTimeUntilStart:
+					case this->SetTimeUntilStart:
 						this->displayControl.showMessage("\fcommand\nEnter time until\nstart:");
 						this->displayControl.showMessage(this->para.timeUntilStart);
 
 						wait(this->buttonChannel);
-						bnID = this->buttonChannel.read();
+						this->bnID = this->buttonChannel.read();
 						
-						if (bnID == 15 && this->para.timeUntilStart >= 1 && this->para.timeUntilStart <= 31) { //bnID 15 = BUTTON #
-							this->state = sendData;
+						if (this->bnID == 15 && this->para.timeUntilStart >= 1 && this->para.timeUntilStart <= 31) { //bnID 15 = BUTTON #
+							this->state = this->sendData;
 						}
-						else if (bnID >= 0 && bnID <= 9) {
+						else if (this->bnID >= 0 && this->bnID <= 9) {
 							this->para.timeUntilStart = this->para.timeUntilStart * 10;
-							this->para.timeUntilStart += bnID;
+							this->para.timeUntilStart += this->bnID;
 						}
 						break;
-					case sendData:
+					case this->sendData: {
 						this->displayControl.showMessage("\fPress * to send para\nPress # to go to\nStart.\n");
+						uint64_t time = hwlib::now_us() - this->preTimer;
 
-						wait(this->buttonChannel);
-						bnID = this->buttonChannel.read();
+						if(!this->isSending) {
+							this->preTimer = hwlib::now_us();
+							this->isSending = true;
+						}
+						else if(10000 * rtos::ms > time) {
+							if(wait(this->buttonChannel + intervalKeyCheck) == this->buttonChannel) {
+								this->bnID = this->buttonChannel.read();
+								if (this->bnID == 14) { //bnID 14 = BUTTON *
+									// adjust time
+									this->dataToIrByteControl.sendingGameParametersChannel(this->para);
+								}
+							}
+							hwlib::cout << time / 1000000 << '\n';
+						}
+						else {
+							this->preTimer = 0;
+							this->isSending = false;
 
-						if (bnID == 15) { //bnID 15 = BUTTON #
+							this->para.timeUntilStart = 0;
 							this->runGameControl.sendGameParameters(this->para);
 							this->timerControl.setTimer(this->para);
-							this->state = idle;
-						}
-						else if (bnID == 14) { //bnID 14 = BUTTON *
-							this->dataToIrByteControl.sendingGameParametersChannel(para);
+
+							this->state = this->idle;
 						}
 						break;
+					}
 					default:break;
 				}
 			}
