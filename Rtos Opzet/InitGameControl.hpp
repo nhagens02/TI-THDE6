@@ -26,6 +26,7 @@ class InitGameControl : public rtos::task<>{
 		bool isSending;
 		state_t state;
 		int bnID;
+		int baseTime;
 
 		rtos::channel< int, 128 > buttonChannel;
 		rtos::clock intervalKeyCheck;
@@ -38,13 +39,13 @@ class InitGameControl : public rtos::task<>{
 		InitGameControl(DataToIrbyteControl& dataToIrByteControl, DisplayController& displayControl, RunGameControl& runGameControl, TimerControl& timerControl) :
 			task("init game controller"),
 			buttonChannel(this, "button press Channel"),
-			intervalKeyCheck(this, (250*rtos::ms), "keypad interval checker"),
+			intervalKeyCheck(this, (2000*rtos::ms), "keypad interval checker"),
 			dataToIrByteControl(dataToIrByteControl),
 			displayControl( displayControl ),
 			runGameControl( runGameControl ),
 			timerControl(timerControl)
 		{
-			this->state = this->sendData;
+			this->state = this->idle;
 			this->isSending = false;
 		}
 
@@ -113,27 +114,30 @@ class InitGameControl : public rtos::task<>{
 						break;
 					case this->sendData: {
 						this->displayControl.showMessage("\fPress * to send para\nPress # to go to\nStart.\n");
+						
 						uint64_t time = hwlib::now_us() - this->preTimer;
 
 						if(!this->isSending) {
 							this->preTimer = hwlib::now_us();
+							baseTime = (((this->para.timeUntilStart * 4000) * rtos::ms) / 4000) / 1000;
 							this->isSending = true;
 						}
-						else if(10000 * rtos::ms > time) {
-							if(wait(this->buttonChannel + intervalKeyCheck) == this->buttonChannel) {
+						else if(((this->para.timeUntilStart * 4000) * rtos::ms) > time) {
+							if(wait(this->buttonChannel + this->intervalKeyCheck) == this->buttonChannel) {
 								this->bnID = this->buttonChannel.read();
 								if (this->bnID == 14) { //bnID 14 = BUTTON *
 									// adjust time
+									this->para.timeUntilStart = (baseTime - ((time / 4000) / rtos::ms));
 									this->dataToIrByteControl.sendingGameParametersChannel(this->para);
 								}
 							}
-							hwlib::cout << time / 1000000 << '\n';
+							//hwlib::cout << time / 1000000 << '\n';
 						}
 						else {
 							this->preTimer = 0;
 							this->isSending = false;
 
-							this->para.timeUntilStart = 0;
+							this->para.timeUntilStart = 1;
 							this->runGameControl.sendGameParameters(this->para);
 							this->timerControl.setTimer(this->para);
 

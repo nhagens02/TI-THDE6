@@ -96,16 +96,16 @@ class RunGameControl : public rtos::task<>{
 					
 					case run_game: {
 						//entry events
-						//displayControl.showMessage("\f");
-						//displayControl.showMessage("lives: ");
-						//displayControl.showMessage(playerEntity.getlives());
-						//displayControl.showMessage("\n");
-						//hwlib::wait_ms(0);
+						displayControl.showMessage("\f");
+						displayControl.showMessage("lives: ");
+						displayControl.showMessage(playerEntity.getlives());
+						displayControl.showMessage("\n");
+						hwlib::wait_ms(0);
 
-						//displayControl.showMessage("Ammo: ");
-						//displayControl.showMessage(playerEntity.getAmmo());
-						//displayControl.showMessage("\n");
-						//hwlib::wait_ms(0);
+						displayControl.showMessage("Ammo: ");
+						displayControl.showMessage(playerEntity.getAmmo());
+						displayControl.showMessage("\n");
+						hwlib::wait_ms(0);
 
 						hwlib::cout << "here" << hwlib::endl;
 						//other events
@@ -148,8 +148,7 @@ class RunGameControl : public rtos::task<>{
 						hwlib::cout << "hit_received: " << weaponChanData.playerID << ':' << weaponChanData.weaponStrength << hwlib::endl;
 
 						//playerEntity.addData(weaponChanData);
-						lives = playerEntity.getlives();
-						playerEntity.setLives(lives - 1);
+						playerEntity.setLives(playerEntity.getlives() - 1);
 						hwlib::cout << "test" << hwlib::endl;
 						//soundControl.playSound(2);
 						//hitReceivedTimer.set(800);

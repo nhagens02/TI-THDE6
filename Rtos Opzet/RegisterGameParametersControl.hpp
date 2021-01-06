@@ -22,8 +22,8 @@ class RegisterGameParametersControl : public rtos::task<>{
 		state_t state = idle;
 		struct parameters para;
 		int bnID;
-		rtos::channel< int, 128 > buttonChannel;
-		rtos::channel< struct parameters, 128 > SetParametersChannel;
+		rtos::channel< int, 32 > buttonChannel;
+		rtos::channel< struct parameters, 32 > SetParametersChannel;
 		PlayerEntity& playerEntity;
 		DisplayController& displayControl;
 	
