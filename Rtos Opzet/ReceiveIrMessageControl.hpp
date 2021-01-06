@@ -27,7 +27,7 @@ class ReceiveIrMessageControl : public rtos::task<> {
 		rtos::timer exitTimer;
 public:
 	ReceiveIrMessageControl(ReceiveIrByteToDataControl& receiveIrByteToDataControl):
-		task ( "ReceiveIrMessageControl" ),
+		task (5,"ReceiveIrMessageControl" ),
 		bitValueChannel ( this, "Bits channel" ),
 		receiveIrByteToDataControl ( receiveIrByteToDataControl ),
 		exitTimer(this, "exit transmission timer")

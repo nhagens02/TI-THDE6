@@ -56,7 +56,7 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 
 	public:
 		ReceiveIrByteToDataControl(RegisterGameParametersControl& registerGameParametersControl, RunGameControl& runGameControl, TimerControl& timerControl):
-			task("receiveirbyte"),
+			task(2,"receiveirbyte"),
 			messageChannel(this, "Message Channel"),
 			registerGameParametersControl ( registerGameParametersControl ),
 			runGameControl ( runGameControl ),

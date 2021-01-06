@@ -7,7 +7,6 @@
 #include "DisplayController.hpp"
 
 #include "playerEntity.hpp"
-#include <typeinfo> 
 /// @file
 
 
@@ -19,7 +18,7 @@
 /// This class will check if the buttons reload and trigger buttons are being pressed and and processed that.
 /// This class uses rtos::task<>. 
 class RunGameControl : public rtos::task<>{
-	enum state_t {idle, run_game, gameOverState, hit_received, weaponButtonPressed, shoot, reload, sendDataToComputer, start_timer_until_gamestart};
+	enum state_t {idle, start_timer_until_gamestart, run_game, hit_received, reload, shoot, gameOverState};
 
 	private:
 		state_t state = idle;
@@ -100,26 +99,26 @@ class RunGameControl : public rtos::task<>{
 						displayControl.showMessage("lives: ");
 						displayControl.showMessage(playerEntity.getlives());
 						displayControl.showMessage("\n");
-						hwlib::wait_ms(0);
+						//hwlib::wait_ms(0);
 
 						displayControl.showMessage("Ammo: ");
 						displayControl.showMessage(playerEntity.getAmmo());
 						displayControl.showMessage("\n");
-						hwlib::wait_ms(0);
+						//hwlib::wait_ms(0);
 
 						hwlib::cout << "here" << hwlib::endl;
 						//other events
-						auto event = wait(flagGameOver + sendHitChannel + buttonFlag);
-						//hwlib::cout << "type: " << typeid(event).name() << hwlib::endl;
-						if (event == flagGameOver) {
+						auto evt = wait(sendHitChannel + flagGameOver + buttonFlag);
+						if (evt == flagGameOver) {
 							state = gameOverState;
 							break;
 						}
-						if (event == sendHitChannel) {
+						else if (evt == sendHitChannel) {
+							hwlib::cout << "hit received" << hwlib::endl;
 							state = hit_received;
 							break;
 						}
-						if (event == buttonFlag) {
+						else if (evt == buttonFlag) {
 							bnID = buttonIDPool.read();
 							if (bnID == reloadButton) {
 								state = reload;
@@ -192,8 +191,10 @@ class RunGameControl : public rtos::task<>{
 							state = run_game;
 							break;
 						}
+						//ammo implenenatie
 						sData.playerID = playerEntity.getPlayerID();
 						sData.weaponStrength = playerEntity.getWeaponPower();
+						playerEntity.setAmmo(playerEntity.getAmmo()-1);
 						dataToIrbyteControl.sendTriggerChannel(sData);
 						//soundControl.playSound(1);
 
@@ -204,7 +205,7 @@ class RunGameControl : public rtos::task<>{
 
 					case gameOverState:
 						hwlib::cout << "game over\n";
-						displayControl.showMessage("game Over\n");
+						displayControl.showMessage("\fgame Over\n");
 						//soundControl.showMessage(4);
 						displayControl.showMessage(playerEntity.getPlayerID());
 						displayControl.showMessage("\n");

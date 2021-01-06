@@ -31,7 +31,7 @@ class PlayerEntity {
             //default values
             playerIDPool.write(1);
             weaponIDPool.write(1);
-            ammoPool.write(100);
+            ammoPool.write(50);
             livesPool.write(10);
             data_pool.write(data_a);
         }

@@ -27,7 +27,7 @@ class DataToIrbyteControl : public rtos::task<>{
 
 	public:
 		DataToIrbyteControl(hwlib::pin_out& ledpin):
-			task(3, "dataToIRByteControl"),
+			task(1, "dataToIRByteControl"),
 			sendIrMessageControl(ledpin),
 			gameParametersChannel(this, "gameParametersChannel"),
 			triggerChannel(this, "triggerChannel")
