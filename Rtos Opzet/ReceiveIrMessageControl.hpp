@@ -38,7 +38,7 @@ public:
 		bitAmount++;
 		if (bitAmount == 16) {
 			receiveIrByteToDataControl.receiveMessage(message);
-			//hwlib::cout << message << hwlib::endl;
+			//hwlib::cout << "Message: " << message << hwlib::endl;
 			//Reset to 0 for new transmission.
 			bitAmount = 0;
 			message = 0;

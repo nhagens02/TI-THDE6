@@ -42,7 +42,7 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 
 	private:
 		state_t state = idle;
-		rtos::channel <uint16_t, 128> messageChannel;
+		rtos::channel <uint16_t, 64> messageChannel;
 		parameters para;
 		shootdata sData;
 		RegisterGameParametersControl& registerGameParametersControl;
@@ -126,11 +126,11 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 							sData.playerID = player;
 							sData.weaponStrength = weaponStrength;
 							runGameControl.sendHit(sData);
-							
 						}
 					}
 				}
 			}
+			previousMessage = 0;
 			//change state
 		}
 
