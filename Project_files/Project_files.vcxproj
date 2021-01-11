@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{8c25eeaa-3dcd-4fdd-9c09-3c2ba9bf16b8}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <NMakeBuildCommandLine>bmptk-make.exe run</NMakeBuildCommandLine>
+    <NMakeOutput>main.exe</NMakeOutput>
+    <NMakeCleanCommandLine>bmptk-make.exe clean</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>bmptk-make.exe clean &amp;&amp; bmptk-make.exe run</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath>..\..\..\hwlib\library;..\..\..\hwlib\library\ports;..\..\..\hwlib\library\pins;..\..\..\hwlib\library\peripherals;..\..\..\hwlib\library\graphics;..\..\..\hwlib\library\core;..\..\..\hwlib\library\char-io;..\..\..\hwlib\library\targets;..\..\..\Catch2\single_include\catch2;..\..\..\SFML-2.5.1\include;</NMakeIncludeSearchPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <NMakeBuildCommandLine>bmptk-make.exe run</NMakeBuildCommandLine>
+    <NMakeOutput>main.exe</NMakeOutput>
+    <NMakeCleanCommandLine>bmptk-make.exe clean</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>bmptk-make.exe clean &amp;&amp; bmptk-make.exe run</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <NMakeBuildCommandLine>bmptk-make.exe run</NMakeBuildCommandLine>
+    <NMakeOutput>main.exe</NMakeOutput>
+    <NMakeCleanCommandLine>bmptk-make.exe clean</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>bmptk-make.exe clean &amp;&amp; bmptk-make.exe run</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath>..\..\..\hwlib\library;..\..\..\hwlib\library\ports;..\..\..\hwlib\library\pins;..\..\..\hwlib\library\peripherals;..\..\..\hwlib\library\graphics;..\..\..\hwlib\library\core;..\..\..\hwlib\library\char-io;..\..\..\hwlib\library\targets;..\..\..\Catch2\single_include\catch2;..\..\..\SFML-2.5.1\include;</NMakeIncludeSearchPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <NMakeBuildCommandLine>bmptk-make.exe run</NMakeBuildCommandLine>
+    <NMakeOutput>main.exe</NMakeOutput>
+    <NMakeCleanCommandLine>bmptk-make.exe clean</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>bmptk-make.exe clean &amp;&amp; bmptk-make.exe run</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Doxyfile" />
+    <None Include="Makefile" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="bitDetector.hpp" />
+    <ClInclude Include="ButtonControl.hpp" />
+    <ClInclude Include="DataToIrByteControl.hpp" />
+    <ClInclude Include="DisplayController.hpp" />
+    <ClInclude Include="InitGameControl.hpp" />
+    <ClInclude Include="IRLed.hpp" />
+    <ClInclude Include="IrReceiver.hpp" />
+    <ClInclude Include="Keypad.hpp" />
+    <ClInclude Include="keypadControl.hpp" />
+    <ClInclude Include="playerEntity.hpp" />
+    <ClInclude Include="ReceiveIrByteToDataControl.hpp" />
+    <ClInclude Include="ReceiveIrMessageControl.hpp" />
+    <ClInclude Include="RegisterGameParametersControl.hpp" />
+    <ClInclude Include="RunGameControl.hpp" />
+    <ClInclude Include="SendIrMessageControl.hpp" />
+    <ClInclude Include="soundControl.hpp" />
+    <ClInclude Include="StructData.hpp" />
+    <ClInclude Include="TimerControl.hpp" />
+    <ClInclude Include="TransferHitsControl.hpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
