@@ -21,8 +21,6 @@ int main( void ) {
 	
 	hwlib::wait_ms(2000);
 
-	hwlib::cout << "startup\n";
-	
 	auto speakerPin = hwlib::target::pin_oc( hwlib::target::pins::d7 );
    	auto soundClass = SoundControl(speakerPin);
 
@@ -100,6 +98,6 @@ int main( void ) {
 
 	ButtonControl buttonControl(runGame, triggerButton, reloadButton);
 
-	hwlib::cout << "before start" << hawlib::endl;
+	hwlib::cout << "startup\n";
 	rtos::run();
 }

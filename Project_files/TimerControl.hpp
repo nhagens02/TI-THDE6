@@ -57,7 +57,7 @@ class TimerControl : public rtos::task<>{
 						this->state = timeUntilStartState;
 						break;
 					case this->timeUntilStartState:
-						this->untilGameTimer.set((4000 * this->timerData.timeUntilStart) * rtos::ms); //example if timeUntil Start = 2, 2*2000 = 4 sec wait time.
+						this->untilGameTimer.set((4000 * this->timerData.timeUntilStart) * rtos::ms); //example if timeUntil Start = 2, 2*4000 = 8 sec wait time.
 
 						wait(this->untilGameTimer);
 
