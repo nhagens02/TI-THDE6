@@ -56,11 +56,6 @@ bmptk_fixed_size_stack.c
 _cc_flags
 _linker_flags
 
-Test/
-Project/_cpp_flags
-
-
-
 
 .clang
 .codelite/
@@ -84,8 +79,4 @@ _*
 *.ipch
 *.VC.*
 makefile.due
-temp/SoundControl.cpp
-SendTest/Makefile
-SendTest/main.cpp
-Rtos Opzet.7z
-Rtos Opzet.rar
+Doxygen/
