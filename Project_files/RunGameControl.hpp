@@ -181,7 +181,7 @@ class RunGameControl : public rtos::task<>{
 						break;
 
 					case gameOverState:
-						displayControl.showMessage("\fgame Over\n");
+						displayControl.showMessage("\fgame Over\nplayerID: ");
 						displayControl.showMessage(playerEntity.getPlayerID());
 						hwlib::wait_ms(0);
 						displayControl.showMessage("\nlives: ");
