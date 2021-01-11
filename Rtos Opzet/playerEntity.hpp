@@ -1,10 +1,12 @@
 #ifndef PLAYERENTITY_HPP
 #define PLAYERENTITY_HPP
 
+
 #include "hwlib.hpp"
 #include "rtos.hpp"
 #include <array>
 #include "StructData.hpp"
+
 
 /// \brief
 /// PlayerEntity CLASS
@@ -31,8 +33,7 @@ class PlayerEntity {
             //default values
             playerIDPool.write(1);
             weaponIDPool.write(1);
-            ammoPool.write(50);
-            livesPool.write(10);
+            livesPool.write(5);
             data_pool.write(data_a);
         }
         //pool mag ook opslag
@@ -48,9 +49,8 @@ class PlayerEntity {
         void setAmmo(int ammo) { ammoPool.write(ammo); }
         int getAmmo() { return (ammoPool.read()); }
 
-        void addData(struct shootdata sData) { if (data_a.counter < 500) { data_a.playerID[data_a.counter] = sData.playerID; data_a.weaponStrength[data_a.counter] = sData.weaponStrength; data_a.counter++; } data_pool.write(data_a); }
+        void addData(struct shootdata sData) { if (data_a.counter < 50) { data_a.playerID[data_a.counter] = sData.playerID; data_a.weaponStrength[data_a.counter] = sData.weaponStrength; data_a.counter++; } data_pool.write(data_a); }
 	    struct data_s getData(){return data_pool.read(); }
-
 };
 
 #endif // PLAYERENTITY_HPP

@@ -1,5 +1,10 @@
+#ifndef KEYPAD_HPP
+#define KEYPAD_HPP
+
 #include "hwlib.hpp"
 #include "rtos.hpp"
+
+/// @file
 
 struct KeypadButton {
 	hwlib::pin_direct_from_oc_t* pinOut;
@@ -45,3 +50,5 @@ public:
 		return returnValue;
 	}
 };
+
+#endif // KEYPAD_HPP

@@ -5,7 +5,7 @@
 #include "DataToIrByteControl.hpp"
 #include "playerEntity.hpp"
 #include "InitGameControl.hpp"
-#include "keypadControl.cpp"
+#include "keypadControl.hpp"
 #include "DisplayController.hpp"
 #include "RegisterGameParametersControl.hpp"
 #include "bitDetector.hpp"
@@ -14,57 +14,20 @@
 #include "soundControl.hpp"
 #include "ButtonControl.hpp"
 #include "RunGameControl.hpp"
-
-class TimerTest : public rtos::task<> {
-	public:
-		TimerTest(TimerControl &timerControl) : task("TimerTest"), timerControl(timerControl) {}
-	private:
-		TimerControl &timerControl;
-
-		void main() {
-			this->timerControl.setTimer(parameters{1, 5, 2});
-			this->suspend();
-		}
-};
-
-class test : public rtos::task<> {
-	DataToIrbyteControl& dataToIrByteControl;
-	struct shootdata data;
-	struct parameters para;
-	
-	void main() {
-		data.playerID = 7;
-		data.weaponStrength = 4;
-		para.gameMode = 1;
-		para.gameTime = 5;
-		para.timeUntilStart = 10;
-		for (;;) {
-			hwlib::wait_ms(2000);
-			dataToIrByteControl.sendTriggerChannel(data);
-			//hwlib::wait_ms(2000);
-			//dataToIrByteControl.sendingGameParametersChannel(para);
-			//hwlib::cout << data.playerID << hwlib::endl;
-		}
-	}
-
-	public:
-		test(DataToIrbyteControl& dataToIrByteControl) :
-			task(4, "test"),
-			dataToIrByteControl(dataToIrByteControl)
-		{}
-
-};
+#include "TransferHitsControl.hpp"
 
 
 int main( void ) {
 	
-	hwlib::wait_ms(1000);
+	hwlib::wait_ms(2000);
 
 	hwlib::cout << "startup\n";
 	
 	auto speakerPin = hwlib::target::pin_oc( hwlib::target::pins::d7 );
-   	auto soundClass = soundControl(speakerPin);
+   	auto soundClass = SoundControl(speakerPin);
 
+
+	//keypad pins 
 	due::pin_oc pinOut1__ = hwlib::target::pin_oc(hwlib::target::pins::d53);
 	hwlib::pin_direct_from_oc_t pinOut1_(pinOut1__);
 	hwlib::pin_direct_from_oc_t* pinOut1 = &pinOut1_;
@@ -110,20 +73,15 @@ int main( void ) {
 	auto oled = hwlib::glcd_oled(i2c_bus, 0x3c);
 
 	DisplayController display(scl, sda);
-	
 	RegisterGameParametersControl regPar(pe, display);
-
 	
-	hwlib::cout << "test1" << hwlib::endl;
 	auto IrLed_output = hwlib::target::d2_36kHz();
 
 	DataToIrbyteControl dataToIrByteControl(IrLed_output);
-	
 
-	//auto test2 = test(dataToIrByteControl);
+	TransferHitsControl transferHitsControl(pe);
 
-
-	RunGameControl runGame(dataToIrByteControl, display, pe);
+	RunGameControl runGame(dataToIrByteControl, display, pe, transferHitsControl, soundClass);
 
 	TimerControl timerControl(runGame);
 
@@ -131,15 +89,11 @@ int main( void ) {
 
 	keypadControl keyPad(pinOut1, pinOut2, pinOut3, pinOut4, pinIn1, pinIn2, pinIn3, pinIn4, init, regPar);
 
-	
-
 	ReceiveIrByteToDataControl receiveIrByte(regPar, runGame, timerControl);
 
 	ReceiveIrMessageControl recIrMessage(receiveIrByte);
 
 	BitDetector bitDet(tsop_signal, recIrMessage);
-
-	
 
 	auto triggerButton =hwlib::target::pin_in(hwlib::target::pins::d3);
 	auto reloadButton = hwlib::target::pin_in(hwlib::target::pins::d4);

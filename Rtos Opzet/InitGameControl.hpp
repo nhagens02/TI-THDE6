@@ -10,6 +10,7 @@
 #include "TimerControl.hpp"
 /// @file
 
+
 /// \brief
 /// InitGameControl CLASS
 /// \details
@@ -131,7 +132,6 @@ class InitGameControl : public rtos::task<>{
 									this->dataToIrByteControl.sendingGameParametersChannel(this->para);
 								}
 							}
-							//hwlib::cout << time / 1000000 << '\n';
 						}
 						else {
 							this->preTimer = 0;
@@ -150,6 +150,5 @@ class InitGameControl : public rtos::task<>{
 			}
 		}
 };
-
 
 #endif // INITGAMECONTROL_HPP

@@ -1,10 +1,12 @@
 #ifndef TIMERCONTROL_HPP
 #define TIMERCONTROL_HPP
 
+
 #include "StructData.hpp"
 #include "hwlib.hpp"
 #include "rtos.hpp"
 /// @file
+
 
 /// \brief
 /// TimerControl CLASS
@@ -53,7 +55,6 @@ class TimerControl : public rtos::task<>{
 
 						this->timerData = this->setTimerPool.read();
 						this->state = timeUntilStartState;
-						
 						break;
 					case this->timeUntilStartState:
 						this->untilGameTimer.set((4000 * this->timerData.timeUntilStart) * rtos::ms); //example if timeUntil Start = 2, 2*2000 = 4 sec wait time.
@@ -77,8 +78,8 @@ class TimerControl : public rtos::task<>{
 						wait(this->gameTimer);
 						
 						this->runGameControl.gameOver();
-						this->state = this->idle;
 
+						this->state = this->idle;
 						break;
 					default:break;
 				}

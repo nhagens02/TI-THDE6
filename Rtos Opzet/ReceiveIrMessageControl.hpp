@@ -38,7 +38,6 @@ public:
 		bitAmount++;
 		if (bitAmount == 16) {
 			receiveIrByteToDataControl.receiveMessage(message);
-			//hwlib::cout << "Message: " << message << hwlib::endl;
 			//Reset to 0 for new transmission.
 			bitAmount = 0;
 			message = 0;
@@ -48,42 +47,32 @@ public:
 
 	private:
 		void main(){
-
 			for(;;){
 					switch(state)
 					{
 						case idle:
-							//entry event
-							//task::suspend();//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-							//other events
 							wait(bitValueChannel);
 							state = receivingBits;
 							break;
 						case receivingBits:
 							//entry events
-							//receiveIrByteToDataControl.getMessage(GetReceivingBits());
 							for (int i = 0; i < 16;i++) {
 								receiveBit(bitValueChannel.read());
 								exitTimer.set(4 * rtos::ms);
 								auto event = wait( bitValueChannel + exitTimer );
 								if (event == exitTimer) {
-									//hwlib::cout << message << hwlib::endl;
 									message = 0;
 									bitAmount = 0;
 									state = idle;
 									break;
 								}
 							}
-							//hwlib::cout << "endl rec: " << hwlib::endl;
-
 							state = idle;
 							break;
-
 						default:break;
 					}
 			}
 		}
-
 };
 
 #endif // RECEIVEIRMESSAGECONTROL_HPP

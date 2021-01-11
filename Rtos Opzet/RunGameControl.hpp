@@ -5,8 +5,9 @@
 #include "hwlib.hpp"
 #include "rtos.hpp"
 #include "DisplayController.hpp"
-
 #include "playerEntity.hpp"
+#include "TransferHitsControl.hpp"
+#include "soundControl.hpp"
 /// @file
 
 
@@ -29,30 +30,30 @@ class RunGameControl : public rtos::task<>{
 		rtos::flag flagGameOver;
 		rtos::flag StartGameFlag;
 		DataToIrbyteControl& dataToIrbyteControl;
-		//transferHitsControl& transferHitsControl;
+		TransferHitsControl& transferHitsControl;
 		DisplayController& displayControl;
 		PlayerEntity& playerEntity;
+		SoundControl& soundControl;
 		struct parameters para;
 		struct shootdata sData;
 		struct shootdata weaponChanData;
 		int bnID;
 		int lives;
-		//rtos::event event1 = wait(flagGameOver + sendHitChannel + buttonFlag);
 
 	public:
-		RunGameControl(DataToIrbyteControl& dataToIrbyteControl, DisplayController& displayControl, PlayerEntity& playerEntity) ://, transferHitsControl& transferHitsControl,
+		RunGameControl(DataToIrbyteControl& dataToIrbyteControl, DisplayController& displayControl, PlayerEntity& playerEntity,TransferHitsControl& transferHitsControl, SoundControl& soundControl) :
 			task("Run Game Control"),
 			sendHitChannel(this, "sendHitChannel"),
 			buttonFlag(this, "buttonFlag"),
 			buttonIDPool("buttonIDPool"),
 			sendGameParametersChannel(this, "sendGameParametersChannel"),
 			flagGameOver(this, "game over flag"),
-			StartGameFlag(this, "StartGameFlag"),
+			StartGameFlag(this, "Start Game Flag"),
 			dataToIrbyteControl(dataToIrbyteControl),
-			//transferHitsControl (transferHitsControl),
+			transferHitsControl(transferHitsControl),
 			displayControl(displayControl),
-			playerEntity(playerEntity)
-
+			playerEntity(playerEntity),
+			soundControl(soundControl)
 		{}
 		void sendHit(struct shootdata sData) { sendHitChannel.write(sData);}
 		void buttonPressed(eButtonID ButtonID){buttonIDPool.write(ButtonID); buttonFlag.set();}
@@ -66,47 +67,32 @@ class RunGameControl : public rtos::task<>{
 				switch(state)
 				{
 					case idle:
-						//task::suspend();//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 						//entry events
-						wait(sendGameParametersChannel);//wait disabled for testing
+						wait(sendGameParametersChannel);
 						para = sendGameParametersChannel.read();
-
-						//para.gameMode = 1;
-						//para.gameTime = 5;
-						//para.timeUntilStart = 10;
-
-					
-						//hwlib::cout << para.gameMode << hwlib::endl;
-						//hwlib::cout << para.gameTime << hwlib::endl;
-						//hwlib::cout << para.timeUntilStart << hwlib::endl;
-						playerEntity.setLives(5);
 						state = start_timer_until_gamestart;
 						break;
 
 					case start_timer_until_gamestart:
 						//entry events
-						//timerControl.setUntilStartTimer(timeUntilStart);
 						displayControl.showMessage("\fGame is\nstarting\nSoon..");
-						hwlib::cout << "before timer" << hwlib::endl;
 						wait(StartGameFlag);
+						if (playerEntity.getWeaponPower() == 1) {playerEntity.setAmmo(100);}
+						else if (playerEntity.getWeaponPower() == 2) {playerEntity.setAmmo(50);}
+						soundControl.playSound(1);
 						//other events
 						state = run_game;
 						break;
 					
 					case run_game: {
 						//entry events
-						displayControl.showMessage("\f");
-						displayControl.showMessage("lives: ");
+						displayControl.showMessage("\flives: ");
 						displayControl.showMessage(playerEntity.getlives());
-						displayControl.showMessage("\n");
-						//hwlib::wait_ms(0);
 
-						displayControl.showMessage("Ammo: ");
+						displayControl.showMessage("\nAmmo: ");
 						displayControl.showMessage(playerEntity.getAmmo());
 						displayControl.showMessage("\n");
-						//hwlib::wait_ms(0);
 
-						hwlib::cout << "here" << hwlib::endl;
 						//other events
 						auto evt = wait(sendHitChannel + flagGameOver + buttonFlag);
 						if (evt == flagGameOver) {
@@ -114,7 +100,6 @@ class RunGameControl : public rtos::task<>{
 							break;
 						}
 						else if (evt == sendHitChannel) {
-							hwlib::cout << "hit received" << hwlib::endl;
 							state = hit_received;
 							break;
 						}
@@ -144,28 +129,22 @@ class RunGameControl : public rtos::task<>{
 						//entry events
 						
 						weaponChanData = sendHitChannel.read();
-						hwlib::cout << "hit_received: " << weaponChanData.playerID << ':' << weaponChanData.weaponStrength << hwlib::endl;
 
-						//playerEntity.addData(weaponChanData);
+						playerEntity.addData(weaponChanData);
 						playerEntity.setLives(playerEntity.getlives() - 1);
-						hwlib::cout << "test" << hwlib::endl;
-						//soundControl.playSound(2);
-						//hitReceivedTimer.set(800);
 
+						soundControl.playSound(3);
+						hwlib::wait_ms(0);
 						//other events
-						//wait(hitReceivedTimer);
 
 						if (playerEntity.getlives() >= 1) {
-							hwlib::cout << "test2" << hwlib::endl;
 							state = run_game;
 							break;
 						}
 						else {
-							hwlib::cout << "test3" << hwlib::endl;
 							state = gameOverState;
 							break;
 						}
-						hwlib::cout << "test4" << hwlib::endl;
 						state = gameOverState;
 						break;
 
@@ -180,7 +159,6 @@ class RunGameControl : public rtos::task<>{
 							playerEntity.setAmmo(50);
 							hwlib::wait_us(1000000);
 						}
-
 						//other events
 						state = run_game;
 						break;
@@ -196,23 +174,20 @@ class RunGameControl : public rtos::task<>{
 						sData.weaponStrength = playerEntity.getWeaponPower();
 						playerEntity.setAmmo(playerEntity.getAmmo()-1);
 						dataToIrbyteControl.sendTriggerChannel(sData);
-						//soundControl.playSound(1);
+						soundControl.playSound(2);
 
-						//shootTimer.Start();
-						//wait(shootTimer);
+						hwlib::wait_ms(0);
 						state = run_game;
 						break;
 
 					case gameOverState:
-						hwlib::cout << "game over\n";
 						displayControl.showMessage("\fgame Over\n");
-						//soundControl.showMessage(4);
 						displayControl.showMessage(playerEntity.getPlayerID());
-						displayControl.showMessage("\n");
 						hwlib::wait_ms(0);
+						displayControl.showMessage("\nlives: ");
 						displayControl.showMessage(playerEntity.getlives());
 						hwlib::wait_ms(0);
-						//transferHitsControl.gameOver.set();
+						transferHitsControl.gameOver();
 						state = idle;
 						break;
 
@@ -220,7 +195,6 @@ class RunGameControl : public rtos::task<>{
 				}
 			}
 		}
-
 };
 
 #endif // RUNGAMECONTROL_HPP

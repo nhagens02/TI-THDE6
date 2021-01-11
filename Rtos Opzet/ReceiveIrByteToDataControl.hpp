@@ -12,25 +12,6 @@
 
 
 /// \brief
-/// gameModes enum
-/// \details
-/// This enum contains the gamemodes in the game.
-/// This class uses rtos::task<>. 
-enum gameModes {
-	regular = 0, goldenGun = 1
-};
-
-
-/// \brief
-/// GameTime options
-/// \details
-/// This enum contains all possible times for a game of lazergun.
-enum gameTimes {
-	veryShortTime = 0, shortTime = 1, mediumTime = 2, longTime = 3, veryLongTime = 4, testing = 7
-};
-
-
-/// \brief
 /// ReceiveIRByteToDataControl CLASS
 /// \details
 /// This class is used to convert the 16 bits to data to trigger functions in the game. 
@@ -61,7 +42,6 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 			registerGameParametersControl ( registerGameParametersControl ),
 			runGameControl ( runGameControl ),
 			timerControl ( timerControl )
-
 		{}
 
 		void getMessage(uint16_t message) { messageChannel.write(message); }
@@ -79,7 +59,6 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 						
 					uint16_t exclusiveOr = (message << 11);
 					exclusiveOr = (exclusiveOr >> 11);
-
 					//calculate xor
 					
 					uint16_t calculatedXOR = 0;
@@ -103,8 +82,6 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 								gametime = (gametime >> 13);
 								para.gameMode = gamemode;
 								para.gameTime = gametime;
-								//here
-
 							}
 							else {
 								// decode timeUntilStart and call function
@@ -119,10 +96,8 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 						else {
 							// decode hit
 							uint8_t player = message >> 10;
-							hwlib::cout << "player: " << player << hwlib::endl;
 							message -= (player << 10);
 							uint8_t weaponStrength = message >> 5;
-							hwlib::cout << "weaponStrength: " << weaponStrength << hwlib::endl;
 							sData.playerID = player;
 							sData.weaponStrength = weaponStrength;
 							runGameControl.sendHit(sData);
@@ -142,9 +117,6 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 				switch (state)
 				{
 					case idle:
-						//entry events
-
-						//other events
 						wait(messageChannel);
 						state = decodeData;
 						break;
@@ -156,12 +128,10 @@ class ReceiveIrByteToDataControl : public rtos::task<> {
 						//other events
 						state = idle;
 						break;
-
 					default:break;
 				}
 			}
 		}
-
 };
 
 #endif //RECEIVEIRBYTETODATACONTROL_HPP

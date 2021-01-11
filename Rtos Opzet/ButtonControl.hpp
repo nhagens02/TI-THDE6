@@ -4,8 +4,8 @@
 #include "hwlib.hpp"
 #include "rtos.hpp"
 #include "StructData.hpp"
-
 #include "RunGameControl.hpp"
+/// @file
 
 
 class ButtonControl : public rtos::task<> {
@@ -34,9 +34,6 @@ class ButtonControl : public rtos::task<> {
 				switch (state)
 				{
 					case idle:
-						//entry events
-
-						//other events
 						wait(intervalKeyCheck);
 						state = checkAndSendButton;
 						break;

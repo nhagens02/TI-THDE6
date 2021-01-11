@@ -1,5 +1,25 @@
 #ifndef STRUCTDATA_HPP
 #define STRUCTDATA_HPP
+/// @file
+
+
+/// \brief
+/// GameTime options
+/// \details
+/// This enum contains all possible times for a game of lazergun.
+enum gameTimes {
+	veryShortTime = 0, shortTime = 1, mediumTime = 2, longTime = 3, veryLongTime = 4, testing = 7
+};
+
+
+/// \brief
+/// gameModes enum
+/// \details
+/// This enum contains the gamemodes in the game.
+/// This class uses rtos::task<>. 
+enum gameModes {
+	regular = 0, goldenGun = 1
+};
 
 
 /// \brief
@@ -24,8 +44,8 @@ struct parameters {
 
 
 struct data_s {
-	std::array<int, 500> playerID;
-	std::array<int, 500> weaponStrength;
+	std::array<int, 50> playerID;
+	std::array<int, 50> weaponStrength;
 	unsigned int counter = 0;
 };
 
@@ -52,6 +72,5 @@ struct shootdata {
 	int playerID;
 	int weaponStrength;
 };
-
 
 #endif // STRUCTDATA_HPP

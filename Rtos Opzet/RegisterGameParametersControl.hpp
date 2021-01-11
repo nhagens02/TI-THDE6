@@ -1,6 +1,7 @@
 #ifndef REGISTERGAMEPARAMETERSCONTROL_HPP
 #define REGISTERGAMEPARAMETERSCONTROL_HPP
 
+
 #include "hwlib.hpp"
 #include "rtos.hpp"
 #include "StructData.hpp"
@@ -26,7 +27,6 @@ class RegisterGameParametersControl : public rtos::task<>{
 		rtos::channel< struct parameters, 32 > SetParametersChannel;
 		PlayerEntity& playerEntity;
 		DisplayController& displayControl;
-	
 
 	public:
 		RegisterGameParametersControl(PlayerEntity& playerEntity, DisplayController& displayControl):
@@ -37,22 +37,15 @@ class RegisterGameParametersControl : public rtos::task<>{
 			displayControl( displayControl )
 		{}
 
-
 		void buttonPressed(int buttonID){buttonChannel.write(buttonID);}
 		void SetParameters(struct parameters para){SetParametersChannel.write(para);}
 
-
 	private:
 		void main() {
-
 			for (;;) {
 				switch (state)
 				{
 				case idle:
-					//entry events
-					//task::suspend();//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-					//other events
 					wait(buttonChannel);
 					bnID = buttonChannel.read();
 					if (bnID == 10) { //A = 10
@@ -74,7 +67,6 @@ class RegisterGameParametersControl : public rtos::task<>{
 					displayControl.showMessage("Enter PlayerID:\n");
 					hwlib::wait_ms(0);
 					displayControl.showMessage(playerEntity.getPlayerID());
-					//playerEntity.setPlayerID(playerID);
 
 					//other events
 					wait(buttonChannel);
@@ -108,6 +100,7 @@ class RegisterGameParametersControl : public rtos::task<>{
 					displayControl.showMessage("Enter weapon\nPower:");
 					hwlib::wait_ms(0);
 					displayControl.showMessage(playerEntity.getWeaponPower());
+
 					//other events
 					wait(buttonChannel);
 					bnID = buttonChannel.read();
@@ -136,18 +129,14 @@ class RegisterGameParametersControl : public rtos::task<>{
 				case waitForGameData:
 					//entry events
 					displayControl.showMessage("\fWaiting for game\nLeader....\n");
-
 					//other events
 					wait(SetParametersChannel);
-					//runGameControl.sendGameParameters(SetParametersChannel.read());
+
 					state = idle;
 					break;
 				}
 			}
-			
-
-		}
-		
+		}	
 };
 
 #endif // REGISTERGAMEPARAMETERSCONTROL_HPP
