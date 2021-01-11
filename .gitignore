@@ -79,4 +79,4 @@ _*
 *.ipch
 *.VC.*
 makefile.due
-Doxygen/
+Doxygen/html/
