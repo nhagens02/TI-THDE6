@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['bitdetector_2ecpp',['bitDetector.cpp',['../bit_detector_8cpp.html',1,'']]]
+  ['bitdetector_2ehpp_225',['bitDetector.hpp',['../bit_detector_8hpp.html',1,'']]],
+  ['buttoncontrol_2ehpp_226',['ButtonControl.hpp',['../_button_control_8hpp.html',1,'']]]
 ];

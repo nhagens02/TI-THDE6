@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['main',['main',['../classbit_detector.html#a16e4d660027eca9c4e45da7633248a15',1,'bitDetector::main()'],['../class_data_to_i_rbyte_control.html#ac497dcdafbdc716b9e4c30fab41f9d74',1,'DataToIRbyteControl::main()'],['../class_init_game_control.html#a32aba501be811d91e117ed0cd1c8876d',1,'InitGameControl::main()'],['../classkeypad_control.html#a89a8007e28ed9f69d8a5d1a996e5cdfb',1,'keypadControl::main()'],['../class_receive_i_r_byte_to_data_control.html#ac938edb3d7f6001f7fc61eb2f256c29f',1,'ReceiveIRByteToDataControl::main()'],['../class_receive_ir_message_control.html#a6a6a793ea8915363e715f95e86b88ece',1,'ReceiveIrMessageControl::main()'],['../class_register_game_parameters_control.html#a8ffcb10e934a4c6102dd5e0cffad87df',1,'RegisterGameParametersControl::main()'],['../class_run_game_control.html#a29a553b4071b04519147f28fc771fb9d',1,'RunGameControl::main()'],['../class_sound_control.html#a6f9ac3d4d1f9bcec1c739dca79dbb43a',1,'SoundControl::main()'],['../class_timer_control.html#a3d29ad171a4a17a321c1e1150c7ea95b',1,'TimerControl::main()']]],
-  ['mediumtime',['mediumTime',['../_receive_ir_byte_to_data_control_8cpp.html#a740a9bd0f533e73d2a5625249d0844a2a346ed463bdab3d8def6ad1f74dff1a15',1,'ReceiveIrByteToDataControl.cpp']]]
+  ['hit_60',['hit',['../class_sound_control.html#a8992f745ffa61702e5f9a03487ac9a2e',1,'SoundControl']]],
+  ['hit_5freceived_61',['hit_received',['../class_run_game_control.html#a1ef746c9202647bfc02966b7ec3615aea30a13bda2412e828d14612e42969c2ac',1,'RunGameControl']]]
 ];

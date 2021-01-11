@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['update',['update',['../class_receive_ir_message_control.html#a9ebe99dca8545514312c2db2d1583595',1,'ReceiveIrMessageControl']]]
+  ['oled_92',['oled',['../class_display_controller.html#ac2f81b44103505957a6ed7abf83c2644',1,'DisplayController']]]
 ];
